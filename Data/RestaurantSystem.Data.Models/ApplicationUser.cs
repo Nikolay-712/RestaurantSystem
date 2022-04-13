@@ -4,6 +4,7 @@
     using System.Collections.Generic;
 
     using Microsoft.AspNetCore.Identity;
+    using RestaurantSystem.Data.Models.Restaurants;
 
     public class ApplicationUser : IdentityUser
     {
@@ -13,6 +14,7 @@
             this.Roles = new HashSet<IdentityUserRole<string>>();
             this.Claims = new HashSet<IdentityUserClaim<string>>();
             this.Logins = new HashSet<IdentityUserLogin<string>>();
+            this.Restaurants = new HashSet<Restaurant>();
         }
 
         public DateTime CreatedOn { get; set; }
@@ -21,10 +23,12 @@
 
         public DateTime? DeletedOn { get; set; }
 
-        public virtual ICollection<IdentityUserRole<string>> Roles { get; set; }
+        public ICollection<IdentityUserRole<string>> Roles { get; set; }
 
-        public virtual ICollection<IdentityUserClaim<string>> Claims { get; set; }
+        public ICollection<IdentityUserClaim<string>> Claims { get; set; }
 
-        public virtual ICollection<IdentityUserLogin<string>> Logins { get; set; }
+        public ICollection<IdentityUserLogin<string>> Logins { get; set; }
+
+        public ICollection<Restaurant> Restaurants { get; set; }
     }
 }
