@@ -15,6 +15,7 @@
     using RestaurantSystem.Data.Models;
     using RestaurantSystem.Services.Mapping;
     using RestaurantSystem.Services.Messaging;
+    using RestaurantSystem.Services.Restaurants;
     using RestaurantSystem.Web.ViewModels;
 
     public class Startup
@@ -54,6 +55,7 @@
 
             // Application services
             services.AddTransient<IEmailSender, NullMessageSender>();
+            services.AddTransient<IRestaurantService, RestaurantService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
