@@ -4,6 +4,7 @@
     using System.Linq;
 
     using RestaurantSystem.Data;
+    using RestaurantSystem.Web.ViewModels.Owner.Restaurants;
 
     internal class ExistingNameAttribute : ValidationAttribute
     {
@@ -12,16 +13,33 @@
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             var applicationDbContext = this.factory.CreateDbContext(new string[] { });
+            var inputType = validationContext.ObjectType.Name;
+
+            var restaurantName = value.ToString().ToLower();
 
             var existingName = applicationDbContext
-                .Restaurants
-                .Select(x => x.Name)
-                .ToList()
-                .Contains(value as string);
+                    .Restaurants
+                    .Select(x => x.Name.ToLower())
+                    .ToList()
+                    .Contains(restaurantName);
 
-            if (existingName)
+            if (inputType == "RegisterRestaurantInputModel")
             {
-                return new ValidationResult("Името вече се използва, изберете друго)");
+                if (existingName)
+                {
+                    return new ValidationResult("Името вече се използва, изберете друго)");
+                }
+            }
+
+            if (inputType == "EditRestaurantInputModel")
+            {
+                var editModel = validationContext.ObjectInstance as EditRestaurantInputModel;
+                var restaurant = applicationDbContext.Restaurants.FirstOrDefault(x => x.Name.ToLower() == restaurantName);
+
+                if (existingName && restaurant.Id != editModel.Id)
+                {
+                    return new ValidationResult("Името вече се използва, изберете друго)");
+                }
             }
 
             return ValidationResult.Success;

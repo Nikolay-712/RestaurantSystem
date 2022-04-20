@@ -1,5 +1,6 @@
 ﻿namespace RestaurantSystem.Web.Areas.Owner.Controllers.Restaurants
 {
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Identity;
@@ -37,6 +38,38 @@
 
             return this.RedirectToAction("MyRestaurants");
         }
+
+        public IActionResult MyRestaurants()
+        {
+            var restaurants = this.restaurantService
+                .MyRestaurants<MyRestaurantsViewModel>(this.GetCurrentUserId()).ToList();
+
+            return this.View(restaurants);
+        }
+
+        public IActionResult Edit(string restaurantId)
+        {
+            var restaurant = this.restaurantService
+                .MyRestaurants<EditRestaurantInputModel>(this.GetCurrentUserId())
+                .FirstOrDefault(x => x.Id == restaurantId);
+
+            return this.View(restaurant);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditRestaurantInputModel restaurantEditModel)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(restaurantEditModel);
+            }
+
+            await this.restaurantService.EditRestaurantAsync(restaurantEditModel);
+
+            return this.RedirectToAction("Stava");
+        }
+
+
         private string GetCurrentUserId()
         {
             return this.userManager.GetUserId(this.User);

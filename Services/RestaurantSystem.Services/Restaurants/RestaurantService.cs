@@ -1,12 +1,14 @@
 ﻿namespace RestaurantSystem.Services.Restaurants
 {
     using System;
+    using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
 
     using RestaurantSystem.Data;
     using RestaurantSystem.Data.Models.Restaurants;
+    using RestaurantSystem.Services.Mapping;
     using RestaurantSystem.Web.ViewModels.Owner.Restaurants;
 
     public class RestaurantService : IRestaurantService
@@ -34,12 +36,29 @@
             await this.applicationDbContext.SaveChangesAsync();
         }
 
-        public bool ExistingRestaurantName(string restaurantName)
+        public async Task EditRestaurantAsync(EditRestaurantInputModel restaurantEditModel)
+        {
+            var restaurant = this.applicationDbContext
+                .Restaurants
+                .FirstOrDefault(x => x.Id == restaurantEditModel.Id);
+
+            restaurant.Name = restaurantEditModel.Name;
+            restaurant.Description = restaurant.Description;
+            restaurant.DeliveryPeice = restaurantEditModel.DeliveryPeice;
+            restaurant.OpenIn = DateTime.Parse(restaurantEditModel.OpenIn, CultureInfo.InvariantCulture);
+            restaurant.CloseIn = DateTime.Parse(restaurantEditModel.CloseIn, CultureInfo.InvariantCulture);
+
+            this.applicationDbContext.Update(restaurant);
+            await this.applicationDbContext.SaveChangesAsync();
+        }
+
+        public IEnumerable<T> MyRestaurants<T>(string ownerId)
         {
             return this.applicationDbContext
                 .Restaurants
-                .Select(x => x.Name)
-                .Contains(restaurantName);
+                .Where(x => x.OwnerId == ownerId)
+                .To<T>()
+                .ToList();
         }
     }
 }

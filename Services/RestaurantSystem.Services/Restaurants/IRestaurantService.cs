@@ -1,5 +1,6 @@
 ﻿namespace RestaurantSystem.Services.Restaurants
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using RestaurantSystem.Web.ViewModels.Owner.Restaurants;
@@ -8,6 +9,8 @@
     {
         Task RegisterRestaurantAsync(string ownerId, RegisterRestaurantInputModel restaurantInputModel);
 
-        bool ExistingRestaurantName(string restaurantName);
+        Task EditRestaurantAsync(EditRestaurantInputModel restaurantEditModel);
+
+        IEnumerable<T> MyRestaurants<T>(string ownerId);
     }
 }
