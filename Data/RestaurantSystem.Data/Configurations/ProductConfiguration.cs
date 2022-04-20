@@ -34,6 +34,10 @@
                 .IsRequired();
 
             product
+                .Property(x => x.InStock)
+                .IsRequired();
+
+            product
                 .Property(x => x.Category)
                 .IsRequired();
         }

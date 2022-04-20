@@ -5,6 +5,7 @@
     <thead>
         <tr>
             <th scope="col">Име</th>
+            <th scope="col">Описание</th>
             <th scope="col">Работно време</th>
             <th scope="col">Доставна Цена</th>
             <th scope="col">
@@ -21,6 +22,7 @@
         {
             <tr>
                 <td><strong>@restaurant.Name</strong></td>
+                <td><strong>@restaurant.Description.Substring(0, 20)....</strong></td>
                 <td>@restaurant.OpenIn.ToString("HH:mm") - @restaurant.CloseIn.ToString("HH:mm")</td>
                 <td>@restaurant.DeliveryPeice лв.</td>
                 <td>

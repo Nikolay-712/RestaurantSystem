@@ -21,6 +21,8 @@
 
         public int Weight { get; set; }
 
+        public bool InStock { get; set; }
+
         public string RestaurantId { get; set; }
     }
 }

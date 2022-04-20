@@ -53,6 +53,11 @@
                 .MyRestaurants<EditRestaurantInputModel>(this.GetCurrentUserId())
                 .FirstOrDefault(x => x.Id == restaurantId);
 
+            if (restaurant == null)
+            {
+                return this.BadRequest();
+            }
+
             return this.View(restaurant);
         }
 
@@ -68,7 +73,6 @@
 
             return this.RedirectToAction("Stava");
         }
-
 
         private string GetCurrentUserId()
         {

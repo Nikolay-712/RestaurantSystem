@@ -6,6 +6,8 @@
 
         public const string AdministratorRoleName = "Administrator";
 
+        public const string OwnerRoleName = "Owner";
+
         public const string RequiredFieldMessage = "Полето е задалжително.";
 
         public const string LenghtErrorMessage = "{0} трябва да бъде между {1} - {2} символа.";

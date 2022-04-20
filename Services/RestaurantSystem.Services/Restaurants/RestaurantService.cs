@@ -24,6 +24,7 @@
         {
             var restaurant = new Restaurant
             {
+                CreatedOn = DateTime.UtcNow,
                 Name = restaurantInputModel.Name,
                 Description = restaurantInputModel.Description,
                 DeliveryPeice = restaurantInputModel.DeliveryPeice,

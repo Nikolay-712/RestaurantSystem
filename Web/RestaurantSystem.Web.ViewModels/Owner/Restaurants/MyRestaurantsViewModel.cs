@@ -1,15 +1,14 @@
-﻿using RestaurantSystem.Data.Models.Restaurants;
-using RestaurantSystem.Services.Mapping;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RestaurantSystem.Web.ViewModels.Owner.Restaurants
+﻿namespace RestaurantSystem.Web.ViewModels.Owner.Restaurants
 {
+    using System;
+
+    using RestaurantSystem.Data.Models.Restaurants;
+    using RestaurantSystem.Services.Mapping;
+
     public class MyRestaurantsViewModel : IMapFrom<Restaurant>
     {
+        public DateTime CreatedOn { get; set; }
+
         public string Id { get; init; }
 
         public string Name { get; init; }

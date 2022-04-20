@@ -11,12 +11,13 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using RestaurantSystem.Data;
-    using RestaurantSystem.Data.Common;
     using RestaurantSystem.Data.Models;
     using RestaurantSystem.Services.Mapping;
     using RestaurantSystem.Services.Messaging;
     using RestaurantSystem.Services.Restaurants;
     using RestaurantSystem.Web.ViewModels;
+
+    using static RestaurantSystem.Common.GlobalConstants;
 
     public class Startup
     {
@@ -68,6 +69,9 @@
             {
                 var dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 dbContext.Database.Migrate();
+
+                var services = serviceScope.ServiceProvider;
+                Infrastructure.ApplicationBuilderExtensions.SeedApplicationRole(services, OwnerRoleName);
             }
 
             if (env.IsDevelopment())
