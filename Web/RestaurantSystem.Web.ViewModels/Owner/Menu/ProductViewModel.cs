@@ -19,6 +19,6 @@
 
         public string RestaurantId { get; init; }
 
-        public bool InStock { get; set; }
+        public bool InStock { get; init; }
     }
 }

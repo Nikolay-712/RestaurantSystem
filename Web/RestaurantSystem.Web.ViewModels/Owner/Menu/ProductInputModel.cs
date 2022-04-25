@@ -32,6 +32,6 @@
         [Range(minimum: 0.1, maximum: 500, ErrorMessage = WeightErrorMessage)]
         public int Weight { get; init; }
 
-        public string RestaurantId { get; set; }
+        public string RestaurantId { get; init; }
     }
 }

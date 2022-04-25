@@ -7,10 +7,10 @@
 
     public interface IMenuService
     {
-        Task EditProductAsync(bool inStock, string productId, EditProductViewModel editProduct);
-
         Task AddProductAsync(ProductInputModel inputModel);
 
         IEnumerable<T> GetRestaurantMenu<T>(string restaurantId);
+
+        Task EditProductAsync(bool inStock, string productId, EditProductViewModel editProduct);
     }
 }

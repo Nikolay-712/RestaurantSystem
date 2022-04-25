@@ -5,80 +5,155 @@
     var categories = Enum.GetValues(typeof(Category));
 }
 
-<form asp-action="Index" asp-route-restaurantId="@Model.RestaurantId" onclick="this.form.submit()" enctype="multipart/form-data">
-    <div class="form-group">
-        <select onchange="this.form.submit()" asp-for="Category" class="form-control alert-heading">
-            <option value="">Изберете всички</option>
-            @foreach (var category in categories)
-            {
-                <option value="@category">@category</option>
-            }
-        </select>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Index"
+              asp-route-restaurantId="@Model.RestaurantId"
+              onclick="this.form.submit()" enctype="multipart/form-data">
+            <div class="form-group">
+                <select onchange="this.form.submit()" asp-for="Category" class="form-control alert-heading">
+                    <option value="">Изберете всички</option>
+                    @foreach (var category in categories)
+                    {
+                        <option value="@category">@category</option>
+                    }
+                </select>
+            </div>
+        </form>
     </div>
-</form>
+    <div class="col-md-4">
+        <form asp-action="Registration" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input class="form-control" placeholder="Търсене по име" />
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4">
+        <a class="btn btn-success btn-sm"
+           asp-action="AddProduct"
+           asp-route-restaurantId="@Model.RestaurantId">
+            <i class="fas fa-plus-circle"></i> <strong>Добави нов</strong>
+        </a>
+    </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th scope="col">Име</th>
-            <th scope="col">Описание</th>
-            <th scope="col">Цена</th>
-            <th scope="col">Грамаж</th>
-            <th scope="col">Категория</th>
-            <th scope="col"></th>
-            <th scope="col"></th>
+</div>
 
-            <th scope="col">
-                <a class="btn btn-success btn-sm"
-                   asp-action="AddProduct"
-                   asp-route-restaurantId="@Model.RestaurantId">
-                    <i class="fas fa-plus-circle"></i> <strong>Добави нов</strong>
-                </a>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
+<div class="card mb-5">
+    <div class="card-header">Meню</div>
+    <div class="card-block p-0">
+        <table class="table table-bordered table-sm m-0 text-center">
 
-        @foreach (var product in Model.Products)
+            <thead>
+                <tr>
+                    <th scope="col">Име</th>
+                    <th scope="col">Описание</th>
+                    <th scope="col">Цена</th>
+                    <th scope="col">Грамаж</th>
+                    <th scope="col">Категория</th>
+                    <th scope="col">Наличност</th>
+                    <th scope="col"></th>
+
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var product in Model.Products)
+                {
+                    <tr>
+                        <td><strong>@product.Name</strong></td>
+                        <td>@product.Description.Substring(0, 9)....</td>
+                        <td>@product.Price.ToString("F2") лв.</td>
+                        <td>@product.Weight гр.</td>
+                        <td>@product.Category</td>
+                        <td>
+
+                            <label class="custom-control custom-checkbox">
+                                <form asp-action="Edit"
+                                  asp-route-inStock="@product.InStock"
+                                  asp-route-productId="@product.Id"
+                                  asp-route-restaurantId="@product.RestaurantId"
+                                  asp-route-page="@Model.PageNumber"
+                                  enctype="multipart/form-data">
+                                    <input type="checkbox" class="custom-control-input"
+                                       value="@product.InStock"
+                                       checked="@product.InStock"
+                                       onclick="this.form.submit();" />
+                                    <span class="custom-control-indicator"></span>
+                                </form>
+                            </label>
+
+                        </td>
+                        <td>
+                            <a class="btn btn-primary btn-sm"
+                           asp-action="Edit"
+                           asp-route-productId="@product.Id"
+                           asp-route-restaurantId="@product.RestaurantId"
+                           asp-route-page="@Model.PageNumber">
+                                <i class="fas fa-tools"></i>
+                            </a>
+                           
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+
+<nav aria-label="...">
+    <ul class="pagination justify-content-center">
+        <li class="page-item @if (!Model.HasPreviousPage) {
+        <text>disabled</text>
+ }">
+            <a class="page-link"
+               asp-route-restaurantId="@Model.RestaurantId"
+               asp-route-page="@Model.PreviousPageNumber">
+                <i class="fas fa-arrow-alt-circle-left text-blue"></i>
+            </a>
+        </li>
+
+        @for (int i = Model.PageNumber - 4; i < Model.PageNumber; i++)
         {
-            <tr>
-                <td><strong>@product.Name</strong></td>
-                <td>@product.Description.Substring(0, 9)....</td>
-                <td>@product.Price.ToString("F2") лв.</td>
-                <td>@product.Weight гр.</td>
-                <td>@product.Category</td>
-                <td>
-                    <form asp-action="Edit"
-                      asp-route-inStock="@product.InStock"
-                      asp-route-productId="@product.Id"
-                      asp-route-restaurantId="@product.RestaurantId"
-                      enctype="multipart/form-data">
-                        <input type="checkbox"
-                           value="@product.InStock"
-                           checked="@product.InStock"
-                           onclick="this.form.submit();" />
-                        @(product.InStock  ? "В наличност" : "Не се предлага")
-                    </form>
-                </td>
-                <td>
-                    <a class="btn btn-primary btn-sm"
-                   asp-action="Edit"
-                   asp-route-productId="@product.Id"
-                   asp-route-restaurantId="@product.RestaurantId">
-                        <i class="fas fa-tools"></i>
-                    </a>
-                    @*<a class="btn btn-warning btn-sm"
-                        asp-action="Details"
-                        asp-route-restaurantId="@restaurant.Id">
-                        <i class="fas fa-tools"></i>
-                        </a>
-                        <a class="btn btn-danger btn-sm"
-                        asp-action="Edit"
-                        asp-route-restaurantId="@restaurant.Id">
-                        <i class="fas fa-tools"></i>
-                        </a>*@
-                </td>
-            </tr>
+            if (i > 0)
+            {
+                <li class="page-item">
+                    <a class="page-link"
+               asp-route-restaurantId="@Model.RestaurantId"
+               asp-route-page="@i">@i</a>
+                </li>
+            }
         }
-    </tbody>
-</table>
+
+        <li class="page-item active" aria-current="page">
+            <span class="page-link">
+                @Model.PageNumber
+                <span class="sr-only">(current)</span>
+            </span>
+        </li>
+
+        @for (int i = Model.PageNumber + 1; i <= Model.PageNumber + 4; i++)
+        {
+            if (i <= Model.PagesCount)
+            {
+                <li class="page-item">
+                    <a class="page-link"
+               asp-route-restaurantId="@Model.RestaurantId"
+               asp-route-page="@i">@i</a>
+                </li>
+            }
+        }
+        <li class="page-item @if (!Model.HasNextPage) {
+        <text>disabled</text>
+ }">
+            <a class="page-link"
+               asp-route-restaurantId="@Model.RestaurantId"
+               asp-route-page="@Model.NextPageNumber">
+                <i class="fas fa-arrow-alt-circle-right text-blue"> </i>
+            </a>
+        </li>
+    </ul>
+</nav>
+

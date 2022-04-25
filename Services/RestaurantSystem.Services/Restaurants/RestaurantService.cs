@@ -39,9 +39,7 @@
 
         public async Task EditRestaurantAsync(EditRestaurantInputModel restaurantEditModel)
         {
-            var restaurant = this.applicationDbContext
-                .Restaurants
-                .FirstOrDefault(x => x.Id == restaurantEditModel.Id);
+            var restaurant = this.GetRestaurant(restaurantEditModel.Id);
 
             restaurant.Name = restaurantEditModel.Name;
             restaurant.Description = restaurant.Description;
@@ -60,6 +58,13 @@
                 .Where(x => x.OwnerId == ownerId)
                 .To<T>()
                 .ToList();
+        }
+
+        public Restaurant GetRestaurant(string restaurantid)
+        {
+            return this.applicationDbContext
+                .Restaurants
+                .FirstOrDefault(x => x.Id == restaurantid);
         }
     }
 }

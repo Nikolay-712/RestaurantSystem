@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using RestaurantSystem.Data.Models.Restaurants;
     using RestaurantSystem.Web.ViewModels.Owner.Restaurants;
 
     public interface IRestaurantService
@@ -12,5 +13,7 @@
         Task EditRestaurantAsync(EditRestaurantInputModel restaurantEditModel);
 
         IEnumerable<T> MyRestaurants<T>(string ownerId);
+
+        Restaurant GetRestaurant(string restaurantid);
     }
 }

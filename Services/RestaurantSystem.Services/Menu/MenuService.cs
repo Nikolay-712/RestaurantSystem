@@ -18,34 +18,6 @@
             this.applicationDbContext = applicationDbContext;
         }
 
-        public async Task EditProductAsync(bool inStock, string productId, EditProductViewModel editProduct)
-        {
-            if (editProduct.Id == null)
-            {
-                editProduct.Id = productId;
-                editProduct.InStock = inStock;
-            }
-
-            var product = this.applicationDbContext
-                .Products
-                .FirstOrDefault(x => x.Id == editProduct.Id);
-
-            if (productId != null)
-            {
-                product.InStock = editProduct.InStock ? false : true;
-            }
-            else
-            {
-                product.Name = editProduct.Name;
-                product.Description = editProduct.Description;
-                product.Price = editProduct.Price;
-                product.Weight = editProduct.Weight;
-            }
-
-            this.applicationDbContext.Update(product);
-            await this.applicationDbContext.SaveChangesAsync();
-        }
-
         public async Task AddProductAsync(ProductInputModel inputModel)
         {
             var product = new Product
@@ -72,7 +44,34 @@
                 .ToList();
 
             return menu;
+        }
 
+        public async Task EditProductAsync(bool inStock, string productId, EditProductViewModel editProduct)
+        {
+            if (editProduct.Id == null)
+            {
+                editProduct.Id = productId;
+                editProduct.InStock = inStock;
+            }
+
+            var product = this.applicationDbContext
+                .Products
+                .FirstOrDefault(x => x.Id == editProduct.Id);
+
+            if (productId != null)
+            {
+                product.InStock = editProduct.InStock ? false : true;
+            }
+            else
+            {
+                product.Name = editProduct.Name;
+                product.Description = editProduct.Description;
+                product.Price = editProduct.Price;
+                product.Weight = editProduct.Weight;
+            }
+
+            this.applicationDbContext.Update(product);
+            await this.applicationDbContext.SaveChangesAsync();
         }
     }
 }
