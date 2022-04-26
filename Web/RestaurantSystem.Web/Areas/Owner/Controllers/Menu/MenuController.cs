@@ -11,8 +11,6 @@
 
     public class MenuController : OwnerController
     {
-        private const int ProductsPerpage = 3;
-
         private readonly IMenuService menuService;
         private readonly IRestaurantService restaurantService;
 
@@ -47,28 +45,9 @@
 
         public IActionResult Index(string restaurantId, string category, int page = 1)
         {
-            if (this.CheckRestaurant(restaurantId))
-            {
-                var products = category is null ?
-                this.menuService.GetRestaurantMenu<ProductViewModel>(restaurantId) :
-                this.menuService.GetRestaurantMenu<ProductViewModel>(restaurantId).Where(x => x.Category == category);
+            var menu = this.menuService.GetMenu(restaurantId, category, page);
 
-                var menu = new MenuViewModel
-                {
-                    ItemsPerPage = ProductsPerpage,
-                    ItemsCount = products.Count(),
-                    PageNumber = page,
-                    Products = products
-                        .OrderBy(x => x.Category)
-                        .Skip((page - 1) * ProductsPerpage)
-                        .Take(ProductsPerpage),
-                    RestaurantId = restaurantId,
-                };
-
-                return this.View(menu);
-            }
-
-            return this.BadRequest();
+            return this.View(menu);
         }
 
         public IActionResult Edit(string productId, string restaurantId, int page)
@@ -76,7 +55,7 @@
             if (this.CheckRestaurant(restaurantId))
             {
                 var product = this.menuService
-                    .GetRestaurantMenu<EditProductViewModel>(restaurantId)
+                    .GetProducts<EditProductViewModel>(restaurantId)
                     .FirstOrDefault(x => x.Id == productId);
 
                 if (product != null)
@@ -95,11 +74,6 @@
         {
             if (this.CheckRestaurant(editProduct.RestaurantId))
             {
-                if (this.ModelState.IsValid)
-                {
-                    return this.View(editProduct);
-                }
-
                 await this.menuService.EditProductAsync(inStock, productId, editProduct);
                 return this.RedirectToAction("Index", "Menu", new { restaurantId = editProduct.RestaurantId, page = page });
             }

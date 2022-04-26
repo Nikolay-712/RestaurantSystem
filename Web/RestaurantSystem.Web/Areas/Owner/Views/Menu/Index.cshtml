@@ -22,15 +22,10 @@
         </form>
     </div>
     <div class="col-md-4">
-        <form asp-action="Registration" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <input class="form-control" placeholder="Търсене по име" />
-            </div>
-        </form>
+        <input class="form-control me-2" id="myInput" onkeyup="myFunction()" type="search" placeholder="Search">
     </div>
     <div class="col-md-4">
-        <a class="btn btn-success btn-sm"
+        <a class="btn btn-primary"
            asp-action="AddProduct"
            asp-route-restaurantId="@Model.RestaurantId">
             <i class="fas fa-plus-circle"></i> <strong>Добави нов</strong>
@@ -40,9 +35,9 @@
 </div>
 
 <div class="card mb-5">
-    <div class="card-header">Meню</div>
+    <div class="card-header">Meню (@Model.Products.Count() продукта)</div>
     <div class="card-block p-0">
-        <table class="table table-bordered table-sm m-0 text-center">
+        <table id="myTable" class="table table-bordered table-sm m-0 text-center">
 
             <thead>
                 <tr>
@@ -60,7 +55,7 @@
 
                 @foreach (var product in Model.Products)
                 {
-                    <tr>
+                    <tr id="myUL">
                         <td><strong>@product.Name</strong></td>
                         <td>@product.Description.Substring(0, 9)....</td>
                         <td>@product.Price.ToString("F2") лв.</td>
@@ -85,14 +80,13 @@
 
                         </td>
                         <td>
-                            <a class="btn btn-primary btn-sm"
+                            <a class="btn-primary btn-sm"
                            asp-action="Edit"
                            asp-route-productId="@product.Id"
                            asp-route-restaurantId="@product.RestaurantId"
                            asp-route-page="@Model.PageNumber">
                                 <i class="fas fa-tools"></i>
                             </a>
-                           
                         </td>
                     </tr>
                 }
@@ -156,4 +150,28 @@
         </li>
     </ul>
 </nav>
+
+<script>
+    function myFunction() {
+      // Declare variables
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("myInput");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("myTable");
+      tr = table.getElementsByTagName("tr");
+
+      // Loop through all table rows, and hide those who don't match the search query
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+          txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
+    }
+</script>
 

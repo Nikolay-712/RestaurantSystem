@@ -9,6 +9,5 @@
         public string RestaurantId { get; init; }
 
         public string Category { get; init; }
-
     }
 }

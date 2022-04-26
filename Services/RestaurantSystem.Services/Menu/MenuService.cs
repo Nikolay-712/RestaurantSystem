@@ -11,6 +11,7 @@
 
     public class MenuService : IMenuService
     {
+        private const int ProductsPerpage = 15;
         private readonly ApplicationDbContext applicationDbContext;
 
         public MenuService(ApplicationDbContext applicationDbContext)
@@ -35,13 +36,36 @@
             await this.applicationDbContext.SaveChangesAsync();
         }
 
-        public IEnumerable<T> GetRestaurantMenu<T>(string restaurantId)
+        public IEnumerable<T> GetProducts<T>(string restaurantId)
         {
             var menu = this.applicationDbContext
                 .Products
                 .Where(x => x.RestaurantId == restaurantId)
-                .To<T>()
-                .ToList();
+                .To<T>();
+
+            return menu;
+        }
+
+        public MenuViewModel GetMenu(string restaurantId, string category, int page)
+        {
+            var products = this.GetProducts<ProductViewModel>(restaurantId);
+
+            if (category != null)
+            {
+                products = products.Where(x => x.Category == category);
+            }
+
+            var menu = new MenuViewModel
+            {
+                RestaurantId = restaurantId,
+                ItemsPerPage = ProductsPerpage,
+                ItemsCount = products.Count(),
+                PageNumber = page,
+                Products = products
+                    .OrderBy(x => x.Category)
+                    .Skip((page - 1) * ProductsPerpage)
+                    .Take(ProductsPerpage).ToList(),
+            };
 
             return menu;
         }

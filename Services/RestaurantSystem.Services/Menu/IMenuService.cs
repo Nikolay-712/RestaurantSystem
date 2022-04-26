@@ -9,7 +9,9 @@
     {
         Task AddProductAsync(ProductInputModel inputModel);
 
-        IEnumerable<T> GetRestaurantMenu<T>(string restaurantId);
+        IEnumerable<T> GetProducts<T>(string restaurantId);
+
+        MenuViewModel GetMenu(string restaurantId, string category, int page);
 
         Task EditProductAsync(bool inStock, string productId, EditProductViewModel editProduct);
     }
