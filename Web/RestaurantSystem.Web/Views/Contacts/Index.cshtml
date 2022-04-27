@@ -1,0 +1,30 @@
+﻿@model MessageInputVewModel
+@using RestaurantSystem.Data.Models.Contacts;
+
+@{
+    var messageType = Enum.GetValues(typeof(MessageType));
+}
+
+<div class="col-md-6 ">
+    <form asp-action="Index" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <select asp-for="MessageType" class="form-control  alert-heading">
+                <option value="">Изберете вид саобщение</option>
+                @foreach (var type in messageType)
+                {
+                    <option value="@type">@type</option>
+                }
+            </select>
+            <span asp-validation-for="MessageType" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <textarea rows="5" asp-for="Message" class="form-control" placeholder="Саобщение..."></textarea>
+            <span asp-validation-for="Message" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Изпрати" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+

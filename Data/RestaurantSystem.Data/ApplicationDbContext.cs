@@ -7,6 +7,7 @@
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
     using RestaurantSystem.Data.Models;
+    using RestaurantSystem.Data.Models.Contacts;
     using RestaurantSystem.Data.Models.Products;
     using RestaurantSystem.Data.Models.Restaurants;
 
@@ -20,6 +21,8 @@
         public DbSet<Product> Products { get; set; }
 
         public DbSet<Restaurant> Restaurants { get; set; }
+
+        public DbSet<ApplicationMessage> Messages { get; set; }
 
         public override int SaveChanges() => this.SaveChanges(true);
 

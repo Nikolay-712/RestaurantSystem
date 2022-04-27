@@ -12,6 +12,7 @@
     using Microsoft.Extensions.Hosting;
     using RestaurantSystem.Data;
     using RestaurantSystem.Data.Models;
+    using RestaurantSystem.Services.Contacts;
     using RestaurantSystem.Services.Mapping;
     using RestaurantSystem.Services.Menu;
     using RestaurantSystem.Services.Messaging;
@@ -59,6 +60,7 @@
             services.AddTransient<IEmailSender, NullMessageSender>();
             services.AddTransient<IRestaurantService, RestaurantService>();
             services.AddTransient<IMenuService, MenuService>();
+            services.AddTransient<IContactService, ContactService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

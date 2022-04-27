@@ -2,11 +2,10 @@
 {
     using System.Diagnostics;
 
+    using Microsoft.AspNetCore.Mvc;
     using RestaurantSystem.Web.ViewModels;
 
-    using Microsoft.AspNetCore.Mvc;
-
-    public class HomeController : BaseController
+    public class HomeController : Controller
     {
         public IActionResult Index()
         {
