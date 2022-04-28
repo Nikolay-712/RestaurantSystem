@@ -1,0 +1,114 @@
+﻿@model AllMessagesViewModel
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<RestaurantSystem.Data.Models.ApplicationUser> UserManager;
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <input class="form-control me-2" id="myInput" onkeyup="myFunction()" type="search" placeholder="Search by email">
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <input class="form-control me-2" id="myInput1" onkeyup="myFunction1()" type="search" placeholder="Search by type">
+    </div>
+</div>
+
+<div class="card mb-5">
+    <div class="card-header">
+        <span style="font-size: 18px; color: Dodgerblue;">
+            <i class="fas fa-envelope-open-text"></i>
+        </span>
+        (@Model.UnreadMessagesCount Саобщения)
+    </div>
+    <div class="card-block p-0">
+        <table id="myTable" class="table table-bordered table-sm m-0 text-center">
+            <thead>
+                <tr>
+                    <th scope="col">Изпратено от</th>
+                    <th scope="col">Роля</th>
+                    <th scope="col">Изпратено на</th>
+                    <th scope="col">Тема</th>
+                    <th scope="col">Отговорено</th>
+                    <th scope="col"></th>
+
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var message in Model.Messages)
+                {
+                    var senderRole = await this.UserManager
+                    .GetRolesAsync(await UserManager.FindByEmailAsync(message.Sender));
+
+                    var currentRole = senderRole.FirstOrDefault(x => x == "Owner");
+
+                    <tr id="myUL">
+                        <td>@message.Sender</td>
+                        <td>@currentRole</td>
+                        <td>@message.CreatedOn.ToString("dd.MM.yyyy - HH:mm")</td>
+                        <td>@message.MessageType</td>
+                        <td>@message.IsRead</td>
+
+                        <td>
+                            <a class="btn btn-primary btn-sm"
+                           asp-action="ReadMessage"
+                           asp-route-messageId="@message.Id">
+                                <i class="far fa-comment-alt"> </i> Прочети
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+
+<script>
+    function myFunction() {
+      // Declare variables
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("myInput");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("myTable");
+      tr = table.getElementsByTagName("tr");
+
+      // Loop through all table rows, and hide those who don't match the search query
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+          txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
+    }
+</script>
+
+
+<script>
+    function myFunction1() {
+      // Declare variables
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("myInput1");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("myTable");
+      tr = table.getElementsByTagName("tr");
+
+      // Loop through all table rows, and hide those who don't match the search query
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[3];
+        if (td) {
+          txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
+    }
+</script>

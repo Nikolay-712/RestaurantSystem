@@ -17,6 +17,7 @@
     using RestaurantSystem.Services.Menu;
     using RestaurantSystem.Services.Messaging;
     using RestaurantSystem.Services.Restaurants;
+    using RestaurantSystem.Services.Users;
     using RestaurantSystem.Web.ViewModels;
 
     using static RestaurantSystem.Common.GlobalConstants;
@@ -61,6 +62,7 @@
             services.AddTransient<IRestaurantService, RestaurantService>();
             services.AddTransient<IMenuService, MenuService>();
             services.AddTransient<IContactService, ContactService>();
+            services.AddTransient<IUserService, UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

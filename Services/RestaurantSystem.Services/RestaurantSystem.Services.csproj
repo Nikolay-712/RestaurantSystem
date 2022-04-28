@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Data\RestaurantSystem.Data\RestaurantSystem.Data.csproj" />
     <ProjectReference Include="..\..\Web\RestaurantSystem.Web.ViewModels\RestaurantSystem.Web.ViewModels.csproj" />
+    <ProjectReference Include="..\RestaurantSystem.Services.Messaging\RestaurantSystem.Services.Messaging.csproj" />
   </ItemGroup>
 
 </Project>

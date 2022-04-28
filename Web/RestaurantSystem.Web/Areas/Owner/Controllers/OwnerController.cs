@@ -5,8 +5,8 @@
 
     using static RestaurantSystem.Common.GlobalConstants;
 
-    [Area("Owner")]
     [Authorize(Roles = OwnerRoleName)]
+    [Area("Owner")]
     public class OwnerController : Controller
     {
     }
