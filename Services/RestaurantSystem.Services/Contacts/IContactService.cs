@@ -14,6 +14,10 @@
 
         AllMessagesViewModel AllMessages();
 
-        void ReturnАnswer(string messageId);
+        Task<bool> ReturnАnswerAsync(AdminMessageViewModel adminMessage);
+
+        AdminMessageViewModel GetMessageAnswers(string messageId);
+
+        Task<bool> ChangeMessageStatmentAsync(string messageId);
     }
 }

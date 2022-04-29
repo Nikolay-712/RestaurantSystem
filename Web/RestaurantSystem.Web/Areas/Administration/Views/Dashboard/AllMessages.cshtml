@@ -1,6 +1,4 @@
 ﻿@model AllMessagesViewModel
-@using Microsoft.AspNetCore.Identity
-@inject UserManager<RestaurantSystem.Data.Models.ApplicationUser> UserManager;
 
 <div class="row">
     <div class="col-md-4 mb-4">
@@ -24,7 +22,6 @@
             <thead>
                 <tr>
                     <th scope="col">Изпратено от</th>
-                    <th scope="col">Роля</th>
                     <th scope="col">Изпратено на</th>
                     <th scope="col">Тема</th>
                     <th scope="col">Отговорено</th>
@@ -36,17 +33,22 @@
 
                 @foreach (var message in Model.Messages)
                 {
-                    var senderRole = await this.UserManager
-                    .GetRolesAsync(await UserManager.FindByEmailAsync(message.Sender));
-
-                    var currentRole = senderRole.FirstOrDefault(x => x == "Owner");
-
                     <tr id="myUL">
                         <td>@message.Sender</td>
-                        <td>@currentRole</td>
                         <td>@message.CreatedOn.ToString("dd.MM.yyyy - HH:mm")</td>
                         <td>@message.MessageType</td>
-                        <td>@message.IsRead</td>
+                        <td>
+                            @if (message.IsRead)
+                            {
+                                <span style="font-size: 1em; color: Green;"> <i class="fas fa-circle"></i> </span>
+                            }
+
+                            else
+                            {
+                                <span style="font-size: 1em; color: Tomato;"> <i class="fas fa-circle"></i>  </span>
+                            }
+
+                        </td>
 
                         <td>
                             <a class="btn btn-primary btn-sm"
@@ -60,55 +62,6 @@
             </tbody>
         </table>
     </div>
-
 </div>
 
 
-<script>
-    function myFunction() {
-      // Declare variables
-      var input, filter, table, tr, td, i, txtValue;
-      input = document.getElementById("myInput");
-      filter = input.value.toUpperCase();
-      table = document.getElementById("myTable");
-      tr = table.getElementsByTagName("tr");
-
-      // Loop through all table rows, and hide those who don't match the search query
-      for (i = 0; i < tr.length; i++) {
-        td = tr[i].getElementsByTagName("td")[0];
-        if (td) {
-          txtValue = td.textContent || td.innerText;
-          if (txtValue.toUpperCase().indexOf(filter) > -1) {
-            tr[i].style.display = "";
-          } else {
-            tr[i].style.display = "none";
-          }
-        }
-      }
-    }
-</script>
-
-
-<script>
-    function myFunction1() {
-      // Declare variables
-      var input, filter, table, tr, td, i, txtValue;
-      input = document.getElementById("myInput1");
-      filter = input.value.toUpperCase();
-      table = document.getElementById("myTable");
-      tr = table.getElementsByTagName("tr");
-
-      // Loop through all table rows, and hide those who don't match the search query
-      for (i = 0; i < tr.length; i++) {
-        td = tr[i].getElementsByTagName("td")[3];
-        if (td) {
-          txtValue = td.textContent || td.innerText;
-          if (txtValue.toUpperCase().indexOf(filter) > -1) {
-            tr[i].style.display = "";
-          } else {
-            tr[i].style.display = "none";
-          }
-        }
-      }
-    }
-</script>

@@ -1,6 +1,7 @@
 ﻿namespace RestaurantSystem.Web.ViewModels.Administration.Messages
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     using RestaurantSystem.Data.Models.Contacts;
@@ -20,10 +21,9 @@
 
         public string Message { get; init; }
 
-        [Display(Name = "Заглавието")]
-        [Required(ErrorMessage = RequiredFieldMessage)]
-        [StringLength(maximumLength: 50, ErrorMessage = LenghtErrorMessage, MinimumLength = 10)]
-        public string Title { get; init; }
+        public bool IsRead { get; init; }
+
+        public AdminMessageViewModel Answer { get; set; }
 
         [Display(Name = "Саобщението")]
         [Required(ErrorMessage = RequiredFieldMessage)]

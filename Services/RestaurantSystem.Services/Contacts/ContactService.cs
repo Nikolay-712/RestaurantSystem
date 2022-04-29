@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
 
     using RestaurantSystem.Data;
@@ -42,7 +41,10 @@
         public AllMessagesViewModel AllMessages()
         {
             var messagesList = this.GetMessages<MessageViewModel>()
-                .OrderBy(x => x.CreatedOn)
+                .OrderByDescending(x => x.CreatedOn)
+                .OrderBy(x => x.MessageType)
+                .OrderByDescending(x => x.IsRead)
+                .Where(x => !x.Id.Contains("answer"))
                 .ToList();
 
             var messages = new AllMessagesViewModel
@@ -54,9 +56,65 @@
             return messages;
         }
 
-        public void ReturnАnswer(string messageId)
+        public async Task<bool> ReturnАnswerAsync(AdminMessageViewModel adminMessage)
         {
-            
+            if (!await this.ChangeMessageStatmentAsync(adminMessage.Id))
+            {
+                return false;
+            }
+
+            var answer = new ApplicationMessage
+            {
+                Id = $"answer{adminMessage.Id}",
+                CreatedOn = DateTime.UtcNow,
+                MessageType = MessageType.Саобщение,
+                Sender = "admin@abv.bg",
+                Message = adminMessage.Text,
+            };
+
+            await this.applicationDbContext.Messages.AddAsync(answer);
+            await this.applicationDbContext.SaveChangesAsync();
+
+            await this.emailSender
+                 .SendEmailAsync(answer.Sender, "Administration", adminMessage.Sender, answer.Message, null);
+
+            return true;
+        }
+
+        public AdminMessageViewModel GetMessageAnswers(string messageId)
+        {
+            var message = this
+                .GetMessages<AdminMessageViewModel>()
+                .FirstOrDefault(x => x.Id == messageId);
+
+            if (message == null)
+            {
+                return message;
+            }
+
+            message.Answer = this.GetMessages<AdminMessageViewModel>()
+                .FirstOrDefault(x => x.Id == $"answer{message.Id}");
+
+            return message;
+        }
+
+        public async Task<bool> ChangeMessageStatmentAsync(string messageId)
+        {
+            var message = this.applicationDbContext
+                .Messages.
+                FirstOrDefault(x => x.Id == messageId);
+
+            if (message == null)
+            {
+                return false;
+            }
+
+            message.IsRead = true;
+
+            this.applicationDbContext.Messages.Update(message);
+            await this.applicationDbContext.SaveChangesAsync();
+
+            return true;
         }
 
         public IEnumerable<T> GetMessages<T>()

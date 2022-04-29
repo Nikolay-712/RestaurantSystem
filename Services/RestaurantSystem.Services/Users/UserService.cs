@@ -7,6 +7,7 @@
     using RestaurantSystem.Data;
     using RestaurantSystem.Data.Models;
     using RestaurantSystem.Services.Contacts;
+    using RestaurantSystem.Web.ViewModels.Administration.Messages;
 
     using static RestaurantSystem.Common.GlobalConstants;
 
@@ -41,6 +42,18 @@
 
             var user = await this.userManager.FindByEmailAsync(message.Sender);
             var result = await this.userManager.AddToRoleAsync(user, OwnerRoleName);
+
+            if (result.Succeeded)
+            {
+                var answer = new AdminMessageViewModel
+                {
+                    Id = messageId,
+                    Text = "Вече може да използвате Owner Area",
+                    Sender = message.Sender,
+                };
+
+                await this.contactService.ReturnАnswerAsync(answer);
+            }
 
             return approveResult = result.Succeeded;
 

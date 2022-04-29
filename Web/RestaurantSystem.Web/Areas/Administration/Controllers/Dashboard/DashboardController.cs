@@ -1,6 +1,6 @@
 ﻿namespace RestaurantSystem.Web.Areas.Administration.Controllers
 {
-    using System.Linq;
+    using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
     using RestaurantSystem.Services.Contacts;
@@ -24,19 +24,21 @@
 
         public IActionResult ReadMessage(string messageId)
         {
-            var message = this.contactService
-                .GetMessages<AdminMessageViewModel>()
-                .FirstOrDefault(x => x.Id == messageId);
+            var message = this.contactService.GetMessageAnswers(messageId);
+
+            if (message == null)
+            {
+                return this.NotFound();
+            }
 
             return this.View(message);
         }
 
         [HttpPost]
-        public IActionResult ReadMessage(AdminMessageViewModel adminMessage)
+        public async Task<IActionResult> ReadMessage(AdminMessageViewModel adminMessage)
         {
-            this.contactService.ReturnАnswer(adminMessage.Id);
-
-            return this.View();
+            var result = await this.contactService.ReturnАnswerAsync(adminMessage);
+            return result is true ? this.RedirectToAction("AllMessages", "Dashboard") : this.NotFound();
         }
     }
 }
