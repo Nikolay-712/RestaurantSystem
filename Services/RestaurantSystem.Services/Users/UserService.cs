@@ -58,5 +58,20 @@
             return approveResult = result.Succeeded;
 
         }
+
+        public async Task SavePhoneNumberAsync(string userId, string phoneNumber)
+        {
+            var user = await this.GetUserByIdAsync(userId);
+
+            user.PhoneNumber = "+359" + phoneNumber;
+
+            this.applicationDbContext.Update(user);
+            await this.applicationDbContext.SaveChangesAsync();
+        }
+
+        public async Task<ApplicationUser> GetUserByIdAsync(string userId)
+        {
+            return await this.userManager.FindByIdAsync(userId);
+        }
     }
 }

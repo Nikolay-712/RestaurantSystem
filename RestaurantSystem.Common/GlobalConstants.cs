@@ -16,8 +16,8 @@
 
         public const string CategoryErrorMesage = "Категорията {0} не се подържа.";
 
-        public const string WeightErrorMessage = "{0} трябва да буде между {1} - {2} грама.";
+        public const string WeightErrorMessage = "{0} трябва да бъде между {1} - {2} грама.";
 
-
+        public const string CountErrorMessage = "{0} трябва да бъде между {1} - {2} души.";
     }
 }

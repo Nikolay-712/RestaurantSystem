@@ -1,0 +1,83 @@
+﻿@model RestaurantSystem.Web.ViewModels.Reservations.ReservationInputViewModel
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var user = await this.UserManager.GetUserAsync(this.User);
+    var reservationTime = new List<string>
+    {
+        "12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30","18:00","18:30","19:00","19:30","20:00","20:30"
+    };
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Reservation">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input asp-for="FirstName" class="form-control" placeholder="Име" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-3">
+                    <div class="form-group text-center">
+                        <label class="form-control"><strong>+359</strong></label>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="form-group">
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="Телефон" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input asp-for="Date" type="date" class="form-control" />
+                        <span asp-validation-for="Date" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <select asp-for="Time" class="form-control alert-heading">
+                            <option value="">-- : --</option>
+                            @foreach (var time in reservationTime)
+                            {
+                                <option value="@time">@time</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Time" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <input asp-for="PeopleCount" class="form-control" placeholder="Брои души" />
+                <span asp-validation-for="PeopleCount" class="text-danger"></span>
+            </div>
+            <div class="form-row">
+                <input type="hidden" asp-for="RestaurantId" class="form-control" />
+            </div>
+            <div class="form-row">
+
+                <div class="form-group mr-4">
+                    <input type="submit" value="Резервираи" class="btn btn-primary" />
+                </div>
+
+                @if (user.PhoneNumber == null)
+                {
+                    <div class="form-check">
+                        <div class="col-4">
+                            <div class="form-group form-check">
+                                <input asp-for="SavePhone" type="checkbox" class="form-check-input" id="exampleCheck1">
+                                <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </form>
+    </div>
+</div>
+

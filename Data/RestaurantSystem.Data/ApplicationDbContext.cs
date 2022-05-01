@@ -9,6 +9,7 @@
     using RestaurantSystem.Data.Models;
     using RestaurantSystem.Data.Models.Contacts;
     using RestaurantSystem.Data.Models.Products;
+    using RestaurantSystem.Data.Models.Reservations;
     using RestaurantSystem.Data.Models.Restaurants;
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
@@ -23,6 +24,8 @@
         public DbSet<Restaurant> Restaurants { get; set; }
 
         public DbSet<ApplicationMessage> Messages { get; set; }
+
+        public DbSet<Reservation> Reservations { get; set; }
 
         public override int SaveChanges() => this.SaveChanges(true);
 

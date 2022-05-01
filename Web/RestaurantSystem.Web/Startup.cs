@@ -16,6 +16,7 @@
     using RestaurantSystem.Services.Mapping;
     using RestaurantSystem.Services.Menu;
     using RestaurantSystem.Services.Messaging;
+    using RestaurantSystem.Services.Reservations;
     using RestaurantSystem.Services.Restaurants;
     using RestaurantSystem.Services.Users;
     using RestaurantSystem.Web.ViewModels;
@@ -63,6 +64,7 @@
             services.AddTransient<IMenuService, MenuService>();
             services.AddTransient<IContactService, ContactService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IReservationService, ReservationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
