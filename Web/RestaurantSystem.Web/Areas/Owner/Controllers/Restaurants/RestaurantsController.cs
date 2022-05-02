@@ -6,18 +6,25 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using RestaurantSystem.Data.Models;
+    using RestaurantSystem.Services.Reservations;
     using RestaurantSystem.Services.Restaurants;
+    using RestaurantSystem.Web.ViewModels.Owner.Reservations;
     using RestaurantSystem.Web.ViewModels.Owner.Restaurants;
 
     public class RestaurantsController : OwnerController
     {
         private readonly IRestaurantService restaurantService;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly IReservationService reservationService;
 
-        public RestaurantsController(IRestaurantService restaurantService, UserManager<ApplicationUser> userManager)
+        public RestaurantsController(
+            IRestaurantService restaurantService,
+            UserManager<ApplicationUser> userManager,
+            IReservationService reservationService)
         {
             this.restaurantService = restaurantService;
             this.userManager = userManager;
+            this.reservationService = reservationService;
         }
 
         public IActionResult Registration()
@@ -72,6 +79,26 @@
             await this.restaurantService.EditRestaurantAsync(restaurantEditModel);
 
             return this.RedirectToAction("Stava");
+        }
+
+        public async Task<IActionResult> ChangeStatus(ReservationViewModel reservation)
+        {
+            var result = await this.reservationService
+                .ChangeReservationStatusAsync(reservation.Id, reservation.ReservationStatus);
+
+            if (!result)
+            {
+                return this.NotFound();
+            }
+
+            return this.RedirectToAction("Details", new { restaurantId = reservation.RestaurantId });
+        }
+
+        public IActionResult Details(string restaurantId)
+        {
+            var details = this.restaurantService.Details(restaurantId);
+
+            return this.View(details);
         }
 
         private string GetCurrentUserId()

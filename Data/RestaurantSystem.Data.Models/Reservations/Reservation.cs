@@ -21,7 +21,7 @@
 
         public int PeopleCount { get; set; }
 
-        public bool IsConfirmed { get; set; }
+        public ReservationStatus ReservationStatus { get; set; }
 
         public string RestaurantId { get; set; }
 

@@ -1,10 +1,13 @@
 ﻿namespace RestaurantSystem.Services.Reservations
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using RestaurantSystem.Data;
     using RestaurantSystem.Data.Models.Reservations;
+    using RestaurantSystem.Services.Mapping;
     using RestaurantSystem.Services.Users;
     using RestaurantSystem.Web.ViewModels.Reservations;
 
@@ -31,7 +34,7 @@
                 PhoneNumber = reservationInput.PhoneNumber,
                 Date = reservationDate,
                 PeopleCount = reservationInput.PeopleCount,
-                IsConfirmed = false,
+                ReservationStatus = ReservationStatus.Pending,
                 RestaurantId = reservationInput.RestaurantId,
                 UserId = userId,
             };
@@ -47,6 +50,34 @@
             return result;
         }
 
+        public IEnumerable<T> AllResarvations<T>()
+        {
+            return this.applicationDbContext
+                 .Reservations.To<T>();
+        }
+
+        public async Task<bool> ChangeReservationStatusAsync(string resarvationId, string status)
+        {
+            var resarvation = this.applicationDbContext
+                .Reservations
+                .FirstOrDefault(x => x.Id == resarvationId);
+
+            ReservationStatus parseResult;
+            Enum.TryParse<ReservationStatus>(status, out parseResult);
+
+            if (resarvation == null)
+            {
+                return false;
+            }
+
+            resarvation.ReservationStatus = parseResult;
+
+            this.applicationDbContext.Update(resarvation);
+            var result = await this.applicationDbContext.SaveChangesAsync();
+
+            return result == 1 ? true : false;
+        }
+
         public async Task<string> GetUserPhoneNumberAsync(string userId)
         {
             var user = await this.userService.GetUserByIdAsync(userId);
@@ -54,6 +85,5 @@
 
             return phoneNumber;
         }
-
     }
 }
