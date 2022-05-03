@@ -27,7 +27,7 @@
                 return this.View();
             }
 
-            return this.BadRequest();
+            return this.NotFound();
         }
 
         [HttpPost]
@@ -45,9 +45,13 @@
 
         public IActionResult Index(string restaurantId, string category, int page = 1)
         {
-            var menu = this.menuService.GetMenu(restaurantId, category, page);
+            if (this.CheckRestaurant(restaurantId))
+            {
+                var menu = this.menuService.GetMenu(restaurantId, category, page);
+                return this.View(menu);
+            }
 
-            return this.View(menu);
+            return this.NotFound();
         }
 
         public IActionResult Edit(string productId, string restaurantId, int page)
@@ -63,10 +67,10 @@
                     return this.View(product);
                 }
 
-                return this.BadRequest();
+                return this.NotFound();
             }
 
-            return this.BadRequest();
+            return this.NotFound();
         }
 
         [HttpPost]
@@ -78,7 +82,7 @@
                 return this.RedirectToAction("Index", "Menu", new { restaurantId = editProduct.RestaurantId, page = page });
             }
 
-            return this.BadRequest();
+            return this.NotFound();
         }
 
         private bool CheckRestaurant(string restaurantId)

@@ -1,5 +1,6 @@
 ﻿namespace RestaurantSystem.Web.Areas.Owner.Controllers.Restaurants
 {
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -8,6 +9,7 @@
     using RestaurantSystem.Data.Models;
     using RestaurantSystem.Services.Reservations;
     using RestaurantSystem.Services.Restaurants;
+    using RestaurantSystem.Web.Infrastructure;
     using RestaurantSystem.Web.ViewModels.Owner.Reservations;
     using RestaurantSystem.Web.ViewModels.Owner.Restaurants;
 
@@ -41,7 +43,7 @@
             }
 
             await this.restaurantService
-                .RegisterRestaurantAsync(this.GetCurrentUserId(), restaurantInputModel);
+                .RegisterRestaurantAsync(ClaimsPrincipalExtensions.Id(this.User), restaurantInputModel);
 
             return this.RedirectToAction("MyRestaurants");
         }
@@ -49,7 +51,7 @@
         public IActionResult MyRestaurants()
         {
             var restaurants = this.restaurantService
-                .MyRestaurants<MyRestaurantsViewModel>(this.GetCurrentUserId()).ToList();
+                .MyRestaurants<MyRestaurantsViewModel>(ClaimsPrincipalExtensions.Id(this.User)).ToList();
 
             return this.View(restaurants);
         }
@@ -57,13 +59,19 @@
         public IActionResult Edit(string restaurantId)
         {
             var restaurant = this.restaurantService
-                .MyRestaurants<EditRestaurantInputModel>(this.GetCurrentUserId())
+                .MyRestaurants<EditRestaurantInputModel>(ClaimsPrincipalExtensions.Id(this.User))
                 .FirstOrDefault(x => x.Id == restaurantId);
 
             if (restaurant == null)
             {
-                return this.BadRequest();
+                return this.NotFound();
             }
+
+            var timeOpenIn = restaurant.OpenIn.Split(new[] { " ", ":" }, StringSplitOptions.RemoveEmptyEntries);
+            var timeCloseIn = restaurant.CloseIn.Split(new[] { " ", ":" }, StringSplitOptions.RemoveEmptyEntries);
+
+            restaurant.OpenIn = $"{timeOpenIn[1]}:{timeOpenIn[2]}";
+            restaurant.CloseIn = $"{timeCloseIn[1]}:{timeCloseIn[2]}";
 
             return this.View(restaurant);
         }
@@ -78,7 +86,7 @@
 
             await this.restaurantService.EditRestaurantAsync(restaurantEditModel);
 
-            return this.RedirectToAction("Stava");
+            return this.RedirectToAction("MyRestaurants");
         }
 
         public async Task<IActionResult> ChangeStatus(ReservationViewModel reservation)
@@ -96,14 +104,15 @@
 
         public IActionResult Details(string restaurantId)
         {
-            var details = this.restaurantService.Details(restaurantId);
+            var details = this.restaurantService
+                .Details(ClaimsPrincipalExtensions.Id(this.User), restaurantId);
+
+            if (details == null)
+            {
+                return this.NotFound();
+            }
 
             return this.View(details);
-        }
-
-        private string GetCurrentUserId()
-        {
-            return this.userManager.GetUserId(this.User);
         }
     }
 }

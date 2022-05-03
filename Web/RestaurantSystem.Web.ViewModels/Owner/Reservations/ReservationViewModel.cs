@@ -1,31 +1,28 @@
-﻿using RestaurantSystem.Data.Models.Reservations;
-using RestaurantSystem.Services.Mapping;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RestaurantSystem.Web.ViewModels.Owner.Reservations
+﻿namespace RestaurantSystem.Web.ViewModels.Owner.Reservations
 {
+    using System;
+
+    using RestaurantSystem.Data.Models.Reservations;
+    using RestaurantSystem.Services.Mapping;
+
     public class ReservationViewModel : IMapFrom<Reservation>
     {
-        public string Id { get; set; }
+        public string Id { get; init; }
 
-        public DateTime CreatedOn { get; set; }
+        public DateTime CreatedOn { get; init; }
 
-        public string FirstName { get; set; }
+        public string FirstName { get; init; }
 
-        public string PhoneNumber { get; set; }
+        public string PhoneNumber { get; init; }
 
-        public DateTime Date { get; set; }
+        public DateTime Date { get; init; }
 
-        public int PeopleCount { get; set; }
+        public int PeopleCount { get; init; }
 
-        public string ReservationStatus { get; set; }
+        public string ReservationStatus { get; init; }
 
-        public string RestaurantId { get; set; }
+        public string RestaurantId { get; init; }
 
-        public string UserId { get; set; }
+        public string UserId { get; init; }
     }
 }

@@ -1,16 +1,12 @@
-﻿using RestaurantSystem.Data.Models.Reservations;
-using RestaurantSystem.Web.ViewModels.Reservations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RestaurantSystem.Services.Reservations
+﻿namespace RestaurantSystem.Services.Reservations
 {
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using RestaurantSystem.Web.ViewModels.Reservations;
+
     public interface IReservationService
     {
-        Task<int> SendReservationAsync(ReservationInputViewModel reservationInput, string userId);
+        Task<bool> SendReservationAsync(ReservationInputViewModel reservationInput, string userId);
 
         IEnumerable<T> AllResarvations<T>();
 

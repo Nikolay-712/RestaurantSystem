@@ -14,7 +14,7 @@
 
         IEnumerable<T> MyRestaurants<T>(string ownerId);
 
-        RestaurantDetailsViewModel Details(string restaurantId);
+        RestaurantDetailsViewModel Details(string ownerId, string restaurantId);
 
         Restaurant GetRestaurant(string restaurantid);
     }

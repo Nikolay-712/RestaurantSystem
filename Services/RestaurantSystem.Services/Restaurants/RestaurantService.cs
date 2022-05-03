@@ -46,7 +46,7 @@
             var restaurant = this.GetRestaurant(restaurantEditModel.Id);
 
             restaurant.Name = restaurantEditModel.Name;
-            restaurant.Description = restaurant.Description;
+            restaurant.Description = restaurantEditModel.Description;
             restaurant.DeliveryPeice = restaurantEditModel.DeliveryPeice;
             restaurant.OpenIn = DateTime.Parse(restaurantEditModel.OpenIn, CultureInfo.InvariantCulture);
             restaurant.CloseIn = DateTime.Parse(restaurantEditModel.CloseIn, CultureInfo.InvariantCulture);
@@ -71,19 +71,22 @@
                 .FirstOrDefault(x => x.Id == restaurantid);
         }
 
-        public RestaurantDetailsViewModel Details(string restaurantId)
+        public RestaurantDetailsViewModel Details(string ownerId, string restaurantId)
         {
-            var details = this.applicationDbContext
-                .Restaurants
-                .To<RestaurantDetailsViewModel>()
+            var details = this.MyRestaurants<RestaurantDetailsViewModel>(ownerId)
                 .FirstOrDefault(x => x.Id == restaurantId);
 
-            var allReservations = this.resarvationService
-                    .AllResarvations<ReservationViewModel>()
-                    .Where(x => x.RestaurantId == restaurantId)
-                    .OrderByDescending(x => x.CreatedOn);
+            if (details == null)
+            {
+                return details;
+            }
 
-            details.Reservations = allReservations;
+            var allReservations = this.resarvationService
+                    .AllResarvations<ReservationViewModel>();
+
+            details.Reservations = allReservations
+                .Where(x => x.RestaurantId == restaurantId)
+                .OrderByDescending(x => x.CreatedOn);
 
             return details;
         }

@@ -34,7 +34,7 @@
                                 @foreach (var reservation in Model.Reservations)
                                 {
                                     <tr id="myUL">
-                                        <td>@reservation.Date.ToString("dd.MM.yy HH:mm")</td>
+                                        <td>@reservation.Date.ToString("dd.MMM.yy HH:mm")</td>
                                         <td>@reservation.FirstName</td>
                                         @{
                                             var number = $"+359{reservation.PhoneNumber}";

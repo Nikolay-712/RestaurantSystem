@@ -1,20 +1,19 @@
-﻿using AutoMapper;
-using RestaurantSystem.Data.Models.Restaurants;
-using RestaurantSystem.Services.Mapping;
-using RestaurantSystem.Web.ViewModels.Owner.Reservations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RestaurantSystem.Web.ViewModels.Owner.Restaurants
+﻿namespace RestaurantSystem.Web.ViewModels.Owner.Restaurants
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using RestaurantSystem.Data.Models.Restaurants;
+    using RestaurantSystem.Services.Mapping;
+    using RestaurantSystem.Web.ViewModels.Owner.Reservations;
+
     public class RestaurantDetailsViewModel : IMapFrom<Restaurant>
     {
         public string Id { get; set; }
 
         public string Name { get; set; }
+
+        public string OwnerId { get; set; }
 
         public IEnumerable<ReservationViewModel> Reservations { get; set; }
 

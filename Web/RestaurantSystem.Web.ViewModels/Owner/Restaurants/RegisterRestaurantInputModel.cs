@@ -27,10 +27,10 @@
 
         [Required(ErrorMessage = RequiredFieldMessage)]
         [TimeFormat]
-        public string OpenIn { get; init; }
+        public string OpenIn { get; set; }
 
         [Required(ErrorMessage = RequiredFieldMessage)]
         [TimeFormat]
-        public string CloseIn { get; init; }
+        public string CloseIn { get; set; }
     }
 }

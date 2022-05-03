@@ -77,7 +77,15 @@
             var result = await this.reservationService
                  .SendReservationAsync(reservationInput, ClaimsPrincipalExtensions.Id(this.User));
 
-            return this.View();
+            if (!result)
+            {
+                return this.NotFound();
+            }
+
+            var message = "Вашата резервация бевше изпратена успешно.След като бъде обработена ше получите потварждение";
+            this.TempData["reservation"] = message;
+
+            return this.Redirect("/");
         }
     }
 }

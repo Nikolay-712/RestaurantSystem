@@ -7,6 +7,7 @@
 
     using RestaurantSystem.Data;
     using RestaurantSystem.Data.Models.Reservations;
+    using RestaurantSystem.Services.Contacts;
     using RestaurantSystem.Services.Mapping;
     using RestaurantSystem.Services.Users;
     using RestaurantSystem.Web.ViewModels.Reservations;
@@ -15,16 +16,21 @@
     {
         private readonly ApplicationDbContext applicationDbContext;
         private readonly IUserService userService;
+        private readonly IContactService contactService;
 
-        public ReservationService(ApplicationDbContext applicationDbContext, IUserService userService)
+        public ReservationService(
+            ApplicationDbContext applicationDbContext,
+            IUserService userService,
+            IContactService contactService)
         {
             this.applicationDbContext = applicationDbContext;
             this.userService = userService;
+            this.contactService = contactService;
         }
 
-        public async Task<int> SendReservationAsync(ReservationInputViewModel reservationInput, string userId)
+        public async Task<bool> SendReservationAsync(ReservationInputViewModel reservationInput, string userId)
         {
-            var date = reservationInput.Date.ToString("dd.MM.yy") + " " + reservationInput.Time;
+            var date = reservationInput.Date.ToShortDateString() + " " + reservationInput.Time;
             var reservationDate = DateTime.Parse(date);
 
             var reservation = new Reservation
@@ -47,7 +53,12 @@
                 await this.userService.SavePhoneNumberAsync(userId, reservationInput.PhoneNumber);
             }
 
-            return result;
+            if (result == 1)
+            {
+                //this.contactService.SendMessageAsync();
+            }
+
+            return result == 1 ? true : false;
         }
 
         public IEnumerable<T> AllResarvations<T>()
@@ -63,9 +74,9 @@
                 .FirstOrDefault(x => x.Id == resarvationId);
 
             ReservationStatus parseResult;
-            Enum.TryParse<ReservationStatus>(status, out parseResult);
+            var validStatus = Enum.TryParse<ReservationStatus>(status, out parseResult);
 
-            if (resarvation == null)
+            if (resarvation == null || !validStatus)
             {
                 return false;
             }
