@@ -38,10 +38,10 @@
                 return this.View(messageInput);
             }
 
-            var sender = ClaimsPrincipalExtensions.Email(this.User);
-            await this.contactService.SendMessageAsync(messageInput, sender);
+            var userId = ClaimsPrincipalExtensions.Id(this.User);
+            await this.contactService.SendMessageAsync(messageInput, userId);
 
-            var message = $"Благодаря за вашето саобщение,ще се свържем с вас на посочения email - {sender}";
+            var message = "Благодаря за вашето саобщение,ще се свържем с вас";
             this.TempData["message"] = message;
 
             return this.Redirect("/");

@@ -29,33 +29,9 @@
 
         public async Task<bool> АpproveUserAsync(string messageId)
         {
-            var approveResult = true;
 
-            var message = this.applicationDbContext
-                .Messages
-                .FirstOrDefault(x => x.Id == messageId);
 
-            if (message == null)
-            {
-                return approveResult = false;
-            }
-
-            var user = await this.userManager.FindByEmailAsync(message.Sender);
-            var result = await this.userManager.AddToRoleAsync(user, OwnerRoleName);
-
-            if (result.Succeeded)
-            {
-                var answer = new AdminMessageViewModel
-                {
-                    Id = messageId,
-                    Text = "Вече може да използвате Owner Area",
-                    Sender = message.Sender,
-                };
-
-                await this.contactService.ReturnАnswerAsync(answer);
-            }
-
-            return approveResult = result.Succeeded;
+            return true;
 
         }
 

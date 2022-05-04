@@ -8,16 +8,12 @@
 
     public interface IContactService
     {
-        Task SendMessageAsync(MessageInputVewModel messageInput, string sender);
+        Task SendMessageAsync(MessageInputVewModel messageInput, string userId);
 
         IEnumerable<T> GetMessages<T>();
 
         AllMessagesViewModel AllMessages();
 
-        Task<bool> ReturnАnswerAsync(AdminMessageViewModel adminMessage);
-
-        AdminMessageViewModel GetMessageAnswers(string messageId);
-
-        Task<bool> ChangeMessageStatmentAsync(string messageId);
+        Task<bool> ReplyMessage(AllMessagesViewModel replyInput, string messageId);
     }
 }

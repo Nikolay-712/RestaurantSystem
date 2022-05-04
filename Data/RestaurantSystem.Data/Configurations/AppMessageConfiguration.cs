@@ -4,17 +4,12 @@
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
     using RestaurantSystem.Data.Models.Contacts;
 
-    public class ApplicationMessageConfiguration : IEntityTypeConfiguration<ApplicationMessage>
+    public class AppMessageConfiguration : IEntityTypeConfiguration<AppMessage>
     {
-        public void Configure(EntityTypeBuilder<ApplicationMessage> appMessage)
+        public void Configure(EntityTypeBuilder<AppMessage> appMessage)
         {
             appMessage
-                .HasKey(x => x.Id);
-
-            appMessage
-                .Property(x => x.Sender)
-                .IsRequired()
-                .HasMaxLength(100);
+               .HasKey(x => x.Id);
 
             appMessage
                 .Property(x => x.MessageType)
@@ -25,6 +20,15 @@
                 .IsRequired()
                 .HasMaxLength(700)
                 .IsUnicode();
+
+            appMessage
+                .Property(x => x.Status)
+                .IsRequired();
+
+            appMessage
+                .HasMany(x => x.Replies)
+                .WithOne()
+                .HasForeignKey(x => x.MessageId);
         }
     }
 }

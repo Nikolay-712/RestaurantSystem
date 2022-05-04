@@ -23,9 +23,11 @@
 
         public DbSet<Restaurant> Restaurants { get; set; }
 
-        public DbSet<ApplicationMessage> Messages { get; set; }
-
         public DbSet<Reservation> Reservations { get; set; }
+
+        public DbSet<AppMessage> AppMessages { get; set; }
+
+        public DbSet<MessageReply> Replies { get; set; }
 
         public override int SaveChanges() => this.SaveChanges(true);
 

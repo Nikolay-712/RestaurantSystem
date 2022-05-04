@@ -33,6 +33,11 @@
                 .HasMany(e => e.Reservations)
                 .WithOne()
                 .HasForeignKey(e => e.UserId);
+
+            appUser
+               .HasMany(e => e.Messages)
+               .WithOne()
+               .HasForeignKey(x => x.UserId);
         }
     }
 }
