@@ -12,5 +12,9 @@
         public string Text { get; init; }
 
         public string MessageId { get; init; }
+
+        public string Sender { get; init; }
+
+        public bool IsRead { get; set; }
     }
 }

@@ -51,25 +51,37 @@
             return messages;
         }
 
-        public async Task<bool> ReplyMessage(AllMessagesViewModel replyInput, string messageId)
+        public ReadMessageViewModel ReadMessage(string messageId)
+        {
+            var message = this.GetMessages<ReadMessageViewModel>()
+                .FirstOrDefault(x => x.Id == messageId);
+
+            return message;
+        }
+
+        public async Task<bool> ReplyMessageAsync(ReadMessageViewModel replyInput, string sender)
         {
             var message = this.applicationDbContext
                 .AppMessages
-                .FirstOrDefault(x => x.Id == messageId);
+                .FirstOrDefault(x => x.Id == replyInput.Id);
 
             if (message != null)
             {
                 var replyMessage = new MessageReply
                 {
-                    Text = replyInput.Reply,
+                    Text = replyInput.Text,
                     MessageId = message.Id,
+                    Sender = sender,
                 };
 
                 await this.applicationDbContext.Replies.AddAsync(replyMessage);
+                await this.applicationDbContext.SaveChangesAsync();
+
+                await this.UpdateLastReplies(sender, message.Id);
 
                 message.Status = MessageStatus.Answered;
-
                 this.applicationDbContext.AppMessages.Update(message);
+
                 await this.applicationDbContext.SaveChangesAsync();
 
                 return true;
@@ -85,6 +97,26 @@
                 .To<T>();
 
             return messages;
+        }
+
+        private async Task UpdateLastReplies(string sender, string messageId)
+        {
+            var replySender = sender is "Administration" ? "user" : "administration";
+
+            var lastReplies = this.applicationDbContext.Replies
+                .Where(x => x.MessageId == messageId)
+                .OrderBy(x => x.CreatedOn)
+                .Where(x => x.Sender.ToLower() == replySender)
+                .Where(x => x.IsRead == false)
+                .ToList();
+
+            if (lastReplies.Count > 0)
+            {
+                lastReplies.ForEach(x => x.IsRead = true);
+
+                this.applicationDbContext.Replies.UpdateRange(lastReplies);
+                await this.applicationDbContext.SaveChangesAsync();
+            }
         }
     }
 }

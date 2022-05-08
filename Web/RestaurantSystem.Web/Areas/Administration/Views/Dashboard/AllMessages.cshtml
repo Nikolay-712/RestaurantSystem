@@ -1,7 +1,6 @@
 ﻿@model AllMessagesViewModel
 @using RestaurantSystem.Data.Models
 @using Microsoft.AspNetCore.Identity
-@inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
 
@@ -10,141 +9,73 @@
         <input class="form-control me-2" id="myInput" onkeyup="myFunction()" type="search" placeholder="Search by email">
     </div>
 
-    <div class="col-md-4 mb-4">
-        <input class="form-control me-2" id="myInput1" onkeyup="myFunction1()" type="search" placeholder="Search by type">
-    </div>
 </div>
 
-<div class="container">
-    <div class="row">
+<div class="card mb-5">
+    <div class="card-header">
+        <span style="font-size: 1.2em; color: orange;">
+            <i class="far fa-envelope"></i> (@Model.UnreadMessagesCount) нови саобщения
+        </span>
+    </div>
+    <div class="card-block p-0">
+        <table id="myTable" class="table table-bordered table-sm m-0">
+            <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Потребител</th>
+                    <th scope="col">Дата</th>
+                    <th scope="col"></th>
+                    <th scope="col">Тема</th>
+                    <th scope="col">Саобщение</th>
+                </tr>
+            </thead>
+            <tbody>
 
-        @foreach (var message in Model.Messages)
-        {
-            TimeSpan ts = DateTime.UtcNow - message.CreatedOn;
-            var user = await this.UserManager.FindByIdAsync(message.UserId);
+                @foreach (var message in Model.Messages.OrderByDescending(x => x.NewUserRepliesCount))
+                {
+                    var user = await this.UserManager.FindByIdAsync(message.UserId);
 
-            <div class="col-md-8">
-                <div class="media g-mb-30 media-comment">
-                    <img class="d-flex g-width-50 g-height-50 rounded-circle g-mt-3 g-mr-5" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Image Description">
-                    <div class="media-body u-shadow-v18 g-bg-secondary g-pa-30">
-                        <div class="g-mb-15 ml-3">
-                            <h5 class="h5 g-color-gray-dark-v1 mb-0">@user.Email</h5>
-                            <span class="g-color-gray-dark-v4 g-font-size-12">@message.MessageType</span>
-                            <span class="g-color-gray-dark-v4 g-font-size-12"> (преди @ts.Days дни)</span>
-                        </div>
-                        <div class="ml-3">
-                            <p>
-                                @message.Message
-                            </p>
-                        </div>
-
-
-                        <ul class="list-inline d-sm-flex ml-3 mb-2 my-0">
-                            <li class="list-inline-item g-mr-20">
-                                <a class="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover" data-toggle="modal" data-target="#exampleModal" data-whatever="mdo" href="#!">
-                                    <i class="fas fa-bell g-pos-rel g-top-1 g-mr-3"></i>
-                                    @message.Replies.Count()
-                                </a>
-
-                            </li>
-                            <li class="list-inline-item g-mr-20">
-
-                                <span style="font-size: 0.7em; color: Green;">
-                                    <i class="fas fa-circle g-pos-rel g-top-1 g-mr-3"></i>
-                                    <span class="g-color-gray-dark-v4 g-font-size-12"> ново </span>
+                    <tr id="myUL">
+                        <td class="text-center">
+                            @if (message.Status == "Pending")
+                            {
+                                <span style="font-size: 1em; color: orange;">
+                                    <i class="fas fa-circle"></i>
                                 </span>
+                            }
+                            @if (message.Status == "Answered")
+                            {
+                                <span style="font-size: 1em; color: green;">
+                                    <i class="fas fa-circle"></i>
+                                </span>
+                            }
+                            @if (message.Status == "Approved")
+                            {
+                                <span style="font-size: 1em; color: purple;">
+                                    <i class="fas fa-circle"></i>
+                                </span>
+                            }
+                        </td>
+                        <td>@user.Email</td>
+                        <td>@message.CreatedOn.ToString("dd.MM.yy HH:mm")</td>
+                        <td class="text-center">
+                            <span style="font-size: 1em; color: green;">
+                                <i class="fas fa-bell"></i> (@message.NewUserRepliesCount)
+                            </span>
 
-                            </li>
-                            <li class="list-inline-item mr-3 ml-auto">
-                                <a class="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover" data-toggle="modal" data-target="#exampleModal" data-whatever="mdo" href="#!">
-                                    <i class="fa fa-reply g-pos-rel g-top-1 g-mr-3"></i>
-                                    Reply
-                                </a>
-
-
-                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">New message</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body md-4 ml-2">
-                                                @foreach (var reply in message.Replies)
-                                                {
-                                                    <p>@reply.CreatedOn.ToString("dd.MM.yyy HH:mm")</p>
-                                                    <div class="form-group">
-                                                       @reply.Text
-                                                    </div>
-                                                }
-
-                                            </div>
-                                            <div class="modal-body">
-                                                <form asp-action="ReadMessage" asp-route-messageId="@message.Id" enctype="multipart/form-data">
-                                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                                    <div class="form-group">
-                                                        <label asp-for="Reply" class="col-form-label">Отговор:</label>
-                                                        <textarea rows="4" asp-for="Reply" class="form-control"></textarea>
-                                                        <span asp-validation-for="Reply" class="text-danger"></span>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-                                                        <div class="form-group">
-                                                            <input type="submit" value="Изпрати" class="btn btn-primary btn-sm" />
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        }
-
-
-
+                        </td>
+                        <td>@message.MessageType</td>
+                        <td>
+                            <a asp-action="ReadMessage"
+                           asp-route-messageId="@message.Id"
+                           class="btn-primary btn-sm">
+                                <i class="fas fa-comment-alt"></i> Прочети
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
+
 </div>
-
-<style>
-    body {
-        margin-top: 20px;
-    }
-
-    .g-height-50 {
-        height: 50px;
-    }
-
-    .g-width-50 {
-        width: 50px !important;
-    }
-
-    .g-bg-secondary {
-        background-color: #fafafa !important;
-    }
-
-    .u-shadow-v18 {
-        box-shadow: 0 5px 10px 6px rgba(0, 0, 0, 0.15);
-    }
-
-    .g-color-gray-dark-v4 {
-        color: #777 !important;
-    }
-
-    .g-font-size-12 {
-        font-size: 0.85714rem !important;
-    }
-
-    .media-comment {
-        margin-top: 20px
-    }
-
-</style>

@@ -18,6 +18,10 @@
                 .IsUnicode();
 
             reply
+                .Property(x => x.Sender)
+                .IsRequired();
+
+            reply
                 .Property(x => x.MessageId)
                 .IsRequired();
         }

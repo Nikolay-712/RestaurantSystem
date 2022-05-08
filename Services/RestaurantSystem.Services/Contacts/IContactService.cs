@@ -14,6 +14,8 @@
 
         AllMessagesViewModel AllMessages();
 
-        Task<bool> ReplyMessage(AllMessagesViewModel replyInput, string messageId);
+        ReadMessageViewModel ReadMessage(string messageId);
+
+        Task<bool> ReplyMessageAsync(ReadMessageViewModel replyInput, string sender);
     }
 }

@@ -22,17 +22,24 @@
             return this.View(messages);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> ReadMessage(AllMessagesViewModel replyInput, string messageId)
+        public IActionResult ReadMessage(string messageId)
         {
-            var result = await this.contactService.ReplyMessage(replyInput, messageId);
+            var message = this.contactService.ReadMessage(messageId);
+            return this.View(message);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ReadMessage(ReadMessageViewModel readMessage)
+        {
+            var sender = "Administration";
+            var result = await this.contactService.ReplyMessageAsync(readMessage, sender);
 
             if (!result)
             {
                 return this.NotFound();
             }
 
-            return this.RedirectToAction("AllMessages");
+            return this.RedirectToAction("ReadMessage", new { messageId = readMessage.Id });
         }
     }
 }
