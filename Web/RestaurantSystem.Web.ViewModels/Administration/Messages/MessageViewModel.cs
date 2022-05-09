@@ -3,8 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using RestaurantSystem.Data.Models.Contacts;
     using RestaurantSystem.Services.Mapping;
+    using RestaurantSystem.Data.Models.Contacts;
 
     public class MessageViewModel : IMapFrom<AppMessage>
     {
@@ -19,6 +19,8 @@
         public string UserId { get; init; }
 
         public string Status { get; init; }
+
+        public bool IsOpen { get; set; }
 
         public IEnumerable<ReplieViewModel> Replies { get; init; }
 

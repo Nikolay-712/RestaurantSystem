@@ -14,16 +14,11 @@
             this.userService = userService;
         }
 
-        public async Task<IActionResult> Аpprove(string messageId)
+        public async Task<IActionResult> Аpprove(string messageId, string approve)
         {
-            var result = await this.userService.АpproveUserAsync(messageId);
+            await this.userService.АpproveUserAsync(messageId, approve);
 
-            if (!result)
-            {
-                return this.NotFound();
-            }
-
-            return this.RedirectToAction("AllMessages", "Dashboard");
+            return this.RedirectToAction("ReadMessage", "Dashboard", new { messageId = messageId });
         }
     }
 }

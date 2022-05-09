@@ -5,16 +5,36 @@
         <a asp-action="AllMessages" class="btn btn-primary btn btn-sm pull-right rounded mb-3">
             <i class="fas fa-arrow-alt-circle-left"></i> Всички
         </a>
-
-        @if (Model.MessageType == "Кандидатсване")
+        @if (!Model.IsOpen)
         {
-            <a asp-action="AllMessages" class="btn btn-success btn btn-sm pull-right rounded mb-3">
-                <i class="fas fa-check-circle"></i> Одобри
+            @if (Model.MessageType == "Кандидатсване")
+            {
+                <a asp-controller="Users"
+           asp-action="Аpprove"
+           asp-route-messageId="@Model.Id"
+           asp-route-approve="true"
+           class="btn btn-success btn btn-sm pull-right rounded mb-3">
+                    <i class="fas fa-check-circle"></i> Одобри
+                </a>
+
+                   <a asp-controller="Users"
+           asp-action="Аpprove"
+           asp-route-messageId="@Model.Id"
+           asp-route-approve="false"
+           class="btn btn-danger btn btn-sm pull-right rounded mb-3">
+                   <i class="fas fa-times-circle"></i> Отказ
+                </a>
+            }
+        }
+        else
+        {
+            <a class="btn btn-secondary btn btn-sm pull-right rounded mb-3">
+                <i class="fas fa-times-circle"></i> Затворено
             </a>
         }
-
     </div>
 </div>
+
 
 <div class="container">
     <div class="row message-wrapper rounded shadow mb-20">
@@ -49,17 +69,29 @@
                         <hr />
                     }
                     <br>
-                    <form asp-action="ReadMessage" enctype="multipart/form-data">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <div class="form-group">
-                            <textarea rows=3 asp-for="Text" class="form-control" placeholder="Отговор"></textarea>
-                            <span asp-validation-for="Text" class="text-danger"></span>
-                            <input type="hidden" asp-for="Id" />
-                        </div>
-                        <div class="form-group">
-                            <input type="submit" value="Изпрати" class="btn btn-sm btn-primary" />
-                        </div>
-                    </form>
+
+                    @if (!Model.IsOpen)
+                    {
+                        <form asp-action="ReadMessage" enctype="multipart/form-data">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <textarea rows=3 asp-for="Text" class="form-control" placeholder="Отговор"></textarea>
+                                <span asp-validation-for="Text" class="text-danger"></span>
+                                <input type="hidden" asp-for="Id" />
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Изпрати" class="btn btn-sm btn-primary" />
+                            </div>
+                            <div class="form-group">
+                                <a asp-action="CloseDiscussion"
+                               asp-route-messageId="@Model.Id"
+                               class="btn btn-success btn btn-sm pull-right rounded mb-3">
+                                    <i class="fas fa-check-circle"></i> Затвори дискусия
+                                </a>
+                            </div>
+                        </form>
+                    }
+
                 </div>
             </div>
 

@@ -25,5 +25,7 @@
         public MessageStatus Status { get; set; }
 
         public IEnumerable<MessageReply> Replies { get; set; }
+
+        public bool IsOpen { get; set; }
     }
 }

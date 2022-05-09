@@ -15,9 +15,9 @@
             this.contactService = contactService;
         }
 
-        public IActionResult AllMessages()
+        public IActionResult AllMessages(int page = 1)
         {
-            var messages = this.contactService.AllMessages();
+            var messages = this.contactService.AllMessages(page);
 
             return this.View(messages);
         }
@@ -40,6 +40,19 @@
             }
 
             return this.RedirectToAction("ReadMessage", new { messageId = readMessage.Id });
+        }
+
+        public async Task<IActionResult> CloseDiscussion(string messageId)
+        {
+            var message = this.contactService.GetMessageById(messageId);
+
+            if (message == null)
+            {
+                return this.NotFound();
+            }
+
+            await this.contactService.CloseDiscussionAsync(message);
+            return this.RedirectToAction("ReadMessage", new { messageId = message.Id });
         }
     }
 }

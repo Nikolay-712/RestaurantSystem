@@ -14,6 +14,7 @@
 
     public class ContactService : IContactService
     {
+        private const int MessagesPerPage = 15;
         private readonly ApplicationDbContext applicationDbContext;
 
         public ContactService(ApplicationDbContext applicationDbContext)
@@ -35,14 +36,19 @@
             await this.applicationDbContext.SaveChangesAsync();
         }
 
-        public AllMessagesViewModel AllMessages()
+        public AllMessagesViewModel AllMessages(int page)
         {
             var messagesList = this.GetMessages<MessageViewModel>()
-                .OrderByDescending(x => x.CreatedOn).ToList();
+                .OrderByDescending(x => x.CreatedOn).ThenBy(x => x.IsOpen);
 
             var messages = new AllMessagesViewModel
             {
-                Messages = messagesList,
+                ItemsPerPage = MessagesPerPage,
+                ItemsCount = messagesList.Count(),
+                PageNumber = page,
+                Messages = messagesList
+                    .Skip((page - 1) * MessagesPerPage)
+                    .Take(MessagesPerPage),
                 UnreadMessagesCount = messagesList
                     .Where(x => x.Status == "Pending")
                     .Count(),
@@ -97,6 +103,38 @@
                 .To<T>();
 
             return messages;
+        }
+
+        public AppMessage GetMessageById(string messageId)
+        {
+            return this.applicationDbContext
+                .AppMessages.
+                FirstOrDefault(x => x.Id == messageId);
+        }
+
+        public async Task ChangeMessageStatusAsync(AppMessage message, MessageStatus status)
+        {
+            message.Status = status;
+
+            this.applicationDbContext.AppMessages.Update(message);
+            await this.applicationDbContext.SaveChangesAsync();
+        }
+
+        public async Task CloseDiscussionAsync(AppMessage message)
+        {
+            message.IsOpen = true;
+
+            var sender = "Administration";
+            var reply = new ReadMessageViewModel()
+            {
+                Id = message.Id,
+                Text = "Дискусията е затворена,надявам се да сме били полезни",
+            };
+
+            await this.ReplyMessageAsync(reply, sender);
+
+            this.applicationDbContext.AppMessages.Update(message);
+            await this.applicationDbContext.SaveChangesAsync();
         }
 
         private async Task UpdateLastReplies(string sender, string messageId)

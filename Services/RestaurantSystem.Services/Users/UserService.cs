@@ -6,6 +6,7 @@
     using Microsoft.AspNetCore.Identity;
     using RestaurantSystem.Data;
     using RestaurantSystem.Data.Models;
+    using RestaurantSystem.Data.Models.Contacts;
     using RestaurantSystem.Services.Contacts;
     using RestaurantSystem.Web.ViewModels.Administration.Messages;
 
@@ -27,12 +28,24 @@
             this.contactService = contactService;
         }
 
-        public async Task<bool> АpproveUserAsync(string messageId)
+        public async Task АpproveUserAsync(string messageId, string appruve)
         {
+            var message = this.contactService.GetMessageById(messageId);
 
+            if (message != null)
+            {
+                var sender = "Administration";
+                var text = appruve == "true" ? "Изпращам инструкци за използване" : "Вие не сте одобрен";
+                var messageStatus = appruve == "true" ? MessageStatus.Approved : MessageStatus.Canceled;
 
-            return true;
+                var replyInput = new ReadMessageViewModel
+                {
+                    Id = message.Id,
+                    Text = text,
+                };
 
+                await this.FinishedOwnerApplication(replyInput, sender, message, messageStatus);
+            }
         }
 
         public async Task SavePhoneNumberAsync(string userId, string phoneNumber)
@@ -48,6 +61,14 @@
         public async Task<ApplicationUser> GetUserByIdAsync(string userId)
         {
             return await this.userManager.FindByIdAsync(userId);
+        }
+
+        private async Task FinishedOwnerApplication(
+            ReadMessageViewModel replyInput, string sender, AppMessage message, MessageStatus status)
+        {
+            await this.contactService.ReplyMessageAsync(replyInput, sender);
+            await this.contactService.CloseDiscussionAsync(message);
+            await this.contactService.ChangeMessageStatusAsync(message, status);
         }
     }
 }

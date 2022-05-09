@@ -6,14 +6,14 @@
 
 <div class="row">
     <div class="col-md-4 mb-4">
-        <input class="form-control me-2" id="myInput" onkeyup="myFunction()" type="search" placeholder="Search by email">
+        <input class="form-control me-2" id="myInput" onkeyup="myFunction1()" type="search" placeholder="Search by email">
     </div>
 
 </div>
 
 <div class="card mb-5">
     <div class="card-header">
-        <span style="font-size: 1.2em; color: orange;">
+        <span style="font-size: 1.2em; color: royalblue;">
             <i class="far fa-envelope"></i> (@Model.UnreadMessagesCount) нови саобщения
         </span>
     </div>
@@ -51,7 +51,13 @@
                             }
                             @if (message.Status == "Approved")
                             {
-                                <span style="font-size: 1em; color: purple;">
+                                <span style="font-size: 1em; color: royalblue;">
+                                    <i class="fas fa-circle"></i>
+                                </span>
+                            }
+                            @if (message.Status == "Canceled")
+                            {
+                                <span style="font-size: 1em; color: red;">
                                     <i class="fas fa-circle"></i>
                                 </span>
                             }
@@ -71,6 +77,7 @@
                            class="btn-primary btn-sm">
                                 <i class="fas fa-comment-alt"></i> Прочети
                             </a>
+
                         </td>
                     </tr>
                 }
@@ -79,3 +86,77 @@
     </div>
 
 </div>
+
+<nav aria-label="...">
+    <ul class="pagination justify-content-center">
+        <li class="page-item @if (!Model.HasPreviousPage) {
+        <text>disabled</text>
+ }">
+            <a class="page-link"
+               asp-route-page="@Model.PreviousPageNumber">
+                <i class="fas fa-arrow-alt-circle-left text-blue"></i>
+            </a>
+        </li>
+
+        @for (int i = Model.PageNumber - 4; i < Model.PageNumber; i++)
+        {
+            if (i > 0)
+            {
+                <li class="page-item">
+                    <a class="page-link"
+               asp-route-page="@i">@i</a>
+                </li>
+            }
+        }
+
+        <li class="page-item active" aria-current="page">
+            <span class="page-link">
+                @Model.PageNumber
+                <span class="sr-only">(current)</span>
+            </span>
+        </li>
+
+        @for (int i = Model.PageNumber + 1; i <= Model.PageNumber + 4; i++)
+        {
+            if (i <= Model.PagesCount)
+            {
+                <li class="page-item">
+                    <a class="page-link"
+               asp-route-page="@i">@i</a>
+                </li>
+            }
+        }
+        <li class="page-item @if (!Model.HasNextPage) {
+        <text>disabled</text>
+ }">
+            <a class="page-link"
+               asp-route-page="@Model.NextPageNumber">
+                <i class="fas fa-arrow-alt-circle-right text-blue"> </i>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<script>
+     function myFunction1() {
+      // Declare variables
+      var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+
+    // Loop through all table rows, and hide those who don't match the search query
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[1];
+    if (td) {
+        txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+          } else {
+        tr[i].style.display = "none";
+          }
+        }
+      }
+    }
+</script>

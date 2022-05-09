@@ -1,24 +1,24 @@
-﻿using RestaurantSystem.Data.Models.Contacts;
-using RestaurantSystem.Services.Mapping;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static RestaurantSystem.Common.GlobalConstants;
-
-namespace RestaurantSystem.Web.ViewModels.Administration.Messages
+﻿namespace RestaurantSystem.Web.ViewModels.Administration.Messages
 {
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+
+    using RestaurantSystem.Data.Models.Contacts;
+    using RestaurantSystem.Services.Mapping;
+
+    using static RestaurantSystem.Common.GlobalConstants;
+
     public class ReadMessageViewModel : IMapFrom<AppMessage>
     {
-        public string Id { get; set; }
+        public string Id { get; init; }
 
         public string Message { get; init; }
 
-        public string MessageType { get; set; }
+        public string MessageType { get; init; }
 
-        public IEnumerable<ReplieViewModel> Replies { get; set; }
+        public bool IsOpen { get; init; }
+
+        public IEnumerable<ReplieViewModel> Replies { get; init; }
 
         [Display(Name = "Саобщението")]
         [Required(ErrorMessage = RequiredFieldMessage)]
