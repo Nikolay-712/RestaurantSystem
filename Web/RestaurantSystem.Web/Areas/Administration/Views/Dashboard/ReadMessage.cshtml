@@ -1,4 +1,4 @@
-﻿@model ReadMessageViewModel
+﻿@model AppMessageViewModel
 
 <div class="row">
     <div class="col">
@@ -9,20 +9,26 @@
         {
             @if (Model.MessageType == "Кандидатсване")
             {
-                <a asp-controller="Users"
+                <a class="btn btn-success btn btn-sm pull-right rounded mb-3"
+           asp-controller="Users"
            asp-action="Аpprove"
            asp-route-messageId="@Model.Id"
-           asp-route-approve="true"
-           class="btn btn-success btn btn-sm pull-right rounded mb-3">
+           asp-route-approve="true">
                     <i class="fas fa-check-circle"></i> Одобри
                 </a>
 
-                   <a asp-controller="Users"
+                <a class="btn btn-danger btn btn-sm pull-right rounded mb-3"
+           asp-controller="Users"
            asp-action="Аpprove"
            asp-route-messageId="@Model.Id"
-           asp-route-approve="false"
-           class="btn btn-danger btn btn-sm pull-right rounded mb-3">
-                   <i class="fas fa-times-circle"></i> Отказ
+           asp-route-approve="false">
+                    <i class="fas fa-times-circle"></i> Отказ
+                </a>
+
+                <a class="btn btn-success btn btn-sm pull-right rounded mb-3"
+           asp-action="CloseDiscussion"
+           asp-route-messageId="@Model.Id">
+                    <i class="fas fa-check-circle"></i> Затвори дискусия
                 </a>
             }
         }
@@ -35,67 +41,4 @@
     </div>
 </div>
 
-
-<div class="container">
-    <div class="row message-wrapper rounded shadow mb-20">
-        <div class="col-md-8 message-sideright">
-            <div class="panel">
-                <div class="panel-heading">
-                    <div class="media">
-                        <div class="media-body">
-                            <h5 class="media-heading"> <small>(@Model.MessageType)</small></h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel-body">
-                    <p class="lead">
-                        @Model.Message
-                    </p>
-                    <hr>
-                    @{
-
-                        var orderReplies = Model.Replies.OrderBy(x => x.CreatedOn);
-                    }
-
-                    @foreach (var item in orderReplies)
-                    {
-                        <div class="ml-4">
-                            <p>
-                                <small>@item.CreatedOn.ToString("dd.MM.yy HH:mm") - @item.Sender</small>
-                            </p>
-                            <p>@item.Text</p>
-                        </div>
-
-                        <hr />
-                    }
-                    <br>
-
-                    @if (!Model.IsOpen)
-                    {
-                        <form asp-action="ReadMessage" enctype="multipart/form-data">
-                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <div class="form-group">
-                                <textarea rows=3 asp-for="Text" class="form-control" placeholder="Отговор"></textarea>
-                                <span asp-validation-for="Text" class="text-danger"></span>
-                                <input type="hidden" asp-for="Id" />
-                            </div>
-                            <div class="form-group">
-                                <input type="submit" value="Изпрати" class="btn btn-sm btn-primary" />
-                            </div>
-                            <div class="form-group">
-                                <a asp-action="CloseDiscussion"
-                               asp-route-messageId="@Model.Id"
-                               class="btn btn-success btn btn-sm pull-right rounded mb-3">
-                                    <i class="fas fa-check-circle"></i> Затвори дискусия
-                                </a>
-                            </div>
-                        </form>
-                    }
-
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-</div>
+<partial name="_ReadMessagePartial" model=Model />

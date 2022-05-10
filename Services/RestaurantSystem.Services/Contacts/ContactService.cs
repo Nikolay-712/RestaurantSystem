@@ -1,6 +1,5 @@
 ﻿namespace RestaurantSystem.Services.Contacts
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -8,9 +7,9 @@
     using RestaurantSystem.Data;
     using RestaurantSystem.Data.Models.Contacts;
     using RestaurantSystem.Services.Mapping;
-    using RestaurantSystem.Services.Messaging;
-    using RestaurantSystem.Web.ViewModels.Administration.Messages;
     using RestaurantSystem.Web.ViewModels.Contacts;
+
+    using static RestaurantSystem.Common.GlobalConstants;
 
     public class ContactService : IContactService
     {
@@ -38,7 +37,7 @@
 
         public AllMessagesViewModel AllMessages(int page)
         {
-            var messagesList = this.GetMessages<MessageViewModel>()
+            var messagesList = this.GetMessages<AppMessageViewModel>()
                 .OrderByDescending(x => x.CreatedOn).ThenBy(x => x.IsOpen);
 
             var messages = new AllMessagesViewModel
@@ -57,25 +56,25 @@
             return messages;
         }
 
-        public ReadMessageViewModel ReadMessage(string messageId)
+        public AppMessageViewModel ReadMessage(string messageId)
         {
-            var message = this.GetMessages<ReadMessageViewModel>()
+            var message = this.GetMessages<AppMessageViewModel>()
                 .FirstOrDefault(x => x.Id == messageId);
 
             return message;
         }
 
-        public async Task<bool> ReplyMessageAsync(ReadMessageViewModel replyInput, string sender)
+        public async Task<bool> ReplyMessageAsync(string messageId, string text, string sender)
         {
             var message = this.applicationDbContext
                 .AppMessages
-                .FirstOrDefault(x => x.Id == replyInput.Id);
+                .FirstOrDefault(x => x.Id == messageId);
 
             if (message != null)
             {
                 var replyMessage = new MessageReply
                 {
-                    Text = replyInput.Text,
+                    Text = text,
                     MessageId = message.Id,
                     Sender = sender,
                 };
@@ -84,9 +83,11 @@
                 await this.applicationDbContext.SaveChangesAsync();
 
                 await this.UpdateLastReplies(sender, message.Id);
-
-                message.Status = MessageStatus.Answered;
-                this.applicationDbContext.AppMessages.Update(message);
+                if (sender == Message.AdminSender)
+                {
+                    message.Status = MessageStatus.Answered;
+                    this.applicationDbContext.AppMessages.Update(message);
+                }
 
                 await this.applicationDbContext.SaveChangesAsync();
 
@@ -124,14 +125,10 @@
         {
             message.IsOpen = true;
 
-            var sender = "Administration";
-            var reply = new ReadMessageViewModel()
-            {
-                Id = message.Id,
-                Text = "Дискусията е затворена,надявам се да сме били полезни",
-            };
+            var sender = Message.AdminSender;
+            var text = Message.CloseDiscussionMessage;
 
-            await this.ReplyMessageAsync(reply, sender);
+            await this.ReplyMessageAsync(message.Id, text, sender);
 
             this.applicationDbContext.AppMessages.Update(message);
             await this.applicationDbContext.SaveChangesAsync();

@@ -1,6 +1,5 @@
 ﻿namespace RestaurantSystem.Services.Users
 {
-    using System.Linq;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Identity;
@@ -8,7 +7,6 @@
     using RestaurantSystem.Data.Models;
     using RestaurantSystem.Data.Models.Contacts;
     using RestaurantSystem.Services.Contacts;
-    using RestaurantSystem.Web.ViewModels.Administration.Messages;
 
     using static RestaurantSystem.Common.GlobalConstants;
 
@@ -28,24 +26,22 @@
             this.contactService = contactService;
         }
 
-        public async Task АpproveUserAsync(string messageId, string appruve)
+        public async Task<bool> АpproveUserAsync(string messageId, string appruve)
         {
             var message = this.contactService.GetMessageById(messageId);
+            var validRoute = appruve == "true" || appruve == "false";
 
-            if (message != null)
+            if (message != null && validRoute)
             {
-                var sender = "Administration";
-                var text = appruve == "true" ? "Изпращам инструкци за използване" : "Вие не сте одобрен";
+                var sender = Message.AdminSender;
+                var text = appruve == "true" ? Message.АpproveOwnerMessage : Message.RefuseOwnerMessage;
                 var messageStatus = appruve == "true" ? MessageStatus.Approved : MessageStatus.Canceled;
 
-                var replyInput = new ReadMessageViewModel
-                {
-                    Id = message.Id,
-                    Text = text,
-                };
-
-                await this.FinishedOwnerApplication(replyInput, sender, message, messageStatus);
+                await this.FinishedOwnerApplication(messageId, text, sender, message, messageStatus);
+                return true;
             }
+
+            return false;
         }
 
         public async Task SavePhoneNumberAsync(string userId, string phoneNumber)
@@ -64,9 +60,9 @@
         }
 
         private async Task FinishedOwnerApplication(
-            ReadMessageViewModel replyInput, string sender, AppMessage message, MessageStatus status)
+            string messageId, string text, string sender, AppMessage message, MessageStatus status)
         {
-            await this.contactService.ReplyMessageAsync(replyInput, sender);
+            await this.contactService.ReplyMessageAsync(messageId, text, sender);
             await this.contactService.CloseDiscussionAsync(message);
             await this.contactService.ChangeMessageStatusAsync(message, status);
         }

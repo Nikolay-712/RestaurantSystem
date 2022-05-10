@@ -19,5 +19,17 @@
         public const string WeightErrorMessage = "{0} трябва да бъде между {1} - {2} грама.";
 
         public const string CountErrorMessage = "{0} трябва да бъде между {1} - {2} души.";
+
+        public static class Message
+        {
+            public const string UserSender = "User";
+            public const string AdminSender = "Administration";
+
+            public const string SuccessfullySentMessage = "Благодаря за вашето саобщение,ще се свържем с вас";
+            public const string SuccessfullySentReservation = "Вашата резервация бевше изпратена успешно.След като бъде обработена ше получите потварждение";
+            public const string CloseDiscussionMessage = "Дискусията е затворена,надявам се да сме били полезни";
+            public const string АpproveOwnerMessage = "Изпращам инструкци за използване";
+            public const string RefuseOwnerMessage = "Вие не сте одобрен";
+        }
     }
 }

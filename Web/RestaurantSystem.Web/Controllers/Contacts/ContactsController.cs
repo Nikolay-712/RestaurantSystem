@@ -1,6 +1,7 @@
 ﻿namespace RestaurantSystem.Web.Controllers.Contacts
 {
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Authorization;
@@ -10,6 +11,8 @@
     using RestaurantSystem.Web.Infrastructure;
     using RestaurantSystem.Web.ViewModels.Contacts;
     using RestaurantSystem.Web.ViewModels.Reservations;
+
+    using static RestaurantSystem.Common.GlobalConstants;
 
     [Authorize]
     public class ContactsController : Controller
@@ -41,7 +44,7 @@
             var userId = ClaimsPrincipalExtensions.Id(this.User);
             await this.contactService.SendMessageAsync(messageInput, userId);
 
-            var message = "Благодаря за вашето саобщение,ще се свържем с вас";
+            var message = Message.SuccessfullySentMessage;
             this.TempData["message"] = message;
 
             return this.Redirect("/");
@@ -82,10 +85,52 @@
                 return this.NotFound();
             }
 
-            var message = "Вашата резервация бевше изпратена успешно.След като бъде обработена ше получите потварждение";
+            var message = Message.SuccessfullySentReservation;
             this.TempData["reservation"] = message;
 
             return this.Redirect("/");
+        }
+
+        public IActionResult MyMessages()
+        {
+            var userId = ClaimsPrincipalExtensions.Id(this.User);
+            var messages = this.contactService.GetMessages<AppMessageViewModel>()
+                .Where(x => x.UserId == userId);
+
+            return this.View(messages);
+        }
+
+        public IActionResult ReadMessage(string messageId)
+        {
+            var userId = ClaimsPrincipalExtensions.Id(this.User);
+
+            var message = this.contactService
+                   .GetMessages<AppMessageViewModel>()
+                   .Where(x => x.UserId == userId)
+                   .FirstOrDefault(x => x.Id == messageId);
+
+            if (messageId == null || message == null)
+            {
+                return this.NotFound();
+            }
+
+            return this.View(message);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ReadMessage(AppMessageViewModel replyMessage)
+        {
+            var sender = Message.UserSender;
+
+            var result = await this.contactService
+                .ReplyMessageAsync(replyMessage.Id, replyMessage.ReplyInput.Text, sender);
+
+            if (!result)
+            {
+                return this.NotFound();
+            }
+
+            return this.RedirectToAction("ReadMessage", new { messageId = replyMessage.Id });
         }
     }
 }

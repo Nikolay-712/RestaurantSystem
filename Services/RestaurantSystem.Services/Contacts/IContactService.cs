@@ -4,7 +4,6 @@
     using System.Threading.Tasks;
 
     using RestaurantSystem.Data.Models.Contacts;
-    using RestaurantSystem.Web.ViewModels.Administration.Messages;
     using RestaurantSystem.Web.ViewModels.Contacts;
 
     public interface IContactService
@@ -15,7 +14,7 @@
 
         AllMessagesViewModel AllMessages(int page);
 
-        ReadMessageViewModel ReadMessage(string messageId);
+        AppMessageViewModel ReadMessage(string messageId);
 
         AppMessage GetMessageById(string messageId);
 
@@ -23,6 +22,6 @@
 
         Task CloseDiscussionAsync(AppMessage message);
 
-        Task<bool> ReplyMessageAsync(ReadMessageViewModel replyInput, string sender);
+        Task<bool> ReplyMessageAsync(string messageId, string text, string sender);
     }
 }

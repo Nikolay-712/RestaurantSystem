@@ -16,7 +16,12 @@
 
         public async Task<IActionResult> Аpprove(string messageId, string approve)
         {
-            await this.userService.АpproveUserAsync(messageId, approve);
+            var result = await this.userService.АpproveUserAsync(messageId, approve);
+
+            if (!result)
+            {
+                return this.NotFound();
+            }
 
             return this.RedirectToAction("ReadMessage", "Dashboard", new { messageId = messageId });
         }

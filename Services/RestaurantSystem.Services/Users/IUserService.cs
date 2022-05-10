@@ -6,7 +6,7 @@
 
     public interface IUserService
     {
-        Task АpproveUserAsync(string messageId, string appruve);
+        Task<bool> АpproveUserAsync(string messageId, string appruve);
 
         Task SavePhoneNumberAsync(string userId, string phoneNumber);
 

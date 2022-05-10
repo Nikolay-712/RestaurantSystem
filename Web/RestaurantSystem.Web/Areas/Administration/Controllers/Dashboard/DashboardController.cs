@@ -4,7 +4,9 @@
 
     using Microsoft.AspNetCore.Mvc;
     using RestaurantSystem.Services.Contacts;
-    using RestaurantSystem.Web.ViewModels.Administration.Messages;
+    using RestaurantSystem.Web.ViewModels.Contacts;
+
+    using static RestaurantSystem.Common.GlobalConstants;
 
     public class DashboardController : AdministrationController
     {
@@ -25,14 +27,21 @@
         public IActionResult ReadMessage(string messageId)
         {
             var message = this.contactService.ReadMessage(messageId);
+
+            if (messageId == null || message == null)
+            {
+                return this.NotFound();
+            }
+
             return this.View(message);
         }
 
         [HttpPost]
-        public async Task<IActionResult> ReadMessage(ReadMessageViewModel readMessage)
+        public async Task<IActionResult> ReadMessage(AppMessageViewModel readMessage)
         {
-            var sender = "Administration";
-            var result = await this.contactService.ReplyMessageAsync(readMessage, sender);
+            var sender = Message.AdminSender;
+            var result = await this.contactService
+                .ReplyMessageAsync(readMessage.Id, readMessage.ReplyInput.Text, sender);
 
             if (!result)
             {
