@@ -38,6 +38,11 @@
                .HasMany(e => e.Messages)
                .WithOne()
                .HasForeignKey(x => x.UserId);
+
+            appUser
+                .HasMany(x => x.Orders)
+                .WithOne()
+                .HasForeignKey(x => x.UserId);
         }
     }
 }

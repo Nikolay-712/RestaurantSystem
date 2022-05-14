@@ -19,6 +19,7 @@
     using RestaurantSystem.Services.Reservations;
     using RestaurantSystem.Services.Restaurants;
     using RestaurantSystem.Services.Users;
+    using RestaurantSystem.Web.Hubs;
     using RestaurantSystem.Web.ViewModels;
 
     using static RestaurantSystem.Common.GlobalConstants;
@@ -56,6 +57,7 @@
             services.AddRazorPages();
             services.AddDatabaseDeveloperPageExceptionFilter();
 
+            services.AddSignalR();
             services.AddSingleton(this.configuration);
 
             // Application services
@@ -107,6 +109,7 @@
                     {
                         endpoints.MapControllerRoute("areaRoute", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
                         endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+                        endpoints.MapHub<DashboardHub>("/dashboardHub");
                         endpoints.MapRazorPages();
                     });
         }

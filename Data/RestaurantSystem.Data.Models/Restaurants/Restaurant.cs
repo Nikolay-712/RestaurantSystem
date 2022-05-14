@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-
+    using RestaurantSystem.Data.Models.Orders;
     using RestaurantSystem.Data.Models.Products;
     using RestaurantSystem.Data.Models.Reservations;
 
@@ -13,6 +13,7 @@
             this.Id = Guid.NewGuid().ToString();
             this.Menu = new List<Product>();
             this.Rservations = new List<Reservation>();
+            this.Orders = new List<Order>();
         }
 
         public string Id { get; set; }
@@ -36,5 +37,7 @@
         public IEnumerable<Product> Menu { get; set; }
 
         public IEnumerable<Reservation> Rservations { get; set; }
+
+        public IEnumerable<Order> Orders { get; set; }
     }
 }

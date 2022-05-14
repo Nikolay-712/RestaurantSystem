@@ -8,6 +8,8 @@
     using Microsoft.EntityFrameworkCore;
     using RestaurantSystem.Data.Models;
     using RestaurantSystem.Data.Models.Contacts;
+    using RestaurantSystem.Data.Models.Orders;
+    using RestaurantSystem.Data.Models.Payments;
     using RestaurantSystem.Data.Models.Products;
     using RestaurantSystem.Data.Models.Reservations;
     using RestaurantSystem.Data.Models.Restaurants;
@@ -28,6 +30,10 @@
         public DbSet<AppMessage> AppMessages { get; set; }
 
         public DbSet<MessageReply> Replies { get; set; }
+
+        public DbSet<Payment> Payments { get; set; }
+
+        public DbSet<Order> Orders { get; set; }
 
         public override int SaveChanges() => this.SaveChanges(true);
 

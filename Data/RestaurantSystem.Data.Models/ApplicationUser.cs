@@ -5,6 +5,7 @@
 
     using Microsoft.AspNetCore.Identity;
     using RestaurantSystem.Data.Models.Contacts;
+    using RestaurantSystem.Data.Models.Orders;
     using RestaurantSystem.Data.Models.Reservations;
     using RestaurantSystem.Data.Models.Restaurants;
 
@@ -19,6 +20,7 @@
             this.Restaurants = new HashSet<Restaurant>();
             this.Reservations = new HashSet<Reservation>();
             this.Messages = new HashSet<AppMessage>();
+            this.Orders = new HashSet<Order>();
         }
 
         public DateTime CreatedOn { get; set; }
@@ -38,5 +40,7 @@
         public ICollection<Reservation> Reservations { get; set; }
 
         public ICollection<AppMessage> Messages { get; set; }
+
+        public ICollection<Order> Orders { get; set; }
     }
 }

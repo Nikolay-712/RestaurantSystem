@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RestaurantSystem.Data;
 
@@ -11,9 +12,10 @@ using RestaurantSystem.Data;
 namespace RestaurantSystem.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220512085800_AddOrderModel")]
+    partial class AddOrderModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -383,6 +385,9 @@ namespace RestaurantSystem.Data.Migrations
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(30)");
 
+                    b.Property<string>("OrderId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<decimal>("Price")
                         .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");
@@ -394,6 +399,8 @@ namespace RestaurantSystem.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
 
                     b.HasIndex("RestaurantId");
 
@@ -577,6 +584,10 @@ namespace RestaurantSystem.Data.Migrations
 
             modelBuilder.Entity("RestaurantSystem.Data.Models.Products.Product", b =>
                 {
+                    b.HasOne("RestaurantSystem.Data.Models.Orders.Order", null)
+                        .WithMany("Products")
+                        .HasForeignKey("OrderId");
+
                     b.HasOne("RestaurantSystem.Data.Models.Restaurants.Restaurant", null)
                         .WithMany("Menu")
                         .HasForeignKey("RestaurantId");
@@ -629,6 +640,8 @@ namespace RestaurantSystem.Data.Migrations
             modelBuilder.Entity("RestaurantSystem.Data.Models.Orders.Order", b =>
                 {
                     b.Navigation("Payment");
+
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("RestaurantSystem.Data.Models.Restaurants.Restaurant", b =>
