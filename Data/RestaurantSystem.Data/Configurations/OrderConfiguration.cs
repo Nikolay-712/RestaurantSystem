@@ -11,6 +11,7 @@
         {
             order
                 .HasKey(x => x.Id);
+
             order
                .Property(x => x.UserId)
                .IsRequired();

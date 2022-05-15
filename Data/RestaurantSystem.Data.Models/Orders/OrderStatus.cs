@@ -6,5 +6,6 @@
         InProgre = 1,
         Sent = 2,
         Canceled = 3,
+        InProgres = 4,
     }
 }

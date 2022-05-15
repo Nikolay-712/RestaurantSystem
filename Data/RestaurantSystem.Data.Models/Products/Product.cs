@@ -1,12 +1,16 @@
 ﻿namespace RestaurantSystem.Data.Models.Products
 {
     using System;
+    using System.Collections.Generic;
+
+    using RestaurantSystem.Data.Models.Orders;
 
     public class Product
     {
         public Product()
         {
             this.Id = Guid.NewGuid().ToString();
+            this.OrderProducts = new List<OrderProducts>();
         }
 
         public string Id { get; set; }
@@ -26,5 +30,7 @@
         public bool InStock { get; set; }
 
         public string RestaurantId { get; set; }
+
+        public ICollection<OrderProducts> OrderProducts { get; set; }
     }
 }

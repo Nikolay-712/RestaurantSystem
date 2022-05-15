@@ -1,0 +1,50 @@
+﻿@model MenuViewModel
+
+<div class=row>
+    <div class="col-md-8">
+        @foreach (var product in Model.Menu)
+        {
+            <div class="card w-65 mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">@product.Name</h5>
+
+                    <hr />
+                    <p class="card-text">@product.Description</p>
+                    <a class="btn btn-sm btn-primary"
+                   asp-action="Order"
+                   asp-route-restaurantId="@Model.Id"
+                   asp-route-productId="@product.Id">
+                        +
+                    </a>
+
+                </div>
+            </div>
+        }
+    </div>
+    <div class="col">
+        <div class="card">
+            @foreach (var item in Model.Order.Products)
+            {
+
+                <p class="card-text">@item.ProductName - @item.Count</p>
+                <a class="btn btn-sm btn-primary"
+               asp-action="Menu">
+                    +
+                </a>
+                <a class="btn btn-sm btn-primary"
+               asp-action="Menu">
+                    -
+
+                </a>
+            }
+            <h4>Тотал: @Model.Order.TotaalSum лв.</h4>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+

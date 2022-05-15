@@ -64,6 +64,14 @@
                 .ToList();
         }
 
+        public IEnumerable<T> AllRestaurants<T>()
+        {
+            return this.applicationDbContext
+                .Restaurants
+                .To<T>()
+                .ToList();
+        }
+
         public Restaurant GetRestaurant(string restaurantid)
         {
             return this.applicationDbContext
