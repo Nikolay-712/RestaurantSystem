@@ -8,7 +8,6 @@
     using RestaurantSystem.Services.Orders;
     using RestaurantSystem.Services.Restaurants;
     using RestaurantSystem.Web.Infrastructure;
-    using RestaurantSystem.Web.ViewModels.Menu;
     using RestaurantSystem.Web.ViewModels.Restaurants;
 
     public class RestaurantsController : Controller
@@ -33,11 +32,12 @@
         public IActionResult Menu(string restaurantId)
         {
             var userId = ClaimsPrincipalExtensions.Id(this.User);
-            var menu = this.restaurantService
-                   .AllRestaurants<MenuViewModel>()
-                   .FirstOrDefault(x => x.Id == restaurantId);
+            var menu = this.orderService.GetRestaurantMenuWithUserOrder(restaurantId, userId);
 
-            menu.Order = this.orderService.OrdersProducts(userId, restaurantId);
+            if (menu == null)
+            {
+                return this.NotFound();
+            }
 
             return this.View(menu);
         }
@@ -45,6 +45,12 @@
         [Authorize]
         public async Task<IActionResult> Order(string restaurantId, string productId)
         {
+            if (!this.orderService.ExstingRestaurant(restaurantId)
+                || !this.orderService.ExstingProduct(productId))
+            {
+                return this.NotFound();
+            }
+
             var userId = ClaimsPrincipalExtensions.Id(this.User);
             var currentOrder = this.orderService.GetUserOrder(userId, restaurantId);
 
@@ -56,6 +62,34 @@
             else
             {
                 await this.orderService.AddProductAsync(currentOrder.Id, productId, userId, restaurantId);
+            }
+
+            return this.RedirectToAction("Menu", new { restaurantId = restaurantId });
+        }
+
+        [Authorize]
+        public async Task<IActionResult> ProductCount(string restaurantId, string productId, string orderId, string count)
+        {
+            if (!this.orderService.ExstingRestaurant(restaurantId)
+                || !this.orderService.ExstingProduct(productId)
+                || !this.orderService.ExstingOrder(orderId))
+            {
+                return this.NotFound();
+            }
+
+            var userId = ClaimsPrincipalExtensions.Id(this.User);
+
+            if (count == "+")
+            {
+                await this.orderService.AddProductAsync(orderId, productId, userId, restaurantId);
+            }
+            else if (count == "-")
+            {
+                await this.orderService.RemoveProductAsync(orderId, productId, userId, restaurantId);
+            }
+            else
+            {
+                return this.NotFound();
             }
 
             return this.RedirectToAction("Menu", new { restaurantId = restaurantId });

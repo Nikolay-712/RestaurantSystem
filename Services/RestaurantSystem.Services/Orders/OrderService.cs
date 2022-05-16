@@ -7,15 +7,35 @@
     using RestaurantSystem.Data;
     using RestaurantSystem.Data.Models.Orders;
     using RestaurantSystem.Services.Mapping;
+    using RestaurantSystem.Services.Restaurants;
+    using RestaurantSystem.Web.ViewModels.Menu;
     using RestaurantSystem.Web.ViewModels.Orders;
 
     public class OrderService : IOrderService
     {
         private readonly ApplicationDbContext applicationDbContext;
+        private readonly IRestaurantService restaurantService;
 
-        public OrderService(ApplicationDbContext applicationDbContext)
+        public OrderService(ApplicationDbContext applicationDbContext, IRestaurantService restaurantService)
         {
             this.applicationDbContext = applicationDbContext;
+            this.restaurantService = restaurantService;
+        }
+
+        public MenuViewModel GetRestaurantMenuWithUserOrder(string restaurantId, string userId)
+        {
+            var menu = this.restaurantService
+                   .AllRestaurants<MenuViewModel>()
+                   .FirstOrDefault(x => x.Id == restaurantId);
+
+            if (menu == null)
+            {
+                return menu;
+            }
+
+            menu.Order = this.GetProductsInOrder(userId, restaurantId);
+
+            return menu;
         }
 
         public async Task<string> MakeOrderAsync(string restaurantId, string userId)
@@ -37,29 +57,15 @@
 
         public async Task AddProductAsync(string orderId, string productId, string userId, string restaurantId)
         {
-            var aa = this.applicationDbContext
-                .OrderProducts
-                .Where(x => x.OrderId == orderId)
-                .To<OrderProductViewModel>();
-
-
-
-            var product = this.applicationDbContext
-                .Products
-                .Where(x => x.RestaurantId == restaurantId)
-                .FirstOrDefault(x => x.Id == productId);
-
-            var order = this.GetUserOrder(userId, restaurantId);
-
             var currentOrderProducts = this.applicationDbContext.
                 OrderProducts.
-                FirstOrDefault(x => x.ProductId == product.Id && x.OrderId == orderId);
+                FirstOrDefault(x => x.ProductId == productId && x.OrderId == orderId);
 
             if (currentOrderProducts == null)
             {
                 var orderProducts = new OrderProducts
                 {
-                    OrderId = order.Id,
+                    OrderId = orderId,
                     ProductId = productId,
                     Count = 1,
                 };
@@ -68,7 +74,26 @@
             }
             else
             {
-                currentOrderProducts.Count = currentOrderProducts.Count + 1;
+                currentOrderProducts.Count++;
+                this.applicationDbContext.OrderProducts.Update(currentOrderProducts);
+            }
+
+            await this.applicationDbContext.SaveChangesAsync();
+        }
+
+        public async Task RemoveProductAsync(string orderId, string productId, string userId, string restaurantId)
+        {
+            var currentOrderProducts = this.applicationDbContext.
+                OrderProducts.
+                FirstOrDefault(x => x.ProductId == productId && x.OrderId == orderId);
+
+            if (currentOrderProducts.Count == 1)
+            {
+                this.applicationDbContext.Remove(currentOrderProducts);
+            }
+            else
+            {
+                currentOrderProducts.Count--;
                 this.applicationDbContext.OrderProducts.Update(currentOrderProducts);
             }
 
@@ -86,7 +111,7 @@
             return order;
         }
 
-        public OrderViewModel OrdersProducts(string userId, string restaurantId)
+        public OrderViewModel GetProductsInOrder(string userId, string restaurantId)
         {
             var orders = new OrderViewModel
             {
@@ -100,6 +125,21 @@
             };
 
             return orders;
+        }
+
+        public bool ExstingRestaurant(string restaurantId)
+        {
+            return this.applicationDbContext.Restaurants.Any(x => x.Id == restaurantId);
+        }
+
+        public bool ExstingProduct(string productId)
+        {
+            return this.applicationDbContext.Products.Any(x => x.Id == productId);
+        }
+
+        public bool ExstingOrder(string orderId)
+        {
+            return this.applicationDbContext.Orders.Any(x => x.Id == orderId);
         }
     }
 }

@@ -6,14 +6,14 @@
         {
             <div class="card w-65 mb-3">
                 <div class="card-body">
-                    <h5 class="card-title">@product.Name</h5>
+                    <h5 class="card-title">@product.Name - <small>@product.Price лв.</small></h5>
 
                     <hr />
-                    <p class="card-text">@product.Description</p>
+                   <small class="card-text">@product.Description</small> 
                     <a class="btn btn-sm btn-primary"
-                   asp-action="Order"
-                   asp-route-restaurantId="@Model.Id"
-                   asp-route-productId="@product.Id">
+                        asp-action="Order"
+                        asp-route-restaurantId="@Model.Id"
+                        asp-route-productId="@product.Id">
                         +
                     </a>
 
@@ -25,16 +25,22 @@
         <div class="card">
             @foreach (var item in Model.Order.Products)
             {
-
                 <p class="card-text">@item.ProductName - @item.Count</p>
                 <a class="btn btn-sm btn-primary"
-               asp-action="Menu">
+                    asp-action="ProductCount" 
+                    asp-route-restaurantId="@Model.Id" 
+                    asp-route-productId="@item.ProductId" 
+                    asp-route-orderId="@item.OrderId"
+                    asp-route-count="+">
                     +
                 </a>
                 <a class="btn btn-sm btn-primary"
-               asp-action="Menu">
+                    asp-action="ProductCount"
+                    asp-route-restaurantId="@Model.Id" 
+                    asp-route-productId="@item.ProductId" 
+                    asp-route-orderId="@item.OrderId"
+                    asp-route-count="-">
                     -
-
                 </a>
             }
             <h4>Тотал: @Model.Order.TotaalSum лв.</h4>

@@ -5,6 +5,10 @@
 
     public class OrderProductViewModel : IMapFrom<OrderProducts>
     {
+        public string OrderId { get; set; }
+
+        public string ProductId { get; init; }
+
         public string ProductName { get; init; }
 
         public decimal ProductPrice { get; init; }
