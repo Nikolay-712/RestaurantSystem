@@ -23,9 +23,15 @@
 
         public string UserId { get; set; }
 
+        public string PhoneNumber { get; set; }
+
         public string PaymentId { get; set; }
 
         public Payment Payment { get; set; }
+
+        public string AddressId { get; set; }
+
+        public Address Address { get; set; }
 
         public ICollection<OrderProducts> OrderProducts { get; set; }
     }

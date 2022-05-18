@@ -8,6 +8,7 @@
     using RestaurantSystem.Services.Orders;
     using RestaurantSystem.Services.Restaurants;
     using RestaurantSystem.Web.Infrastructure;
+    using RestaurantSystem.Web.ViewModels.Orders;
     using RestaurantSystem.Web.ViewModels.Restaurants;
 
     public class RestaurantsController : Controller
@@ -93,6 +94,30 @@
             }
 
             return this.RedirectToAction("Menu", new { restaurantId = restaurantId });
+        }
+
+        [Authorize]
+        public IActionResult SendOrder(string restaurantId)
+        {
+            var userId = ClaimsPrincipalExtensions.Id(this.User);
+            var order = this.orderService.SendOrder(userId, restaurantId);
+
+            return this.View(order);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult SendOrder(OrderInputModel orderInput, string restaurantId)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(orderInput);
+            }
+
+
+            this.orderService.AddOrderInformation(orderInput);
+
+            return this.RedirectToAction("/");
         }
     }
 }

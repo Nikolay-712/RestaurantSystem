@@ -20,6 +20,10 @@
 
         OrderViewModel GetProductsInOrder(string userId, string restaurantId);
 
+        OrderInputModel SendOrder(string userId, string restaurantId);
+
+        void AddOrderInformation(OrderInputModel orderInput);
+
         bool ExstingRestaurant(string restaurantId);
 
         bool ExstingProduct(string productId);

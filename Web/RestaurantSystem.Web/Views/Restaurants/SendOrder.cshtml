@@ -1,0 +1,136 @@
+﻿@model OrderInputModel
+
+<div class="row">
+    <div class="col-md-5 order-md-2 mb-4">
+        <h4 class="d-flex justify-content-between align-items-center mb-4-5">
+            <span class="text-muted"><strong>Поръчка</strong></span>
+            <span class="badge badge-primary badge-pill">@Model.OrderProducts.Count()</span>
+        </h4>
+        <ul class="list-group mb-3">
+
+            @foreach (var product in Model.OrderProducts)
+            {
+                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                    <div>
+                        <h6 class="my-0">@product.ProductName  <small class="text-muted">x @product.Count</small></h6>
+
+                    </div>
+                    <span class="text-muted">@product.ProductPrice лв.</span>
+                </li>
+
+            }
+
+            <li class="list-group-item d-flex justify-content-between">
+                <span></span>
+                <strong>@Model.TotaalSum лв.</strong>
+            </li>
+        </ul>
+
+    </div>
+    <div class="col-md-7 order-md-1">
+        <h4 class="mb-3"><strong>Адрес за доставка</strong></h4>
+
+        <form asp-action="SendOrder" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-row">
+                <div class="col-md-3">
+                    <div class="form-group text-center">
+                        <label class="form-control"><strong>+359</strong></label>
+                        <input type="hidden" asp-for="@Model.OrderProducts" />
+                        <input type="hidden" asp-for="@Model.OrderId" />
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="form-group">
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="Телефон" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 mb-3">
+                    <div class="md-form md-outline my-2">
+                        <input asp-for="@Model.Addres.ShippingAddress" type="text" class="form-control" placeholder="Адрес за доставка">
+                        <span asp-validation-for="@Model.Addres.ShippingAddress" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <select asp-for="@Model.Addres.Country" class="custom-select d-block w-100 mt-2" id="country">
+                        <option value="България">България</option>
+                        <span asp-validation-for="@Model.Addres.Country" class="text-danger"></span>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <select asp-for="@Model.Addres.Town" class="custom-select d-block w-100 mt-2" id="state">
+                        <option value="Радомир">Радомир</option>
+                        <span asp-validation-for="@Model.Addres.Town" class="text-danger"></span>
+                    </select>
+
+                </div>
+
+            </div>
+            <hr class="mb-4">
+            <div class="form-check pl-0">
+                <input asp-for="@Model.SaveAddress" type="checkbox" class="form-check-input filled-in" id="save-info">
+                <label class="form-check-label" for="save-info">Запази информацията за следващия път</label>
+            </div>
+
+
+            <hr class="mb-4">
+            <h4 class="mb-3"><strong>Плащане</strong></h4>
+
+            <div class="d-block my-3">
+                <div class="form-check pl-0">
+                    <input asp-for="@Model.CashMethod" id="credit" name="paymentMethod" type="checkbox" class="form-check-input">
+                    <label class="form-check-label" for="credit">При доставка</label>
+                </div>
+                <div class="form-check pl-0">
+                    <input asp-for="@Model.DebitMethod" id="debit" name="paymentMethod" type="checkbox" class="form-check-input" required>
+                    <label class="form-check-label" for="debit">Дебитна карта</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <div class="md-form md-outline my-2">
+                        <input asp-for="@Model.Payment.CardName" type="text" id="cc-name" class="form-control">
+                        <small class="text-muted">пълното име изписано върху картата</small>
+                        <span asp-validation-for="@Model.Payment.CardName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <div class="md-form md-outline my-2">
+                        <input asp-for="@Model.Payment.CardNumber" type="text" name='creditCradNum' class="form-control">
+                        <small class="text-muted">номер на картата</small>
+                        <span asp-validation-for="@Model.Payment.CardNumber" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 mb-2">
+                    <div class="md-form md-outline my-2">
+                        <input asp-for="@Model.Payment.Expiration" type="text" id="cc-expiration" class="form-control">
+                        <small class="text-muted">валидна до</small>
+                        <span asp-validation-for="@Model.Payment.Expiration" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <div class="md-form md-outline my-2">
+                        <input asp-for="@Model.Payment.CVV" type="text" id="cc-cvv" class="form-control">
+                        <small class="text-muted">CVV</small>
+                        <span asp-validation-for="@Model.Payment.CVV" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <hr class="mb-4">
+            <hr class="mb-4">
+            <button class="btn btn-primary btn-lg btn-block" type="submit" 
+            onclick="creditCardValidation(document.form1.creditCradNum)">Изпарати</button>
+        </form>
+    </div>
+</div>
+
+

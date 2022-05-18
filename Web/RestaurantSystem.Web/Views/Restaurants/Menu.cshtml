@@ -1,52 +1,86 @@
 ﻿@model MenuViewModel
 
+<div class="row">
+    <ul class="list-group list-group-horizontal mb-2">
+        @* @foreach (var category in Model.)
+            {
+            <a class="mr-2"
+            asp-action="ProductCount"
+            asp-route-restaurantId="@Model.Id"
+            asp-route-count="+">
+            category
+            </a>
+            }*@
+
+    </ul>
+</div>
+
+
 <div class=row>
     <div class="col-md-8">
-        @foreach (var product in Model.Menu)
+        <ul class="list-group">
+            @foreach (var product in Model.Menu)
+            {
+                <li class="list-group-item mb-3">
+                    <div class="row">
+                        <div class=col>
+                            @product.Name - @product.Price лв.
+
+                            <a class="btn btn-sm btn-primary float-right"
+                           asp-action="Order"
+                           asp-route-restaurantId="@Model.Id"
+                           asp-route-productId="@product.Id">
+                                <i class="fas fa-plus-circle"></i>
+                            </a>
+                        </div>
+
+                    </div>
+                    @product.Description
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="col-md-4">
+        @foreach (var item in Model.Order.OrderProducts)
         {
-            <div class="card w-65 mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">@product.Name - <small>@product.Price лв.</small></h5>
-
-                    <hr />
-                   <small class="card-text">@product.Description</small> 
-                    <a class="btn btn-sm btn-primary"
-                        asp-action="Order"
-                        asp-route-restaurantId="@Model.Id"
-                        asp-route-productId="@product.Id">
-                        +
+            <div class="row">
+                <div class="col-md-2">
+                    <a class="btn btn-sm btn-primary float-left"
+                   asp-action="ProductCount"
+                   asp-route-restaurantId="@Model.Id"
+                   asp-route-productId="@item.ProductId"
+                   asp-route-orderId="@item.OrderId"
+                   asp-route-count="+">
+                        <i class="fas fa-plus-circle"></i>
                     </a>
-
+                </div>
+                <div class="col text-center">
+                    <p>@item.ProductName - @item.Count</p>
+                </div>
+                <div class="col-md-2">
+                    <a class="btn btn-sm btn-primary float-left"
+                   asp-action="ProductCount"
+                   asp-route-restaurantId="@Model.Id"
+                   asp-route-productId="@item.ProductId"
+                   asp-route-orderId="@item.OrderId"
+                   asp-route-count="-">
+                        <i class="fas fa-minus-circle"></i>
+                    </a>
                 </div>
             </div>
         }
-    </div>
-    <div class="col">
-        <div class="card">
-            @foreach (var item in Model.Order.Products)
-            {
-                <p class="card-text">@item.ProductName - @item.Count</p>
-                <a class="btn btn-sm btn-primary"
-                    asp-action="ProductCount" 
-                    asp-route-restaurantId="@Model.Id" 
-                    asp-route-productId="@item.ProductId" 
-                    asp-route-orderId="@item.OrderId"
-                    asp-route-count="+">
-                    +
-                </a>
-                <a class="btn btn-sm btn-primary"
-                    asp-action="ProductCount"
-                    asp-route-restaurantId="@Model.Id" 
-                    asp-route-productId="@item.ProductId" 
-                    asp-route-orderId="@item.OrderId"
-                    asp-route-count="-">
-                    -
-                </a>
-            }
-            <h4>Тотал: @Model.Order.TotaalSum лв.</h4>
+        <hr />
+        <div class="row justify-content-center">
+            <a class="btn btn-sm btn-primary float-left"
+               asp-action="SendOrder"
+               asp-route-restaurantId="@Model.Id">
+                Поръчай
+            </a>
         </div>
-    </div>
 
+        <h5>Тотал: @Model.Order.TotaalSum лв.</h5>
+
+    </div>
 </div>
 
 

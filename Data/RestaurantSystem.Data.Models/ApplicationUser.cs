@@ -42,5 +42,9 @@
         public ICollection<AppMessage> Messages { get; set; }
 
         public ICollection<Order> Orders { get; set; }
+
+        public string AddressId { get; set; }
+
+        public Address Address { get; set; }
     }
 }

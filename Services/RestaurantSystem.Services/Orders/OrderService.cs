@@ -8,17 +8,24 @@
     using RestaurantSystem.Data.Models.Orders;
     using RestaurantSystem.Services.Mapping;
     using RestaurantSystem.Services.Restaurants;
+    using RestaurantSystem.Services.Users;
+    using RestaurantSystem.Web.ViewModels.Addresses;
     using RestaurantSystem.Web.ViewModels.Menu;
     using RestaurantSystem.Web.ViewModels.Orders;
 
     public class OrderService : IOrderService
     {
         private readonly ApplicationDbContext applicationDbContext;
+        private readonly IUserService userService;
         private readonly IRestaurantService restaurantService;
 
-        public OrderService(ApplicationDbContext applicationDbContext, IRestaurantService restaurantService)
+        public OrderService(
+            ApplicationDbContext applicationDbContext,
+            IUserService userService,
+            IRestaurantService restaurantService)
         {
             this.applicationDbContext = applicationDbContext;
+            this.userService = userService;
             this.restaurantService = restaurantService;
         }
 
@@ -40,11 +47,16 @@
 
         public async Task<string> MakeOrderAsync(string restaurantId, string userId)
         {
+            var user = await this.userService.GetUserByIdAsync(userId);
+            var phoneNumber = user.PhoneNumber == null ? string.Empty : user.PhoneNumber;
+
             var order = new Order
             {
                 CreatedOn = DateTime.Now,
                 Status = OrderStatus.InProgre,
                 PaymentId = "NotSelected",
+                AddressId = "NotSelected",
+                PhoneNumber = phoneNumber,
                 ResaurantId = restaurantId,
                 UserId = userId,
             };
@@ -113,18 +125,45 @@
 
         public OrderViewModel GetProductsInOrder(string userId, string restaurantId)
         {
-            var orders = new OrderViewModel
+            var order = this.applicationDbContext
+                 .Orders
+                 .Where(x => x.Status == OrderStatus.InProgre)
+                 .Where(x => x.ResaurantId == restaurantId)
+                 .Where(x => x.UserId == userId)
+                 .To<OrderViewModel>().FirstOrDefault();
+
+            return order;
+        }
+
+        public OrderInputModel SendOrder(string userId, string restaurantId)
+        {
+            var order = this.GetUserOrder(userId, restaurantId);
+
+            var phoneNumber = order.PhoneNumber == string.Empty ? string.Empty : order.PhoneNumber;
+            var address = this.userService.GetUserAddress(userId);
+            var inputAddress = new AddresInputModel();
+
+            if (address != null)
             {
-                Products = this.applicationDbContext
-                    .OrderProducts
-                    .Where(x => x.Order.Status == OrderStatus.InProgre)
-                    .Where(x => x.Order.ResaurantId == restaurantId)
-                    .Where(x => x.Order.UserId == userId)
-                    .To<OrderProductViewModel>()
-                    .ToList(),
+                inputAddress.Country = address.Country;
+                inputAddress.Town = address.Town;
+                inputAddress.ShippingAddress = address.ShippingAddress;
+            }
+
+            var inputOrder = new OrderInputModel
+            {
+                OrderId = order.Id,
+                PhoneNumber = phoneNumber,
+                Addres = inputAddress,
+                OrderProducts = this.GetProductsInOrder(userId, restaurantId).OrderProducts,
             };
 
-            return orders;
+            return inputOrder;
+        }
+
+        public void AddOrderInformation(OrderInputModel orderInput)
+        {
+
         }
 
         public bool ExstingRestaurant(string restaurantId)

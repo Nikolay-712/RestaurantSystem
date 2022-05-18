@@ -1,11 +1,13 @@
 ﻿namespace RestaurantSystem.Services.Users
 {
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Identity;
     using RestaurantSystem.Data;
     using RestaurantSystem.Data.Models;
     using RestaurantSystem.Data.Models.Contacts;
+    using RestaurantSystem.Data.Models.Orders;
     using RestaurantSystem.Services.Contacts;
 
     using static RestaurantSystem.Common.GlobalConstants;
@@ -57,6 +59,15 @@
         public async Task<ApplicationUser> GetUserByIdAsync(string userId)
         {
             return await this.userManager.FindByIdAsync(userId);
+        }
+
+        public Address GetUserAddress(string userId)
+        {
+            var address = this.applicationDbContext
+                .Addresses
+                .FirstOrDefault(x => x.UseId == userId);
+
+            return address;
         }
 
         private async Task FinishedOwnerApplication(
