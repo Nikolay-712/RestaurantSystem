@@ -5,7 +5,7 @@
 
     using Microsoft.AspNetCore.Identity;
     using Microsoft.Extensions.DependencyInjection;
-    using RestaurantSystem.Data.Models;
+    using RestaurantSystem.Data.Models.Users;
 
     public static class ApplicationBuilderExtensions
     {

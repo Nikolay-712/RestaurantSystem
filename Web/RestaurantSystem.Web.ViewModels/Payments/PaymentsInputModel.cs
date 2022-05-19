@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RestaurantSystem.Data.Models.Payments;
+using System;
 
 namespace RestaurantSystem.Web.ViewModels.Payments
 {
@@ -11,5 +12,7 @@ namespace RestaurantSystem.Web.ViewModels.Payments
         public DateTime Expiration { get; init; }
 
         public string CVV { get; init; }
+
+        public PaymentType PaymentType { get; init; }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace RestaurantSystem.Data.Models
+﻿namespace RestaurantSystem.Data.Models.Users
 {
     using System;
     using System.Collections.Generic;

@@ -10,19 +10,17 @@
 
     public class OrderInputModel : OrderViewModel
     {
-        public string OrderId { get; init; }
+        public string OrderId { get; set; }
+
+        public string RestaurantId { get; init; }
 
         [Required(ErrorMessage = RequiredFieldMessage)]
         [PhoneValidation]
-        public string PhoneNumber { get; init; }
+        public string PhoneNumber { get; set; }
 
-        public PaymentsInputModel Payment { get; init; }
+        public PaymentsInputModel Payment { get; set; }
 
-        public AddresInputModel Addres { get; init; }
-
-        public bool CashMethod { get; init; }
-
-        public bool DebitMethod { get; init; }
+        public AddresInputModel Addres { get; set; }
 
         public bool SaveAddress { get; init; }
     }

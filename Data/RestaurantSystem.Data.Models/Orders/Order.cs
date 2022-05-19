@@ -29,9 +29,7 @@
 
         public Payment Payment { get; set; }
 
-        public string AddressId { get; set; }
-
-        public Address Address { get; set; }
+        public string ShippingAddress { get; set; }
 
         public ICollection<OrderProducts> OrderProducts { get; set; }
     }

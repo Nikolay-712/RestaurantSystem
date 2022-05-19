@@ -11,12 +11,13 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using RestaurantSystem.Data;
-    using RestaurantSystem.Data.Models;
+    using RestaurantSystem.Data.Models.Users;
     using RestaurantSystem.Services.Contacts;
     using RestaurantSystem.Services.Mapping;
     using RestaurantSystem.Services.Menu;
     using RestaurantSystem.Services.Messaging;
     using RestaurantSystem.Services.Orders;
+    using RestaurantSystem.Services.Payments;
     using RestaurantSystem.Services.Reservations;
     using RestaurantSystem.Services.Restaurants;
     using RestaurantSystem.Services.Users;
@@ -69,6 +70,7 @@
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IReservationService, ReservationService>();
             services.AddTransient<IOrderService, OrderService>();
+            services.AddTransient<IPaymentService, PaymentService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,4 +1,4 @@
-﻿namespace RestaurantSystem.Data.Models.Orders
+﻿namespace RestaurantSystem.Data.Models.Users
 {
     using System;
 

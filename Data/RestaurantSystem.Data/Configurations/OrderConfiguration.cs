@@ -30,13 +30,8 @@
                 .IsRequired();
 
             order
-                .Property(x => x.AddressId)
+                .Property(x => x.ShippingAddress)
                 .IsRequired();
-
-            order
-                .HasOne(x => x.Address)
-                .WithOne()
-                .HasForeignKey<Address>(x => x.Id);
 
             order
                 .HasOne(x => x.Payment)

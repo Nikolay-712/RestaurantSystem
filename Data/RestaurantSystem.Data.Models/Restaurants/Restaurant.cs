@@ -2,9 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+
     using RestaurantSystem.Data.Models.Orders;
     using RestaurantSystem.Data.Models.Products;
     using RestaurantSystem.Data.Models.Reservations;
+    using RestaurantSystem.Data.Models.Users;
 
     public class Restaurant
     {

@@ -6,7 +6,7 @@
 
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-    using RestaurantSystem.Data.Models;
+    using RestaurantSystem.Data.Models.Users;
     using RestaurantSystem.Services.Reservations;
     using RestaurantSystem.Services.Restaurants;
     using RestaurantSystem.Web.Infrastructure;

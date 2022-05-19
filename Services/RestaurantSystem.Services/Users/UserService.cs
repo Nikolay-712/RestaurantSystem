@@ -5,10 +5,10 @@
 
     using Microsoft.AspNetCore.Identity;
     using RestaurantSystem.Data;
-    using RestaurantSystem.Data.Models;
     using RestaurantSystem.Data.Models.Contacts;
-    using RestaurantSystem.Data.Models.Orders;
+    using RestaurantSystem.Data.Models.Users;
     using RestaurantSystem.Services.Contacts;
+    using RestaurantSystem.Web.ViewModels.Addresses;
 
     using static RestaurantSystem.Common.GlobalConstants;
 
@@ -53,6 +53,35 @@
             user.PhoneNumber = "+359" + phoneNumber;
 
             this.applicationDbContext.Update(user);
+            await this.applicationDbContext.SaveChangesAsync();
+        }
+
+        public async Task SaveAddressAsync(string userId, AddresInputModel addresInput)
+        {
+            var user = await this.GetUserByIdAsync(userId);
+            var addres = this.GetUserAddress(userId);
+
+            if (addres == null)
+            {
+                var newAddress = new Address
+                {
+                    UseId = userId,
+                    Country = addresInput.Country,
+                    Town = addresInput.Town,
+                    ShippingAddress = addresInput.ShippingAddress,
+                };
+
+                await this.applicationDbContext.Addresses.AddAsync(addres);
+            }
+            else
+            {
+                addres.Town = addresInput.Town;
+                addres.Country = addresInput.Country;
+                addres.ShippingAddress = addresInput.ShippingAddress;
+
+                this.applicationDbContext.Addresses.Update(addres);
+            }
+
             await this.applicationDbContext.SaveChangesAsync();
         }
 

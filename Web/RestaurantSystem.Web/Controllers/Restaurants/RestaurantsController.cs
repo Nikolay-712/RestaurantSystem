@@ -109,13 +109,9 @@
         [HttpPost]
         public IActionResult SendOrder(OrderInputModel orderInput, string restaurantId)
         {
-            if (!this.ModelState.IsValid)
-            {
-                return this.View(orderInput);
-            }
-
-
-            this.orderService.AddOrderInformation(orderInput);
+            var userId = ClaimsPrincipalExtensions.Id(this.User);
+            
+            this.orderService.AddOrderInformationАsync(userId, orderInput);
 
             return this.RedirectToAction("/");
         }

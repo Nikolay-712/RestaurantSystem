@@ -2,7 +2,7 @@
 {
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
-    using RestaurantSystem.Data.Models.Orders;
+    using RestaurantSystem.Data.Models.Users;
 
     public class AddressConfiguration : IEntityTypeConfiguration<Address>
     {

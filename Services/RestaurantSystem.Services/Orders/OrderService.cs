@@ -7,6 +7,7 @@
     using RestaurantSystem.Data;
     using RestaurantSystem.Data.Models.Orders;
     using RestaurantSystem.Services.Mapping;
+    using RestaurantSystem.Services.Payments;
     using RestaurantSystem.Services.Restaurants;
     using RestaurantSystem.Services.Users;
     using RestaurantSystem.Web.ViewModels.Addresses;
@@ -16,15 +17,18 @@
     public class OrderService : IOrderService
     {
         private readonly ApplicationDbContext applicationDbContext;
+        private readonly IPaymentService paymentService;
         private readonly IUserService userService;
         private readonly IRestaurantService restaurantService;
 
         public OrderService(
             ApplicationDbContext applicationDbContext,
+            IPaymentService paymentService,
             IUserService userService,
             IRestaurantService restaurantService)
         {
             this.applicationDbContext = applicationDbContext;
+            this.paymentService = paymentService;
             this.userService = userService;
             this.restaurantService = restaurantService;
         }
@@ -48,14 +52,17 @@
         public async Task<string> MakeOrderAsync(string restaurantId, string userId)
         {
             var user = await this.userService.GetUserByIdAsync(userId);
+
             var phoneNumber = user.PhoneNumber == null ? string.Empty : user.PhoneNumber;
+            var address = this.userService.GetUserAddress(userId);
+            var shippingAddress = address.ShippingAddress == null ? string.Empty : address.ShippingAddress;
 
             var order = new Order
             {
                 CreatedOn = DateTime.Now,
                 Status = OrderStatus.InProgre,
                 PaymentId = "NotSelected",
-                AddressId = "NotSelected",
+                ShippingAddress = shippingAddress,
                 PhoneNumber = phoneNumber,
                 ResaurantId = restaurantId,
                 UserId = userId,
@@ -138,32 +145,57 @@
         public OrderInputModel SendOrder(string userId, string restaurantId)
         {
             var order = this.GetUserOrder(userId, restaurantId);
-
-            var phoneNumber = order.PhoneNumber == string.Empty ? string.Empty : order.PhoneNumber;
             var address = this.userService.GetUserAddress(userId);
-            var inputAddress = new AddresInputModel();
 
-            if (address != null)
+            var inputOrder = new OrderInputModel();
+
+            if (order.ShippingAddress != string.Empty)
             {
-                inputAddress.Country = address.Country;
-                inputAddress.Town = address.Town;
-                inputAddress.ShippingAddress = address.ShippingAddress;
+                var inputAddress = new AddresInputModel()
+                {
+                    Country = address.Country,
+                    Town = address.Town,
+                    ShippingAddress = address.ShippingAddress,
+                };
+
+                inputOrder.Addres = inputAddress;
             }
 
-            var inputOrder = new OrderInputModel
-            {
-                OrderId = order.Id,
-                PhoneNumber = phoneNumber,
-                Addres = inputAddress,
-                OrderProducts = this.GetProductsInOrder(userId, restaurantId).OrderProducts,
-            };
+            inputOrder.OrderId = order.Id;
+            inputOrder.Addres = new AddresInputModel();
+            inputOrder.PhoneNumber = order.PhoneNumber;
+            inputOrder.OrderProducts = this.GetProductsInOrder(userId, restaurantId).OrderProducts;
 
             return inputOrder;
         }
 
-        public void AddOrderInformation(OrderInputModel orderInput)
+        public async Task AddOrderInformationАsync(string userId, OrderInputModel orderInput)
         {
+            var order = this.GetUserOrder(userId, orderInput.RestaurantId);
 
+            if (!this.ExstingOrder(orderInput.OrderId))
+            {
+                //-----;
+            }
+
+            var paymentId = await this.paymentService
+                .MakePaymentAsync(orderInput.OrderId, orderInput.Payment);
+
+            if (paymentId == null)
+            {
+                //----;
+            }
+
+            order.Status = OrderStatus.Pending;
+            order.CreatedOn = DateTime.Now;
+            order.PaymentId = paymentId;
+            order.ShippingAddress = orderInput.Addres.ShippingAddress;
+            order.PhoneNumber = orderInput.PhoneNumber;
+
+            if (orderInput.SaveAddress)
+            {
+                await this.userService.SaveAddressAsync(userId, orderInput.Addres);
+            }
         }
 
         public bool ExstingRestaurant(string restaurantId)

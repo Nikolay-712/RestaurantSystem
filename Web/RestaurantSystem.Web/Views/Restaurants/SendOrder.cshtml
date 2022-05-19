@@ -38,6 +38,7 @@
                         <label class="form-control"><strong>+359</strong></label>
                         <input type="hidden" asp-for="@Model.OrderProducts" />
                         <input type="hidden" asp-for="@Model.OrderId" />
+                         <input type="hidden" asp-for="@Model.RestaurantId" />
                     </div>
                 </div>
                 <div class="col-md-9">
@@ -69,7 +70,6 @@
                         <option value="Радомир">Радомир</option>
                         <span asp-validation-for="@Model.Addres.Town" class="text-danger"></span>
                     </select>
-
                 </div>
 
             </div>
@@ -84,14 +84,12 @@
             <h4 class="mb-3"><strong>Плащане</strong></h4>
 
             <div class="d-block my-3">
-                <div class="form-check pl-0">
-                    <input asp-for="@Model.CashMethod" id="credit" name="paymentMethod" type="checkbox" class="form-check-input">
-                    <label class="form-check-label" for="credit">При доставка</label>
-                </div>
-                <div class="form-check pl-0">
-                    <input asp-for="@Model.DebitMethod" id="debit" name="paymentMethod" type="checkbox" class="form-check-input" required>
-                    <label class="form-check-label" for="debit">Дебитна карта</label>
-                </div>
+                <select asp-for="@Model.Payment.PaymentType" class="custom-select d-block w-100 mt-2" id="state">
+                    <option value="Cash">Метод на плащане</option>
+                    <option value="Cash">При доставка</option>
+                    <option value="Cash">Дебитна карта</option>
+                    <span asp-validation-for="@Model.Payment.PaymentType" class="text-danger"></span>
+                </select>
             </div>
             <div class="row">
                 <div class="col-md-6 mb-2">
@@ -127,8 +125,9 @@
             </div>
             <hr class="mb-4">
             <hr class="mb-4">
-            <button class="btn btn-primary btn-lg btn-block" type="submit" 
-            onclick="creditCardValidation(document.form1.creditCradNum)">Изпарати</button>
+            <button class="btn btn-primary btn-lg btn-block" type="submit" >
+                Изпарати
+            </button>
         </form>
     </div>
 </div>

@@ -6,13 +6,13 @@
 
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
-    using RestaurantSystem.Data.Models;
     using RestaurantSystem.Data.Models.Contacts;
     using RestaurantSystem.Data.Models.Orders;
     using RestaurantSystem.Data.Models.Payments;
     using RestaurantSystem.Data.Models.Products;
     using RestaurantSystem.Data.Models.Reservations;
     using RestaurantSystem.Data.Models.Restaurants;
+    using RestaurantSystem.Data.Models.Users;
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
