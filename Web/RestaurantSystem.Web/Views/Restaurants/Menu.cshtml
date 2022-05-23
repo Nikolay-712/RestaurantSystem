@@ -1,5 +1,19 @@
 ﻿@model MenuViewModel
 
+@{
+     var message = this.TempData["order"] as string;
+}
+
+@if (message != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Изпратено</strong> @message.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
 <div class="row">
     <ul class="list-group list-group-horizontal mb-2">
         @* @foreach (var category in Model.)
@@ -40,47 +54,52 @@
             }
         </ul>
     </div>
-    <div class="col-md-4">
-        @foreach (var item in Model.Order.OrderProducts)
-        {
-            <div class="row">
-                <div class="col-md-2">
-                    <a class="btn btn-sm btn-primary float-left"
+    @if (Model.Order != null)
+    {
+        <div class="col-md-4">
+            @foreach (var item in Model.Order.OrderProducts)
+            {
+                <div class="row">
+                    <div class="col-md-2">
+                        <a class="btn btn-sm btn-primary float-left"
                    asp-action="ProductCount"
                    asp-route-restaurantId="@Model.Id"
                    asp-route-productId="@item.ProductId"
                    asp-route-orderId="@item.OrderId"
                    asp-route-count="+">
-                        <i class="fas fa-plus-circle"></i>
-                    </a>
-                </div>
-                <div class="col text-center">
-                    <p>@item.ProductName - @item.Count</p>
-                </div>
-                <div class="col-md-2">
-                    <a class="btn btn-sm btn-primary float-left"
+                            <i class="fas fa-plus-circle"></i>
+                        </a>
+                    </div>
+                    <div class="col text-center">
+                        <p>@item.ProductName - @item.Count</p>
+                    </div>
+                    <div class="col-md-2">
+                        <a class="btn btn-sm btn-primary float-left"
                    asp-action="ProductCount"
                    asp-route-restaurantId="@Model.Id"
                    asp-route-productId="@item.ProductId"
                    asp-route-orderId="@item.OrderId"
                    asp-route-count="-">
-                        <i class="fas fa-minus-circle"></i>
-                    </a>
+                            <i class="fas fa-minus-circle"></i>
+                        </a>
+                    </div>
                 </div>
-            </div>
-        }
-        <hr />
-        <div class="row justify-content-center">
-            <a class="btn btn-sm btn-primary float-left"
+            }
+            <hr />
+            @if (Model.Order.OrderProducts.ToList().Count != 0)
+            {
+                <div class="row justify-content-center">
+                    <a class="btn btn-sm btn-primary float-left"
                asp-action="SendOrder"
                asp-route-restaurantId="@Model.Id">
-                Поръчай
-            </a>
+                        Поръчай
+                    </a>
+                </div>
+
+                <h5>Тотал: @Model.Order.TotaalSum лв.</h5>
+            }
         </div>
-
-        <h5>Тотал: @Model.Order.TotaalSum лв.</h5>
-
-    </div>
+    }
 </div>
 
 

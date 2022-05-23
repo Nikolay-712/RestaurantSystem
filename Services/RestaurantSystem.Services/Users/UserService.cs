@@ -50,7 +50,7 @@
         {
             var user = await this.GetUserByIdAsync(userId);
 
-            user.PhoneNumber = "+359" + phoneNumber;
+            user.PhoneNumber = phoneNumber;
 
             this.applicationDbContext.Update(user);
             await this.applicationDbContext.SaveChangesAsync();
@@ -58,7 +58,6 @@
 
         public async Task SaveAddressAsync(string userId, AddresInputModel addresInput)
         {
-            var user = await this.GetUserByIdAsync(userId);
             var addres = this.GetUserAddress(userId);
 
             if (addres == null)
@@ -71,7 +70,7 @@
                     ShippingAddress = addresInput.ShippingAddress,
                 };
 
-                await this.applicationDbContext.Addresses.AddAsync(addres);
+                await this.applicationDbContext.Addresses.AddAsync(newAddress);
             }
             else
             {

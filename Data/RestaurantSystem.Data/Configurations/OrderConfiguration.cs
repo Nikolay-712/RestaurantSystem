@@ -26,17 +26,15 @@
                 .HasMaxLength(13);
 
             order
-                .Property(x => x.PaymentId)
-                .IsRequired();
-
-            order
                 .Property(x => x.ShippingAddress)
                 .IsRequired();
 
             order
                 .HasOne(x => x.Payment)
                 .WithOne()
-                .HasForeignKey<Payment>(x => x.Id);
+                .HasForeignKey<Payment>(x => x.OrderId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

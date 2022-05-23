@@ -55,7 +55,12 @@
 
             var phoneNumber = user.PhoneNumber == null ? string.Empty : user.PhoneNumber;
             var address = this.userService.GetUserAddress(userId);
-            var shippingAddress = address.ShippingAddress == null ? string.Empty : address.ShippingAddress;
+            var shippingAddress = string.Empty;
+
+            if (address != null)
+            {
+                shippingAddress = address.ShippingAddress == null ? string.Empty : address.ShippingAddress;
+            }
 
             var order = new Order
             {
@@ -147,6 +152,11 @@
             var order = this.GetUserOrder(userId, restaurantId);
             var address = this.userService.GetUserAddress(userId);
 
+            if (order == null)
+            {
+                return null;
+            }
+
             var inputOrder = new OrderInputModel();
 
             if (order.ShippingAddress != string.Empty)
@@ -160,22 +170,25 @@
 
                 inputOrder.Addres = inputAddress;
             }
+            else
+            {
+                inputOrder.Addres = new AddresInputModel();
+            }
 
             inputOrder.OrderId = order.Id;
-            inputOrder.Addres = new AddresInputModel();
             inputOrder.PhoneNumber = order.PhoneNumber;
             inputOrder.OrderProducts = this.GetProductsInOrder(userId, restaurantId).OrderProducts;
 
             return inputOrder;
         }
 
-        public async Task AddOrderInformationАsync(string userId, OrderInputModel orderInput)
+        public async Task<bool> AddOrderInformationАsync(string userId, OrderInputModel orderInput)
         {
             var order = this.GetUserOrder(userId, orderInput.RestaurantId);
 
             if (!this.ExstingOrder(orderInput.OrderId))
             {
-                //-----;
+                return false;
             }
 
             var paymentId = await this.paymentService
@@ -183,7 +196,7 @@
 
             if (paymentId == null)
             {
-                //----;
+                return false;
             }
 
             order.Status = OrderStatus.Pending;
@@ -195,7 +208,13 @@
             if (orderInput.SaveAddress)
             {
                 await this.userService.SaveAddressAsync(userId, orderInput.Addres);
+                await this.userService.SavePhoneNumberAsync(userId, orderInput.PhoneNumber);
             }
+
+            this.applicationDbContext.Update(order);
+            await this.applicationDbContext.SaveChangesAsync();
+
+            return true;
         }
 
         public bool ExstingRestaurant(string restaurantId)

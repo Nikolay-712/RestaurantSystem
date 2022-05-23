@@ -12,7 +12,7 @@
 
         [Display(Name = "Адреса")]
         [Required(ErrorMessage = RequiredFieldMessage)]
-        [StringLength(maximumLength: 30, ErrorMessage = LenghtErrorMessage, MinimumLength = 5)]
+        [StringLength(maximumLength: 50, ErrorMessage = LenghtErrorMessage, MinimumLength = 15)]
         public string ShippingAddress { get; set; }
     }
 }

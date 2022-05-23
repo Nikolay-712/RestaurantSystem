@@ -18,6 +18,10 @@
                 .IsUnicode();
 
             reservation
+                .Property(x => x.RestaurantId)
+                .IsRequired();
+
+            reservation
                 .Property(x => x.PhoneNumber)
                 .IsRequired()
                 .HasMaxLength(13);

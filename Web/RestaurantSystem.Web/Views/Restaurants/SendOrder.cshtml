@@ -1,4 +1,6 @@
 ﻿@model OrderInputModel
+@using RestaurantSystem.Data.Models.Payments;
+
 
 <div class="row">
     <div class="col-md-5 order-md-2 mb-4">
@@ -38,7 +40,7 @@
                         <label class="form-control"><strong>+359</strong></label>
                         <input type="hidden" asp-for="@Model.OrderProducts" />
                         <input type="hidden" asp-for="@Model.OrderId" />
-                         <input type="hidden" asp-for="@Model.RestaurantId" />
+                        <input type="hidden" asp-for="@Model.RestaurantId" />
                     </div>
                 </div>
                 <div class="col-md-9">
@@ -83,14 +85,15 @@
             <hr class="mb-4">
             <h4 class="mb-3"><strong>Плащане</strong></h4>
 
-            <div class="d-block my-3">
-                <select asp-for="@Model.Payment.PaymentType" class="custom-select d-block w-100 mt-2" id="state">
-                    <option value="Cash">Метод на плащане</option>
-                    <option value="Cash">При доставка</option>
-                    <option value="Cash">Дебитна карта</option>
-                    <span asp-validation-for="@Model.Payment.PaymentType" class="text-danger"></span>
+             <div class="form-group">
+                <select asp-for="@Model.Payment.PaymentType" class="form-control  alert-heading">
+                   <option value="">Метод на плащане</option>
+                    <option value="@PaymentType.Cash">При доставка</option>
+                    <option value="@PaymentType.DebitCard">Дебитна карта</option>
                 </select>
+                <span asp-validation-for="@Model.Payment.PaymentType" class="text-danger"></span>
             </div>
+
             <div class="row">
                 <div class="col-md-6 mb-2">
                     <div class="md-form md-outline my-2">
@@ -125,7 +128,7 @@
             </div>
             <hr class="mb-4">
             <hr class="mb-4">
-            <button class="btn btn-primary btn-lg btn-block" type="submit" >
+            <button class="btn btn-primary btn-lg btn-block" type="submit">
                 Изпарати
             </button>
         </form>

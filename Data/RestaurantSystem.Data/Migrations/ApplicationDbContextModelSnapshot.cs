@@ -202,7 +202,6 @@ namespace RestaurantSystem.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PaymentId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
@@ -264,12 +263,16 @@ namespace RestaurantSystem.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("OrderId")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("PaymentType")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
 
                     b.ToTable("Payments");
                 });
@@ -346,6 +349,7 @@ namespace RestaurantSystem.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("RestaurantId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UserId")
@@ -649,7 +653,7 @@ namespace RestaurantSystem.Data.Migrations
                 {
                     b.HasOne("RestaurantSystem.Data.Models.Orders.Order", null)
                         .WithOne("Payment")
-                        .HasForeignKey("RestaurantSystem.Data.Models.Payments.Payment", "Id")
+                        .HasForeignKey("RestaurantSystem.Data.Models.Payments.Payment", "OrderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
@@ -665,7 +669,9 @@ namespace RestaurantSystem.Data.Migrations
                 {
                     b.HasOne("RestaurantSystem.Data.Models.Restaurants.Restaurant", null)
                         .WithMany("Rservations")
-                        .HasForeignKey("RestaurantId");
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("RestaurantSystem.Data.Models.Users.ApplicationUser", null)
                         .WithMany("Reservations")

@@ -22,7 +22,7 @@
 
         OrderInputModel SendOrder(string userId, string restaurantId);
 
-        Task AddOrderInformationАsync(string userId, OrderInputModel orderInput);
+        Task<bool> AddOrderInformationАsync(string userId, OrderInputModel orderInput);
 
         bool ExstingRestaurant(string restaurantId);
 

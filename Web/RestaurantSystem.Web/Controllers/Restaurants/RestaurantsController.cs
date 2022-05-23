@@ -102,18 +102,37 @@
             var userId = ClaimsPrincipalExtensions.Id(this.User);
             var order = this.orderService.SendOrder(userId, restaurantId);
 
+            if (order == null)
+            {
+                return this.NotFound();
+            }
+
             return this.View(order);
         }
 
         [Authorize]
         [HttpPost]
-        public IActionResult SendOrder(OrderInputModel orderInput, string restaurantId)
+        public async Task<IActionResult> SendOrder(OrderInputModel orderInput, string restaurantId)
         {
             var userId = ClaimsPrincipalExtensions.Id(this.User);
-            
-            this.orderService.AddOrderInformationАsync(userId, orderInput);
 
-            return this.RedirectToAction("/");
+            if (!this.ModelState.IsValid)
+            {
+                var order = this.orderService.SendOrder(userId, restaurantId);
+                return this.View(order);
+            }
+
+            var result = await this.orderService.AddOrderInformationАsync(userId, orderInput);
+
+            if (!result)
+            {
+                return this.NotFound();
+            }
+
+            var message = "Благодарим за вашата поръчка";
+            this.TempData["order"] = message;
+
+            return this.RedirectToAction("Menu", new { restaurantId = restaurantId });
         }
     }
 }
