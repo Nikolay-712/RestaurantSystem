@@ -102,7 +102,7 @@
             return this.RedirectToAction("Details", new { restaurantId = reservation.RestaurantId });
         }
 
-        public IActionResult Details(string restaurantId)
+        public IActionResult Reservations(string restaurantId)
         {
             var details = this.restaurantService
                 .Details(ClaimsPrincipalExtensions.Id(this.User), restaurantId);

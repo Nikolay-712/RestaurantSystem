@@ -50,7 +50,7 @@
             return this.Redirect("/");
         }
 
-        public async Task<IActionResult> Reservation()
+        public async Task<IActionResult> Reservation(string restaurantId)
         {
             var phoneNumber = await this.reservationService
                 .GetUserPhoneNumberAsync(ClaimsPrincipalExtensions.Id(this.User));

@@ -1,0 +1,187 @@
+﻿@model AllOrdersViewModel
+
+
+<div class="row mb-4">
+    <a class="btn btn-primary btn-sm mr-3"
+       asp-controller="restaurants"
+       asp-action="myRestaurants">
+        <i class="fas fa-arrow-alt-circle-left"></i>  <strong>Назад</strong>
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-5">
+            <div class="card-header"> Поръчки (@Model.PendingOrdersCount)
+                    <input class="form-control me-2" id="myInput" onkeyup="myFunction()" type="search" placeholder="търсене по номер">
+            </div>
+            <div class="card-block p-0">
+                <table id="myTable" class="table table-bordered table-sm m-0 text-center">
+
+                    <thead>
+                        <tr>
+                            <th scope="col">Номер</th>
+                            <th scope="col">Дата</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var order in Model.PendingOrders)
+                        {
+                            <tr id="myUL">
+                                <td><strong>@order.Id.Substring(0,4)</strong></td>
+                                <td>@order.CreatedOn.ToString("dd.MM.yy - HH:mm")</td>
+
+                                <td>
+                                    <a class="btn-primary btn-sm"
+                                   asp-action="Details"
+                                   asp-route-orderId="@order.Id">
+                                        <strong>Преглед</strong>
+                                    </a>
+                                </td>
+                                <td>
+
+                                    <label class="custom-control custom-checkbox">
+                                        <form asp-action="SendOrder"
+                                          asp-route-orderId="@order.Id"
+                                          asp-route-restaurantId="@order.ResaurantId"
+                                          enctype="multipart/form-data">
+                                            <input type="checkbox" class="custom-control-input"
+                                               value="@order.IsReady"
+                                               checked="@order.IsReady"
+                                               onclick="this.form.submit();" />
+                                            <span class="custom-control-indicator"></span>
+                                        </form>
+                                    </label>
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-6">
+        <div class="card mb-5">
+            <div class="card-header">
+                Поръчки (@Model.AllOrdersCount)
+            </div>
+            <div class="card-block p-0">
+                <table id="myTable" class="table table-bordered table-sm m-0 text-center">
+
+                    <thead>
+                        <tr>
+                            <th scope="col">Номер</th>
+                            <th scope="col">Дата</th>
+                            <th scope="col">Статус</th>
+                            <th scope="col">
+
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var order in Model.AllOrders)
+                        {
+                            <tr id="myUL">
+                                <td><strong>@order.Id.Substring(0,4)</strong></td>
+                                <td>@order.CreatedOn.ToString("dd.MM.yy")</td>
+                                <td>
+                                    @if (order.Status == "Sent")
+                                    {
+                                        <span style="font-size: 0.7em; color: green;">
+                                            <i class="fas fa-circle"></i> Изпратена
+                                        </span>
+                                    }
+
+                                    @if (order.Status == "Canceled")
+                                    {
+                                        <span style="font-size: 0.7em; color: red;">
+                                            <i class="fas fa-circle"></i> Отказана
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    <a class="btn-primary btn-sm"
+                                   asp-action="Details"
+                                   asp-route-orderId="@order.Id">
+                                        <strong>Преглед</strong>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        @{
+            var restaurantId = Model.AllOrders.FirstOrDefault().ResaurantId;
+        }
+
+        <nav aria-label="...">
+            <ul class="pagination justify-content-center">
+                <li class="page-item @if (!Model.HasPreviousPage) {
+        <text>disabled</text>
+ }">
+            <a class="page-link"
+               asp-route-restaurantId="@restaurantId"
+               asp-route-page="@Model.PreviousPageNumber">
+                <i class="fas fa-arrow-alt-circle-left text-blue"></i>
+            </a>
+        </li>
+
+                @for (int i = Model.PageNumber - 4; i < Model.PageNumber; i++)
+                {
+                    if (i > 0)
+                    {
+                        <li class="page-item">
+                            <a class="page-link"
+                       asp-route-restaurantId="@restaurantId"
+                       asp-route-page="@i">@i</a>
+                        </li>
+                    }
+                }
+
+                <li class="page-item active" aria-current="page">
+                    <span class="page-link">
+                        @Model.PageNumber
+                        <span class="sr-only">(current)</span>
+                    </span>
+                </li>
+
+                @for (int i = Model.PageNumber + 1; i <= Model.PageNumber + 4; i++)
+                {
+                    if (i <= Model.PagesCount)
+                    {
+                        <li class="page-item">
+                            <a class="page-link"
+                       asp-route-restaurantId="@restaurantId"
+                       asp-route-page="@i">@i</a>
+                        </li>
+                    }
+                }
+                <li class="page-item @if (!Model.HasNextPage) {
+        <text>disabled</text>
+ }">
+            <a class="page-link"
+               asp-route-restaurantId="@restaurantId"
+               asp-route-page="@Model.NextPageNumber">
+                <i class="fas fa-arrow-alt-circle-right text-blue"> </i>
+            </a>
+        </li>
+            </ul>
+        </nav>
+
+    </div>
+</div>
+
+
+
+

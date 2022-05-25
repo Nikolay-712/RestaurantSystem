@@ -30,17 +30,23 @@
                         asp-controller="Menu"
                         asp-action="Index" 
                         asp-route-restaurantId= "@restaurant.Id">
-                        <i class="fas fa-hamburger"></i>
+                        <i class="fas fa-hamburger"></i> Меню
                     </a>
                     <a class="btn btn-warning btn-sm"
-                        asp-action="Details"
+                        asp-controller="Orders"
+                        asp-action="Index"
                         asp-route-restaurantId="@restaurant.Id">
-                        <i class="fas fa-tools"></i>
+                        <i class="fas fa-cart-arrow-down"></i> Поръчки
+                    </a>
+                    <a class="btn btn-success btn-sm"
+                        asp-action="Reservations"
+                        asp-route-restaurantId="@restaurant.Id">
+                        <i class="fas fa-glass-cheers"></i> Резерваций
                     </a>
                     <a class="btn btn-danger btn-sm"
                         asp-action="Edit"
                         asp-route-restaurantId="@restaurant.Id">
-                        <i class="fas fa-tools"></i>
+                        <i class="fas fa-tools"></i> Настройки
                     </a>
                 </td>
             </tr>

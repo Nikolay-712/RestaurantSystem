@@ -1,10 +1,11 @@
 ﻿namespace RestaurantSystem.Web.ViewModels.Orders
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     using AutoMapper;
     using RestaurantSystem.Data.Models.Orders;
     using RestaurantSystem.Services.Mapping;
-    using System.Collections.Generic;
-    using System.Linq;
 
     public class OrderViewModel : IMapFrom<Order>, IHaveCustomMappings
     {

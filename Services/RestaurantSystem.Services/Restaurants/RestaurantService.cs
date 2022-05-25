@@ -9,19 +9,15 @@
     using RestaurantSystem.Data;
     using RestaurantSystem.Data.Models.Restaurants;
     using RestaurantSystem.Services.Mapping;
-    using RestaurantSystem.Services.Reservations;
-    using RestaurantSystem.Web.ViewModels.Owner.Reservations;
     using RestaurantSystem.Web.ViewModels.Owner.Restaurants;
 
     public class RestaurantService : IRestaurantService
     {
         private readonly ApplicationDbContext applicationDbContext;
-        private readonly IReservationService resarvationService;
 
-        public RestaurantService(ApplicationDbContext applicationDbContext, IReservationService resarvationService)
+        public RestaurantService(ApplicationDbContext applicationDbContext)
         {
             this.applicationDbContext = applicationDbContext;
-            this.resarvationService = resarvationService;
         }
 
         public async Task RegisterRestaurantAsync(string ownerId, RegisterRestaurantInputModel restaurantInputModel)
@@ -89,10 +85,7 @@
                 return details;
             }
 
-            var allReservations = this.resarvationService
-                    .AllResarvations<ReservationViewModel>();
-
-            details.Reservations = allReservations
+            details.Rservations
                 .Where(x => x.RestaurantId == restaurantId)
                 .OrderByDescending(x => x.CreatedOn);
 

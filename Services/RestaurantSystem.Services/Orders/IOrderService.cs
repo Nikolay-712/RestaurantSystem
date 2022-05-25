@@ -1,5 +1,6 @@
 ﻿namespace RestaurantSystem.Services.Orders
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using RestaurantSystem.Data.Models.Orders;
@@ -14,6 +15,8 @@
 
         Order GetUserOrder(string userId, string restaurantId);
 
+       void CompleteOrder(string orderId);
+
         Task AddProductAsync(string orderId, string productId, string userId, string restaurantId);
 
         Task RemoveProductAsync(string orderId, string productId, string userId, string restaurantId);
@@ -23,6 +26,8 @@
         OrderInputModel SendOrder(string userId, string restaurantId);
 
         Task<bool> AddOrderInformationАsync(string userId, OrderInputModel orderInput);
+
+        IEnumerable<T> GetAllOrders<T>();
 
         bool ExstingRestaurant(string restaurantId);
 

@@ -5,6 +5,7 @@
 
     using RestaurantSystem.Data.Models.Restaurants;
     using RestaurantSystem.Services.Mapping;
+    using RestaurantSystem.Web.ViewModels.Owner.Orders;
     using RestaurantSystem.Web.ViewModels.Owner.Reservations;
 
     public class RestaurantDetailsViewModel : IMapFrom<Restaurant>
@@ -15,9 +16,14 @@
 
         public string OwnerId { get; set; }
 
-        public IEnumerable<ReservationViewModel> Reservations { get; set; }
+        public IEnumerable<ReservationViewModel> Rservations { get; set; }
+
+        public IEnumerable<OrderViewModel> Orders { get; set; }
 
         public int PendingReservationsCount
-            => this.Reservations.Where(x => x.ReservationStatus == "Pending").Count();
+            => this.Rservations.Where(x => x.ReservationStatus == "Pending").Count();
+
+        public int PendingOrdersCount
+            => this.Orders.Where(x => x.Status == "Pending").Count();
     }
 }

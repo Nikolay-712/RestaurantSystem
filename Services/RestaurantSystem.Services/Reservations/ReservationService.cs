@@ -92,7 +92,7 @@
         public async Task<string> GetUserPhoneNumberAsync(string userId)
         {
             var user = await this.userService.GetUserByIdAsync(userId);
-            var phoneNumber = user.PhoneNumber.TrimStart(new char[] { '+', '3', '5', '9' });
+            var phoneNumber = user.PhoneNumber;
 
             return phoneNumber;
         }

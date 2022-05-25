@@ -1,6 +1,7 @@
 ﻿namespace RestaurantSystem.Services.Orders
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -135,6 +136,18 @@
             return order;
         }
 
+        public void CompleteOrder(string orderId)
+        {
+            var order = this.applicationDbContext
+                .Orders.
+                FirstOrDefault(x => x.Id == orderId);
+
+            order.Status = OrderStatus.Sent;
+
+            this.applicationDbContext.Update(order);
+            this.applicationDbContext.SaveChanges();
+        }
+
         public OrderViewModel GetProductsInOrder(string userId, string restaurantId)
         {
             var order = this.applicationDbContext
@@ -215,6 +228,11 @@
             await this.applicationDbContext.SaveChangesAsync();
 
             return true;
+        }
+
+        public IEnumerable<T> GetAllOrders<T>()
+        {
+            return this.applicationDbContext.Orders.To<T>();
         }
 
         public bool ExstingRestaurant(string restaurantId)
