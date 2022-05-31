@@ -30,10 +30,10 @@
             return this.View(restaurants);
         }
 
-        public IActionResult Menu(string restaurantId)
+        public IActionResult Menu(string restaurantId, string category)
         {
             var userId = ClaimsPrincipalExtensions.Id(this.User);
-            var menu = this.orderService.GetRestaurantMenuWithUserOrder(restaurantId, userId);
+            var menu = this.orderService.GetRestaurantMenuWithUserOrder(restaurantId, category, userId);
 
             if (menu == null)
             {
@@ -44,7 +44,7 @@
         }
 
         [Authorize]
-        public async Task<IActionResult> Order(string restaurantId, string productId)
+        public async Task<IActionResult> Order(string restaurantId, string category, string productId)
         {
             if (!this.orderService.ExstingRestaurant(restaurantId)
                 || !this.orderService.ExstingProduct(productId))
@@ -65,11 +65,11 @@
                 await this.orderService.AddProductAsync(currentOrder.Id, productId, userId, restaurantId);
             }
 
-            return this.RedirectToAction("Menu", new { restaurantId = restaurantId });
+            return this.RedirectToAction("Menu", new { restaurantId = restaurantId, category = category });
         }
 
         [Authorize]
-        public async Task<IActionResult> ProductCount(string restaurantId, string productId, string orderId, string count)
+        public async Task<IActionResult> ProductCount(string restaurantId, string productId, string category, string orderId, string count)
         {
             if (!this.orderService.ExstingRestaurant(restaurantId)
                 || !this.orderService.ExstingProduct(productId)
@@ -93,7 +93,7 @@
                 return this.NotFound();
             }
 
-            return this.RedirectToAction("Menu", new { restaurantId = restaurantId });
+            return this.RedirectToAction("Menu", new { restaurantId = restaurantId, category = category });
         }
 
         [Authorize]

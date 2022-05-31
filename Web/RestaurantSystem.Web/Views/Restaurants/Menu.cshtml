@@ -1,7 +1,8 @@
 ﻿@model MenuViewModel
 
 @{
-     var message = this.TempData["order"] as string;
+    var message = this.TempData["order"] as string;
+
 }
 
 @if (message != null)
@@ -14,22 +15,23 @@
     </div>
 }
 
-<div class="row">
-    <ul class="list-group list-group-horizontal mb-2">
-        @* @foreach (var category in Model.)
-            {
-            <a class="mr-2"
-            asp-action="ProductCount"
-            asp-route-restaurantId="@Model.Id"
-            asp-route-count="+">
-            category
-            </a>
-            }*@
+<div class="scrollmenu mb-4">
+    <a asp-action="Menu"
+       asp-route-restaurantId="@Model.Id">
+        Всички
+    </a>
 
-    </ul>
+    @foreach (var category in Model.Categories)
+    {
+        <a asp-action="Menu"
+       asp-route-restaurantId="@Model.Id"
+       asp-route-category="@category">
+            @category
+        </a>
+    }
 </div>
-
-
+<hr />
+<h5>@Model.Category</h5>
 <div class=row>
     <div class="col-md-8">
         <ul class="list-group">
@@ -43,7 +45,8 @@
                             <a class="btn btn-sm btn-primary float-right"
                            asp-action="Order"
                            asp-route-restaurantId="@Model.Id"
-                           asp-route-productId="@product.Id">
+                           asp-route-productId="@product.Id"
+                           asp-route-category="@Model.Category">
                                 <i class="fas fa-plus-circle"></i>
                             </a>
                         </div>
@@ -66,6 +69,7 @@
                    asp-route-restaurantId="@Model.Id"
                    asp-route-productId="@item.ProductId"
                    asp-route-orderId="@item.OrderId"
+                   asp-route-category="@Model.Category"
                    asp-route-count="+">
                             <i class="fas fa-plus-circle"></i>
                         </a>
@@ -79,6 +83,7 @@
                    asp-route-restaurantId="@Model.Id"
                    asp-route-productId="@item.ProductId"
                    asp-route-orderId="@item.OrderId"
+                   asp-route-category="@Model.Category"
                    asp-route-count="-">
                             <i class="fas fa-minus-circle"></i>
                         </a>
@@ -95,8 +100,13 @@
                         Поръчай
                     </a>
                 </div>
+                <div class="row justify-content-center mt-2">
+                    <small>включена доставка @Model.DeliveryPeice лв.</small>
+                </div>
 
-                <h5>Тотал: @Model.Order.TotaalSum лв.</h5>
+                <div class="row justify-content-center">
+                    <h4>Тотал: @Model.Order.TotaalSum лв.</h4>
+                </div>
             }
         </div>
     }

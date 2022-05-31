@@ -11,7 +11,7 @@
     {
         public IEnumerable<OrderProductViewModel> OrderProducts { get; set; }
 
-        public decimal TotaalSum => this.OrderProducts.Select(x => x.Sum).Sum();
+        public decimal TotaalSum { get; set; }
 
         public void CreateMappings(IProfileExpression configuration)
         {

@@ -34,20 +34,26 @@
             this.restaurantService = restaurantService;
         }
 
-        public MenuViewModel GetRestaurantMenuWithUserOrder(string restaurantId, string userId)
+        public MenuViewModel GetRestaurantMenuWithUserOrder(string restaurantId, string category, string userId)
         {
-            var menu = this.restaurantService
+            var restaurant = this.restaurantService
                    .AllRestaurants<MenuViewModel>()
                    .FirstOrDefault(x => x.Id == restaurantId);
 
-            if (menu == null)
+            if (restaurant == null)
             {
-                return menu;
+                return restaurant;
             }
 
-            menu.Order = this.GetProductsInOrder(userId, restaurantId);
+            var categories = restaurant.Menu.Select(x => x.Category);
+            var products = category != null ? restaurant.Menu.Where(x => x.Category == category) : restaurant.Menu;
 
-            return menu;
+            restaurant.Categories = categories;
+            restaurant.Order = this.GetProductsInOrder(userId, restaurantId);
+            restaurant.Menu = products;
+            restaurant.Category = category;
+
+            return restaurant;
         }
 
         public async Task<string> MakeOrderAsync(string restaurantId, string userId)
@@ -157,6 +163,11 @@
                  .Where(x => x.UserId == userId)
                  .To<OrderViewModel>().FirstOrDefault();
 
+            if (order != null)
+            {
+                order.TotaalSum = order.OrderProducts.Select(x => x.Sum).Sum() + this.GetDeliveryPrice(restaurantId);
+            }
+
             return order;
         }
 
@@ -188,9 +199,12 @@
                 inputOrder.Addres = new AddresInputModel();
             }
 
+            var orderViewModel = this.GetProductsInOrder(userId, restaurantId);
+
             inputOrder.OrderId = order.Id;
             inputOrder.PhoneNumber = order.PhoneNumber;
-            inputOrder.OrderProducts = this.GetProductsInOrder(userId, restaurantId).OrderProducts;
+            inputOrder.TotaalSum = orderViewModel.TotaalSum;
+            inputOrder.OrderProducts = orderViewModel.OrderProducts;
 
             return inputOrder;
         }
@@ -248,6 +262,14 @@
         public bool ExstingOrder(string orderId)
         {
             return this.applicationDbContext.Orders.Any(x => x.Id == orderId);
+        }
+
+        private decimal GetDeliveryPrice(string restaurantId)
+        {
+            return this.applicationDbContext
+                .Restaurants
+                .FirstOrDefault(x => x.Id == restaurantId)
+                .DeliveryPeice;
         }
     }
 }

@@ -9,13 +9,13 @@
 
     public interface IOrderService
     {
-        MenuViewModel GetRestaurantMenuWithUserOrder(string restaurantId, string userId);
+        MenuViewModel GetRestaurantMenuWithUserOrder(string restaurantId, string category, string userId);
 
         Task<string> MakeOrderAsync(string restaurantId, string userId);
 
         Order GetUserOrder(string userId, string restaurantId);
 
-       void CompleteOrder(string orderId);
+        void CompleteOrder(string orderId);
 
         Task AddProductAsync(string orderId, string productId, string userId, string restaurantId);
 
