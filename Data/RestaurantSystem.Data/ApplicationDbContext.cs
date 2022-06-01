@@ -10,6 +10,7 @@
     using RestaurantSystem.Data.Models.Orders;
     using RestaurantSystem.Data.Models.Payments;
     using RestaurantSystem.Data.Models.Products;
+    using RestaurantSystem.Data.Models.Ratings;
     using RestaurantSystem.Data.Models.Reservations;
     using RestaurantSystem.Data.Models.Restaurants;
     using RestaurantSystem.Data.Models.Users;
@@ -38,6 +39,8 @@
         public DbSet<OrderProducts> OrderProducts { get; set; }
 
         public DbSet<Address> Addresses { get; set; }
+
+        public DbSet<Rating> Ratings { get; set; }
 
         public override int SaveChanges() => this.SaveChanges(true);
 

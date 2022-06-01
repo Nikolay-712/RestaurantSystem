@@ -2,10 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
-
+    using System.Linq;
     using RestaurantSystem.Data.Models.Restaurants;
     using RestaurantSystem.Services.Mapping;
-    using RestaurantSystem.Web.ViewModels.Menu;
+    using RestaurantSystem.Web.ViewModels.Ratings;
 
     public class RestaurantInfoViewModel : IMapFrom<Restaurant>
     {
@@ -20,5 +20,11 @@
         public DateTime OpenIn { get; init; }
 
         public DateTime CloseIn { get; init; }
+
+        public IEnumerable<RatingViewModel> Ratings { get; init; }
+
+        public int RatingsCount => this.Ratings.Count();
+
+        public double AverageRating => this.Ratings.Select(x => x.Stars).Sum() / this.RatingsCount;
     }
 }

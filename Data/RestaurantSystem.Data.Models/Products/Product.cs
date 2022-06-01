@@ -4,6 +4,7 @@
     using System.Collections.Generic;
 
     using RestaurantSystem.Data.Models.Orders;
+    using RestaurantSystem.Data.Models.Ratings;
 
     public class Product
     {
@@ -11,6 +12,7 @@
         {
             this.Id = Guid.NewGuid().ToString();
             this.OrderProducts = new List<OrderProducts>();
+            this.Ratings = new List<Rating>();
         }
 
         public string Id { get; set; }
@@ -32,5 +34,7 @@
         public string RestaurantId { get; set; }
 
         public ICollection<OrderProducts> OrderProducts { get; set; }
+
+        public ICollection<Rating> Ratings { get; set; }
     }
 }

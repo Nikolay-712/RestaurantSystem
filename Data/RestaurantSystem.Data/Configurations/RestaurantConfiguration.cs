@@ -52,6 +52,11 @@
                 .HasMany(x => x.Orders)
                 .WithOne()
                 .HasForeignKey(x => x.ResaurantId);
+
+            restaurant
+                .HasMany(x => x.Ratings)
+                .WithOne()
+                .HasForeignKey(x => x.RestaurantId);
         }
     }
 }

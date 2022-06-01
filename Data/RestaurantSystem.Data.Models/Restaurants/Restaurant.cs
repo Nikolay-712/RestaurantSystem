@@ -5,6 +5,7 @@
 
     using RestaurantSystem.Data.Models.Orders;
     using RestaurantSystem.Data.Models.Products;
+    using RestaurantSystem.Data.Models.Ratings;
     using RestaurantSystem.Data.Models.Reservations;
     using RestaurantSystem.Data.Models.Users;
 
@@ -16,6 +17,7 @@
             this.Menu = new List<Product>();
             this.Rservations = new List<Reservation>();
             this.Orders = new List<Order>();
+            this.Ratings = new List<Rating>();
         }
 
         public string Id { get; set; }
@@ -41,5 +43,7 @@
         public IEnumerable<Reservation> Rservations { get; set; }
 
         public IEnumerable<Order> Orders { get; set; }
+
+        public IEnumerable<Rating> Ratings { get; set; }
     }
 }

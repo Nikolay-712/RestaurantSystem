@@ -40,6 +40,11 @@
             product
                 .Property(x => x.Category)
                 .IsRequired();
+
+            product
+                .HasMany(x => x.Ratings)
+                .WithOne()
+                .HasForeignKey(x => x.ProductId);
         }
     }
 }

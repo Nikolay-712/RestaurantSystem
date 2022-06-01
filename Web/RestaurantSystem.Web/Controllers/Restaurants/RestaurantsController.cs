@@ -6,6 +6,7 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using RestaurantSystem.Services.Orders;
+    using RestaurantSystem.Services.Ratings;
     using RestaurantSystem.Services.Restaurants;
     using RestaurantSystem.Web.Infrastructure;
     using RestaurantSystem.Web.ViewModels.Orders;
@@ -15,11 +16,16 @@
     {
         private readonly IRestaurantService restaurantService;
         private readonly IOrderService orderService;
+        private readonly IRatingService ratingService;
 
-        public RestaurantsController(IRestaurantService restaurantService, IOrderService orderService)
+        public RestaurantsController(
+            IRestaurantService restaurantService,
+            IOrderService orderService,
+            IRatingService ratingService)
         {
             this.restaurantService = restaurantService;
             this.orderService = orderService;
+            this.ratingService = ratingService;
         }
 
         public IActionResult Index()
@@ -134,5 +140,18 @@
 
             return this.RedirectToAction("Menu", new { restaurantId = restaurantId });
         }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Rate(string restaurantId, int rating)
+        {
+            var userId = ClaimsPrincipalExtensions.Id(this.User);
+            string controllerName = this.ControllerContext.RouteData.Values["controller"].ToString();
+
+            await this.ratingService.AddRateAsync(restaurantId, rating, userId, controllerName);
+
+            return View();
+        }
+
     }
 }

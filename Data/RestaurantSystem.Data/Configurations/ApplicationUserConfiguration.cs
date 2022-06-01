@@ -43,6 +43,11 @@
                 .HasMany(x => x.Orders)
                 .WithOne()
                 .HasForeignKey(x => x.UserId);
+
+            appUser
+                .HasMany(x => x.Ratings)
+                .WithOne()
+                .HasForeignKey(x => x.UserId);
         }
     }
 }

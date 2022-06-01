@@ -1,4 +1,9 @@
 ﻿@model IEnumerable<RestaurantInfoViewModel>
+@using RestaurantSystem.Web.Infrastructure
+
+@{
+    var userId = ClaimsPrincipalExtensions.Id(this.User);
+}
 
 @foreach (var restaurant in Model)
 {
@@ -10,15 +15,69 @@
                     Работно време
                     @restaurant.OpenIn.ToString("HH:mm") - @restaurant.CloseIn.ToString("HH:mm") ч. Доставка @restaurant.DeliveryPeice лв.
                 </div>
+
+                @{
+                    var rating = restaurant
+                    .Ratings
+                    .Select(x => x)
+                    .FirstOrDefault(x => x.UserId == userId);
+
+                    if (rating != null)
+                    {
+
+                    }
+                }
+
+
+                <form asp-action="Rate" enctype="multipart/form-data">
+                    <input type="hidden" name="restaurantId" value="@restaurant.Id">
+                    <button type="submit" name="rating" value="5">&#9733;</button>
+                    <button type="submit" name="rating" value="4">&#9733;</button>
+                    <button type="submit" name="rating" value="3">&#9733;</button>
+                    <button type="submit" name="rating" value="2">&#9733;</button>
+                    <button type="submit" name="rating" value="1">&#9733;</button>
+                </form>
+
+                @if (restaurant.Ratings.Count() != 0)
+                {
+                <p>Count: @restaurant.RatingsCount</p>
+                <p>Avg: @restaurant.AverageRating</p>
+                }
+
+
             </p>
             <hr />
             <p class="card-text">@restaurant.Description</p>
-            <a class="btn btn-sm btn-primary" 
-                asp-action="Menu" 
-                asp-route-restaurantId="@restaurant.Id">
+            <a class="btn btn-sm btn-primary"
+           asp-action="Menu"
+           asp-route-restaurantId="@restaurant.Id">
                 Меню
             </a>
         </div>
 
     </div>
 }
+
+
+<style>
+    form {
+        width: 100px;
+    }
+
+    button {
+        border: 0;
+        background: transparent;
+        font-size: 1.5em;
+        margin: 0;
+        padding: 0;
+        float: right;
+    }
+
+        button:hover,
+        button:hover + button,
+        button:hover + button + button,
+        button:hover + button + button + button,
+        button:hover + button + button + button + button {
+            color: orange;
+        }
+</style>
