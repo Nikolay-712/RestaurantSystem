@@ -150,8 +150,7 @@
 
             await this.ratingService.AddRateAsync(restaurantId, rating, userId, controllerName);
 
-            return View();
+            return this.RedirectToAction("Index");
         }
-
     }
 }

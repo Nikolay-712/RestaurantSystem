@@ -1,8 +1,9 @@
 ﻿@model MenuViewModel
+@using RestaurantSystem.Web.Infrastructure
 
 @{
     var message = this.TempData["order"] as string;
-
+    var userId = ClaimsPrincipalExtensions.Id(this.User);
 }
 
 @if (message != null)
@@ -24,8 +25,8 @@
     @foreach (var category in Model.Categories)
     {
         <a asp-action="Menu"
-       asp-route-restaurantId="@Model.Id"
-       asp-route-category="@category">
+            asp-route-restaurantId="@Model.Id"
+            asp-route-category="@category">
             @category
         </a>
     }
@@ -37,19 +38,38 @@
         <ul class="list-group">
             @foreach (var product in Model.Menu)
             {
+                var rating = product
+                    .Ratings
+                    .Select(x => x)
+                    .FirstOrDefault(x => x.UserId == userId);
+
                 <li class="list-group-item mb-3">
                     <div class="row">
                         <div class=col>
                             @product.Name - @product.Price лв.
+                            @if (product.Ratings.Count() != 0)
+                            {
+                                <div class="small">
+                                    <i class="fa fa-star checked"></i> реитинг: @product.AverageRating / гласували: @product.RatingsCount
+                                    <p class="text-muted">
+                                </div>
+
+                            }
 
                             <a class="btn btn-sm btn-primary float-right"
-                           asp-action="Order"
-                           asp-route-restaurantId="@Model.Id"
-                           asp-route-productId="@product.Id"
-                           asp-route-category="@Model.Category">
+                                asp-action="Order"
+                                asp-route-restaurantId="@Model.Id"
+                                asp-route-productId="@product.Id"
+                                asp-route-category="@Model.Category">
                                 <i class="fas fa-plus-circle"></i>
                             </a>
                         </div>
+
+                        @{
+                            this.ViewData["CurrentId"] = @product.Id;
+                        }
+
+                        <partial name="_RatingPartial" model=@rating view-data="ViewData" />
 
                     </div>
                     @product.Description
@@ -65,13 +85,13 @@
                 <div class="row">
                     <div class="col-md-2">
                         <a class="btn btn-sm btn-primary float-left"
-                   asp-action="ProductCount"
-                   asp-route-restaurantId="@Model.Id"
-                   asp-route-productId="@item.ProductId"
-                   asp-route-orderId="@item.OrderId"
-                   asp-route-category="@Model.Category"
-                   asp-route-count="+">
-                            <i class="fas fa-plus-circle"></i>
+                        asp-action="ProductCount"
+                        asp-route-restaurantId="@Model.Id"
+                        asp-route-productId="@item.ProductId"
+                        asp-route-orderId="@item.OrderId"
+                        asp-route-category="@Model.Category"
+                        asp-route-count="+">
+                        <i class="fas fa-plus-circle"></i>
                         </a>
                     </div>
                     <div class="col text-center">
@@ -79,13 +99,13 @@
                     </div>
                     <div class="col-md-2">
                         <a class="btn btn-sm btn-primary float-left"
-                   asp-action="ProductCount"
-                   asp-route-restaurantId="@Model.Id"
-                   asp-route-productId="@item.ProductId"
-                   asp-route-orderId="@item.OrderId"
-                   asp-route-category="@Model.Category"
-                   asp-route-count="-">
-                            <i class="fas fa-minus-circle"></i>
+                        asp-action="ProductCount"
+                        asp-route-restaurantId="@Model.Id"
+                        asp-route-productId="@item.ProductId"
+                        asp-route-orderId="@item.OrderId"
+                        asp-route-category="@Model.Category"
+                        asp-route-count="-">
+                        <i class="fas fa-minus-circle"></i>
                         </a>
                     </div>
                 </div>
@@ -95,8 +115,8 @@
             {
                 <div class="row justify-content-center">
                     <a class="btn btn-sm btn-primary float-left"
-               asp-action="SendOrder"
-               asp-route-restaurantId="@Model.Id">
+                    asp-action="SendOrder"
+                    asp-route-restaurantId="@Model.Id">
                         Поръчай
                     </a>
                 </div>

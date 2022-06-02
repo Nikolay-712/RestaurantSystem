@@ -1,7 +1,11 @@
 ﻿namespace RestaurantSystem.Web.ViewModels.Menu
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     using RestaurantSystem.Data.Models.Products;
     using RestaurantSystem.Services.Mapping;
+    using RestaurantSystem.Web.ViewModels.Ratings;
 
     public class ProductViewModel : IMapFrom<Product>
     {
@@ -16,5 +20,11 @@
         public decimal Price { get; init; }
 
         public int Weight { get; init; }
+
+        public IEnumerable<RatingViewModel> Ratings { get; init; }
+
+        public int RatingsCount => this.Ratings.Count();
+
+        public double AverageRating => (double)this.Ratings.Select(x => x.Stars).Sum() / (double)this.RatingsCount;
     }
 }

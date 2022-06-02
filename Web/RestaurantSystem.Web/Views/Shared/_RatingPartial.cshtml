@@ -1,0 +1,45 @@
+﻿@model RatingViewModel
+
+@{
+    var Id = this.ViewData["CurrentId"] as string;
+}
+
+@if (Model != null)
+{
+    <form asp-action="Rate" enctype="multipart/form-data">
+        <div class="btn-group">
+            @for (int i = 1; i < Model.Stars + 1; i++)
+            {
+                <div class="btn-group">
+                    <input type="hidden" name="restaurantId" value="@Id">
+                    <button class="btn btn-sm" type="submit" name="rating" value="@i">
+                        <i class="fa fa-star checked"></i>
+                    </button>
+                </div>
+            }
+
+            @for (int i = Model.Stars; i < 5; i++)
+            {
+                var newRating = i + 1;
+
+                <input type="hidden" name="restaurantId" value="@Id">
+                <button class="btn btn-sm" type="submit" name="rating" value="@newRating">
+                    <i class="fa fa-star unchecked"></i>
+                </button>
+            }
+        </div>
+    </form>
+}
+else
+{
+    <form asp-action="Rate" enctype="multipart/form-data">
+        <div class="btn-group">
+            <input type="hidden" name="restaurantId" value="@Id">
+            <button class="btn btn-sm" type="submit" name="rating" value="1"><i class="fa fa-star uncheked"></i></button>
+            <button class="btn btn-sm" type="submit" name="rating" value="2"><i class="fa fa-star uncheked"></i></button>
+            <button class="btn btn-sm" type="submit" name="rating" value="3"><i class="fa fa-star uncheked"></i></button>
+            <button class="btn btn-sm" type="submit" name="rating" value="4"><i class="fa fa-star uncheked"></i></button>
+            <button class="btn btn-sm" type="submit" name="rating" value="5"><i class="fa fa-star uncheked"></i></button>
+        </div>
+    </form>
+}
