@@ -1,5 +1,6 @@
 ﻿namespace RestaurantSystem.Web.ViewModels.Menu
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -25,6 +26,6 @@
 
         public int RatingsCount => this.Ratings.Count();
 
-        public double AverageRating => (double)this.Ratings.Select(x => x.Stars).Sum() / (double)this.RatingsCount;
+        public double AverageRating => Math.Round((double)this.Ratings.Select(x => x.Stars).Sum() / (double)this.RatingsCount, 2);
     }
 }

@@ -33,7 +33,10 @@
             </div>
 
             @{
-                this.ViewData["CurrentId"] = @restaurant.Id;
+                 var type = restaurant.GetType().Name;
+
+                 this.ViewData["CurrentId"] = @restaurant.Id;
+                 this.ViewData["ObjectType"] = type;
             }
 
             <partial name="_RatingPartial" model=@rating view-data="ViewData" />

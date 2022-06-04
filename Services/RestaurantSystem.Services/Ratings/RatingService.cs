@@ -5,6 +5,7 @@
 
     using RestaurantSystem.Data;
     using RestaurantSystem.Data.Models.Ratings;
+    using RestaurantSystem.Web.ViewModels.Ratings;
 
     public class RatingService : IRatingService
     {
@@ -15,18 +16,21 @@
             this.applicationDbContext = applicationDbContext;
         }
 
-        public async Task AddRateAsync(string id, int stars, string userId, string controllerName)
+        public async Task AddRateAsync(RatingInputModel ratingInput, string userId)
         {
             var existingRating = this.applicationDbContext
                 .Ratings
-                .FirstOrDefault(x => x.UserId == userId
-                    && controllerName == "Restaurants" ? x.RestaurantId == id : x.ProductId == id);
+                .Where(x => x.UserId == userId).ToList()
+                .Where(x => x.ProductId == null ?
+                    x.RestaurantId == ratingInput.ObjectId :
+                    x.ProductId == ratingInput.ObjectId)
+                .FirstOrDefault();
 
             if (existingRating != null)
             {
-                if (existingRating.Stars != stars)
+                if (existingRating.Stars != ratingInput.Rating)
                 {
-                    existingRating.Stars = stars;
+                    existingRating.Stars = ratingInput.Rating;
                     this.applicationDbContext.Update(existingRating);
                     await this.applicationDbContext.SaveChangesAsync();
                 }
@@ -35,13 +39,14 @@
             {
                 var rating = new Rating
                 {
-                    Stars = stars,
+                    Stars = ratingInput.Rating,
                     UserId = userId,
                 };
 
-                var currentId = controllerName == "Restaurants" ? rating.RestaurantId = id : rating.ProductId = id;
+                var currentId = ratingInput.ObjectType
+                    .Contains("Restaurant") ? rating.RestaurantId = ratingInput.ObjectId : rating.ProductId = ratingInput.ObjectId;
 
-                await this.applicationDbContext.AddAsync(rating);
+                await this.applicationDbContext.Ratings.AddAsync(rating);
                 await this.applicationDbContext.SaveChangesAsync();
             }
         }

@@ -2,16 +2,21 @@
 
 @{
     var Id = this.ViewData["CurrentId"] as string;
+    var type = ViewData["ObjectType"] as string;
+    var restaurantId = ViewData["RestaurantId"] as string;
+    var category = this.ViewData["Category"];
 }
 
 @if (Model != null)
 {
-    <form asp-action="Rate" enctype="multipart/form-data">
+    <form asp-action="Rate" asp-route-category="@category" enctype="multipart/form-data">
         <div class="btn-group">
             @for (int i = 1; i < Model.Stars + 1; i++)
             {
                 <div class="btn-group">
-                    <input type="hidden" name="restaurantId" value="@Id">
+                    <input type="hidden" asp-for="RatingInput.ObjectId" name="objectId" value="@Id">
+                    <input type="hidden" asp-for="RatingInput.ObjectType" name="objectType" value="@type">
+                     <input type="hidden" asp-for="RatingInput.RestaurantId" name="restaurantId" value="@restaurantId">
                     <button class="btn btn-sm" type="submit" name="rating" value="@i">
                         <i class="fa fa-star checked"></i>
                     </button>
@@ -22,7 +27,9 @@
             {
                 var newRating = i + 1;
 
-                <input type="hidden" name="restaurantId" value="@Id">
+                <input type="hidden" asp-for="RatingInput.ObjectId" name="objectId" value="@Id">
+                <input type="hidden" asp-for="RatingInput.ObjectType" name="objectType" value="@type">
+                <input type="hidden" asp-for="RatingInput.RestaurantId" name="restaurantId" value="@restaurantId">
                 <button class="btn btn-sm" type="submit" name="rating" value="@newRating">
                     <i class="fa fa-star unchecked"></i>
                 </button>
@@ -32,9 +39,11 @@
 }
 else
 {
-    <form asp-action="Rate" enctype="multipart/form-data">
+    <form asp-action="Rate" asp-route-category="@category" enctype="multipart/form-data">
         <div class="btn-group">
-            <input type="hidden" name="restaurantId" value="@Id">
+            <input type="hidden" asp-for="RatingInput.ObjectId" name="objectId" value="@Id">
+            <input type="hidden" asp-for="RatingInput.ObjectType" name="objectType" value="@type">
+            <input type="hidden" asp-for="RatingInput.RestaurantId" name="restaurantId" value="@restaurantId">
             <button class="btn btn-sm" type="submit" name="rating" value="1"><i class="fa fa-star uncheked"></i></button>
             <button class="btn btn-sm" type="submit" name="rating" value="2"><i class="fa fa-star uncheked"></i></button>
             <button class="btn btn-sm" type="submit" name="rating" value="3"><i class="fa fa-star uncheked"></i></button>

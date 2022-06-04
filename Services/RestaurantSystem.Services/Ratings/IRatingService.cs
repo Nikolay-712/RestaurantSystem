@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RestaurantSystem.Services.Ratings
+﻿namespace RestaurantSystem.Services.Ratings
 {
+    using System.Threading.Tasks;
+
+    using RestaurantSystem.Web.ViewModels.Ratings;
+
     public interface IRatingService
     {
-        Task AddRateAsync(string id, int stars, string userId, string controllerName);
+        Task AddRateAsync(RatingInputModel ratingInput, string userId);
     }
 }

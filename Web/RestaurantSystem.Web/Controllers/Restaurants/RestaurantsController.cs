@@ -10,6 +10,7 @@
     using RestaurantSystem.Services.Restaurants;
     using RestaurantSystem.Web.Infrastructure;
     using RestaurantSystem.Web.ViewModels.Orders;
+    using RestaurantSystem.Web.ViewModels.Ratings;
     using RestaurantSystem.Web.ViewModels.Restaurants;
 
     public class RestaurantsController : Controller
@@ -143,12 +144,20 @@
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Rate(string restaurantId, int rating)
+        public async Task<IActionResult> Rate(RatingInputModel ratingInputModel, string category)
         {
-            var userId = ClaimsPrincipalExtensions.Id(this.User);
-            string controllerName = this.ControllerContext.RouteData.Values["controller"].ToString();
+            if (!this.ModelState.IsValid)
+            {
+                return this.BadRequest();
+            }
 
-            await this.ratingService.AddRateAsync(restaurantId, rating, userId, controllerName);
+            var userId = ClaimsPrincipalExtensions.Id(this.User);
+            await this.ratingService.AddRateAsync(ratingInputModel, userId);
+
+            if (ratingInputModel.ObjectType.Contains("Product"))
+            {
+                return this.RedirectToAction("Menu", new { restaurantId = ratingInputModel.RestaurantId, category = category });
+            }
 
             return this.RedirectToAction("Index");
         }
