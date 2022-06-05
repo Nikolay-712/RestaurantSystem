@@ -8,8 +8,8 @@
     using RestaurantSystem.Data;
     using RestaurantSystem.Data.Models.Orders;
     using RestaurantSystem.Services.Mapping;
+    using RestaurantSystem.Services.Menu;
     using RestaurantSystem.Services.Payments;
-    using RestaurantSystem.Services.Restaurants;
     using RestaurantSystem.Services.Users;
     using RestaurantSystem.Web.ViewModels.Addresses;
     using RestaurantSystem.Web.ViewModels.Menu;
@@ -20,40 +20,26 @@
         private readonly ApplicationDbContext applicationDbContext;
         private readonly IPaymentService paymentService;
         private readonly IUserService userService;
-        private readonly IRestaurantService restaurantService;
+        private readonly IMenuService menuService;
 
         public OrderService(
             ApplicationDbContext applicationDbContext,
             IPaymentService paymentService,
             IUserService userService,
-            IRestaurantService restaurantService)
+            IMenuService menuService)
         {
             this.applicationDbContext = applicationDbContext;
             this.paymentService = paymentService;
             this.userService = userService;
-            this.restaurantService = restaurantService;
+            this.menuService = menuService;
         }
 
         public MenuViewModel GetRestaurantMenuWithUserOrder(string restaurantId, string category, string userId)
         {
-            var restaurant = this.restaurantService
-                   .AllRestaurants<MenuViewModel>()
-                   .FirstOrDefault(x => x.Id == restaurantId);
+            var menu = this.menuService.ShowRestaurantMenu(restaurantId, category, userId);
+            if (menu != null) { menu.Order = this.GetProductsInOrder(userId, restaurantId); }
 
-            if (restaurant == null)
-            {
-                return restaurant;
-            }
-
-            var categories = restaurant.Menu.Select(x => x.Category);
-            var products = category != null ? restaurant.Menu.Where(x => x.Category == category) : restaurant.Menu;
-
-            restaurant.Categories = categories;
-            restaurant.Order = this.GetProductsInOrder(userId, restaurantId);
-            restaurant.Menu = products;
-            restaurant.Category = category;
-
-            return restaurant;
+            return menu;
         }
 
         public async Task<string> MakeOrderAsync(string restaurantId, string userId)

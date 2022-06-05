@@ -16,7 +16,7 @@
 
         public decimal DeliveryPeice { get; init; }
 
-        public IEnumerable<string> Categories { get; set; }
+        public HashSet<string> Categories { get; set; }
 
         public string Category { get; set; }
     }

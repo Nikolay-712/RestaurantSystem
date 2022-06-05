@@ -22,6 +22,8 @@
 
         public int Weight { get; init; }
 
+        public bool InStock { get; set; }
+
         public IEnumerable<RatingViewModel> Ratings { get; init; }
 
         public int RatingsCount => this.Ratings.Count();

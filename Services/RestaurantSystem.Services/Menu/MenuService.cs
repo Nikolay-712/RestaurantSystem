@@ -70,6 +70,42 @@
             return menu;
         }
 
+        public RestaurantSystem.Web.ViewModels.Menu.MenuViewModel ShowRestaurantMenu
+            (string restaurantId, string category, string userId)
+        {
+            var menu = this.applicationDbContext
+                .Restaurants
+                .To<RestaurantSystem.Web.ViewModels.Menu.MenuViewModel>()
+                .FirstOrDefault(x => x.Id == restaurantId);
+
+            if (menu == null)
+            {
+                return menu;
+            }
+
+            var categories = menu.Menu.Where(x => x.InStock).Select(x => x.Category);
+            var products = category != null ? menu.Menu.Where(x => x.Category == category) : menu.Menu;
+
+            if (category == "MostRated")
+            {
+                 products = menu
+                    .Menu
+                    .OrderByDescending(x => x.AverageRating)
+                    .ToList().GetRange(0, 5);
+            }
+
+            menu.Categories = categories.ToHashSet<string>();
+            menu.Menu = products.Where(x => x.InStock);
+            menu.Category = category;
+
+            return menu;
+        }
+
+        public void AddProductToDalyMenuAsync()
+        {
+
+        }
+
         public async Task EditProductAsync(bool inStock, string productId, EditProductViewModel editProduct)
         {
             if (editProduct.Id == null)

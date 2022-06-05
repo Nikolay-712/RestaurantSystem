@@ -13,6 +13,8 @@
 
         MenuViewModel GetMenu(string restaurantId, string category, int page);
 
+        RestaurantSystem.Web.ViewModels.Menu.MenuViewModel ShowRestaurantMenu(string restaurantId, string category, string userId);
+
         Task EditProductAsync(bool inStock, string productId, EditProductViewModel editProduct);
     }
 }
