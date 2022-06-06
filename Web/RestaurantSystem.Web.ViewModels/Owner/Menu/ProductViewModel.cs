@@ -20,5 +20,7 @@
         public string RestaurantId { get; init; }
 
         public bool InStock { get; init; }
+
+        public bool InDalyMenu { get; init; }
     }
 }

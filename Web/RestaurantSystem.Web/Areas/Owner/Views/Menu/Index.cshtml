@@ -7,12 +7,13 @@
 
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Index"
+        <form asp-action="Index" 
               asp-route-restaurantId="@Model.RestaurantId"
               onclick="this.form.submit()" enctype="multipart/form-data">
             <div class="form-group">
                 <select onchange="this.form.submit()" asp-for="Category" class="form-control alert-heading">
                     <option value="">Изберете всички</option>
+                    <option value="LunchMenu">Обедно меню</option>
                     @foreach (var category in categories)
                     {
                         <option value="@category">@category</option>
@@ -48,7 +49,7 @@
                     <th scope="col">Категория</th>
                     <th scope="col">Наличност</th>
                     <th scope="col"></th>
-
+                    <th scope="col">Обедно меню</th>
                 </tr>
             </thead>
             <tbody>
@@ -87,6 +88,22 @@
                            asp-route-page="@Model.PageNumber">
                                 <i class="fas fa-tools"></i>
                             </a>
+                        </td>
+                        <td>
+                            <label class="custom-control custom-checkbox">
+                                <form asp-action="DailyMenu"
+                                  asp-route-inDailyMenu="@product.InDalyMenu"
+                                  asp-route-productId="@product.Id"
+                                  asp-route-restaurantId="@product.RestaurantId"
+                                  asp-route-page="@Model.PageNumber"
+                                  enctype="multipart/form-data">
+                                    <input type="checkbox" class="custom-control-input"
+                                       value="@product.InDalyMenu"
+                                       checked="@product.InDalyMenu"
+                                       onclick="this.form.submit();" />
+                                    <span class="custom-control-indicator"></span>
+                                </form>
+                            </label>
                         </td>
                     </tr>
                 }

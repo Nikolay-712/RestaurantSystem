@@ -85,6 +85,26 @@
             return this.NotFound();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> DailyMenu
+            (bool inDailyMenu, string productId, int page, string restaurantId)
+        {
+            if (this.CheckRestaurant(restaurantId))
+            {
+                var result = await this.menuService
+                     .AddProductToDailyMenuAsync(productId, inDailyMenu);
+
+                if (!result)
+                {
+                    return this.NotFound();
+                }
+
+                return this.RedirectToAction("Index", "Menu", new { restaurantId = restaurantId, page = page });
+            }
+
+            return this.NotFound();
+        }
+
         private bool CheckRestaurant(string restaurantId)
         {
             var restaurant = this.restaurantService.GetRestaurant(restaurantId);

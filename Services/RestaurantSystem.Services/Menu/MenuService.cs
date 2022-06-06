@@ -52,7 +52,14 @@
 
             if (category != null)
             {
-                products = products.Where(x => x.Category == category);
+                if (category == "LunchMenu")
+                {
+                    products = products.Where(x => x.InDalyMenu);
+                }
+                else
+                {
+                    products = products.Where(x => x.Category == category);
+                }
             }
 
             var menu = new MenuViewModel
@@ -88,10 +95,15 @@
 
             if (category == "MostRated")
             {
-                 products = menu
-                    .Menu
-                    .OrderByDescending(x => x.AverageRating)
-                    .ToList().GetRange(0, 5);
+                products = menu
+                   .Menu
+                   .OrderByDescending(x => x.AverageRating)
+                   .ToList().GetRange(0, 5);
+            }
+
+            if (category == "LunchMenu")
+            {
+                products = menu.Menu.Where(x => x.InDalyMenu == true);
             }
 
             menu.Categories = categories.ToHashSet<string>();
@@ -101,9 +113,23 @@
             return menu;
         }
 
-        public void AddProductToDalyMenuAsync()
+        public async Task<bool> AddProductToDailyMenuAsync(string productId, bool inDalyMenu)
         {
+            var product = this.applicationDbContext
+                .Products
+                .FirstOrDefault(x => x.Id == productId);
 
+            if (product != null)
+            {
+                product.InDalyMenu = inDalyMenu is false ? true : false;
+
+                this.applicationDbContext.Update(product);
+                await this.applicationDbContext.SaveChangesAsync();
+
+                return true;
+            }
+
+            return false;
         }
 
         public async Task EditProductAsync(bool inStock, string productId, EditProductViewModel editProduct)

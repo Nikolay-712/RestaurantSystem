@@ -15,6 +15,8 @@
 
         RestaurantSystem.Web.ViewModels.Menu.MenuViewModel ShowRestaurantMenu(string restaurantId, string category, string userId);
 
+        Task<bool> AddProductToDailyMenuAsync(string productId, bool inDalyMenu);
+
         Task EditProductAsync(bool inStock, string productId, EditProductViewModel editProduct);
     }
 }

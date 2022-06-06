@@ -22,7 +22,9 @@
 
         public int Weight { get; init; }
 
-        public bool InStock { get; set; }
+        public bool InStock { get; init; }
+
+        public bool InDalyMenu { get; init; }
 
         public IEnumerable<RatingViewModel> Ratings { get; init; }
 

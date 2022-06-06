@@ -31,6 +31,8 @@
 
         public bool InStock { get; set; }
 
+        public bool InDalyMenu { get; set; }
+
         public string RestaurantId { get; set; }
 
         public ICollection<OrderProducts> OrderProducts { get; set; }

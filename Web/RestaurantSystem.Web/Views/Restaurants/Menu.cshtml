@@ -22,6 +22,17 @@
         Всички
     </a>
 
+
+    @if (Model.Menu.Any(x => x.InDalyMenu))
+    {
+        <a asp-action="Menu"
+       asp-route-restaurantId="@Model.Id"
+       asp-route-category="LunchMenu">
+            Обедно меню
+        </a>
+    }
+
+
     @if (Model.Menu.Count() > 5)
     {
         <a asp-action="Menu"
@@ -29,7 +40,6 @@
        asp-route-category="MostRated">
             Топ предложения
         </a>
-
     }
     @foreach (var category in Model.Categories)
     {
@@ -44,13 +54,23 @@
 
 @{
     var categoryProducts = Model.Category is "MostRated" ? "Топ предложения" : Model.Category;
-}
 
-<div class=row>
+}
+<div class="row">
     <div class="col-md-8">
-        <h4 class="d-flex justify-content-between mb-2 align-items-center mb-4-5">
-            <span class="text-muted"><strong>Меню - @categoryProducts</strong></span>
-        </h4>
+        @if (Model.Category == "LunchMenu")
+        {
+            <h4 class="d-flex justify-content-between mb-2 align-items-center mb-4-5">
+                <span class="text-muted"><strong>Обедно Меню</strong></span>
+            </h4>
+        }
+        else
+        {
+            <h4 class="d-flex justify-content-between mb-2 align-items-center mb-4-5">
+                <span class="text-muted"><strong>Меню @categoryProducts</strong></span>
+            </h4>
+        }
+
         <ul class="list-group">
             @foreach (var product in Model.Menu)
             {
@@ -70,7 +90,7 @@
                                 <i class="fas fa-plus-circle"></i>
                             </a>
                             @product.Name - @product.Price лв.
-                             <hr />
+                            <hr />
                             @if (product.Ratings.Count() != 0)
                             {
                                 <div class="small">
@@ -101,10 +121,9 @@
                                 @product.Description
                             </div>
                         </div>
-
                     </div>
-
                 </li>
+
             }
         </ul>
     </div>
@@ -171,4 +190,5 @@
             }
         </div>
     }
+
 </div>
