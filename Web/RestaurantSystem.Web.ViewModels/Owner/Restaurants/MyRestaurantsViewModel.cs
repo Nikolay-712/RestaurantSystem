@@ -7,7 +7,7 @@
 
     public class MyRestaurantsViewModel : IMapFrom<Restaurant>
     {
-        public DateTime CreatedOn { get; set; }
+        public DateTime CreatedOn { get; init; }
 
         public string Id { get; init; }
 
@@ -20,5 +20,7 @@
         public DateTime OpenIn { get; init; }
 
         public DateTime CloseIn { get; init; }
+
+        public string CoverImageUrl { get; init; }
     }
 }

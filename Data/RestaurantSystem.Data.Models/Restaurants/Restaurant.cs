@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-
+    using RestaurantSystem.Data.Models.Images;
     using RestaurantSystem.Data.Models.Orders;
     using RestaurantSystem.Data.Models.Products;
     using RestaurantSystem.Data.Models.Ratings;
@@ -37,6 +37,8 @@
         public string OwnerId { get; set; }
 
         public ApplicationUser Owner { get; set; }
+
+        public string CoverImageUrl { get; set; }
 
         public IEnumerable<Product> Menu { get; set; }
 

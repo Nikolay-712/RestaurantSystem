@@ -7,6 +7,7 @@
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
     using RestaurantSystem.Data.Models.Contacts;
+    using RestaurantSystem.Data.Models.Images;
     using RestaurantSystem.Data.Models.Orders;
     using RestaurantSystem.Data.Models.Payments;
     using RestaurantSystem.Data.Models.Products;
@@ -41,6 +42,8 @@
         public DbSet<Address> Addresses { get; set; }
 
         public DbSet<Rating> Ratings { get; set; }
+
+        public DbSet<Image> Images { get; set; }
 
         public override int SaveChanges() => this.SaveChanges(true);
 

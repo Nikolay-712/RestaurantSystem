@@ -8,16 +8,19 @@
 
     using RestaurantSystem.Data;
     using RestaurantSystem.Data.Models.Restaurants;
+    using RestaurantSystem.Services.Images;
     using RestaurantSystem.Services.Mapping;
     using RestaurantSystem.Web.ViewModels.Owner.Restaurants;
 
     public class RestaurantService : IRestaurantService
     {
         private readonly ApplicationDbContext applicationDbContext;
+        private readonly IImageService imageService;
 
-        public RestaurantService(ApplicationDbContext applicationDbContext)
+        public RestaurantService(ApplicationDbContext applicationDbContext, IImageService imageService)
         {
             this.applicationDbContext = applicationDbContext;
+            this.imageService = imageService;
         }
 
         public async Task RegisterRestaurantAsync(string ownerId, RegisterRestaurantInputModel restaurantInputModel)
@@ -32,6 +35,14 @@
                 CloseIn = DateTime.Parse(restaurantInputModel.CloseIn, CultureInfo.InvariantCulture),
                 OwnerId = ownerId,
             };
+
+            if (restaurantInputModel.CoverImage != null)
+            {
+                var imageUrl = await this.imageService
+                    .UploadFileAsync(restaurant.Id, restaurantInputModel.CoverImage);
+
+                restaurant.CoverImageUrl = imageUrl;
+            }
 
             await this.applicationDbContext.Restaurants.AddAsync(restaurant);
             await this.applicationDbContext.SaveChangesAsync();

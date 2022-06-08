@@ -25,6 +25,10 @@
                 <span asp-validation-for="CloseIn" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <input asp-for="CoverImage" class="form-control  alert-heading" type="file"  placeholder="Добавете снимка">
+                <span asp-validation-for="CoverImage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Добави ресторант" class="btn btn-primary" />
             </div>
         </form>

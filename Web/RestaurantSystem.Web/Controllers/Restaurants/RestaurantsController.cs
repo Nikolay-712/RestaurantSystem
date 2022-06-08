@@ -32,7 +32,8 @@
         public IActionResult Index()
         {
             var restaurants = this.restaurantService
-                .AllRestaurants<RestaurantInfoViewModel>();
+                .AllRestaurants<RestaurantInfoViewModel>()
+                .OrderByDescending(x => x.AverageRating);
 
             return this.View(restaurants);
         }

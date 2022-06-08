@@ -3,6 +3,7 @@
     using System;
     using System.ComponentModel.DataAnnotations;
 
+    using Microsoft.AspNetCore.Http;
     using RestaurantSystem.Web.ViewModels.CustomValidation;
 
     using static RestaurantSystem.Common.GlobalConstants;
@@ -32,5 +33,9 @@
         [Required(ErrorMessage = RequiredFieldMessage)]
         [TimeFormat]
         public string CloseIn { get; set; }
+
+        [ImageValidation]
+        public IFormFile CoverImage { get; set; }
+
     }
 }

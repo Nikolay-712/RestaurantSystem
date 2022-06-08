@@ -22,6 +22,8 @@
 
         public DateTime CloseIn { get; init; }
 
+        public string CoverImageUrl { get; init; }
+
         public IEnumerable<RatingViewModel> Ratings { get; init; }
 
         public int RatingsCount => this.Ratings.Count();

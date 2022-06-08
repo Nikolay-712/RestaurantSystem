@@ -4,54 +4,64 @@
 @{
     var userId = ClaimsPrincipalExtensions.Id(this.User);
 }
-
-@foreach (var restaurant in Model)
-{
-    var rating = restaurant
+<div class="row">
+    @foreach (var restaurant in Model)
+    {
+        var rating = restaurant
         .Ratings
         .Select(x => x)
         .FirstOrDefault(x => x.UserId == userId);
 
-    <div class="card w-75 mb-3">
-        <div class="card-body">
-            <h5 class="card-title">
-                @restaurant.Name
-            </h5>
-            @if (restaurant.Ratings.Count() != 0)
-            {
-                <div class="small">
-                    <i class="fa fa-star checked"></i> реитинг: @restaurant.AverageRating / гласували: @restaurant.RatingsCount
-                    <p class="text-muted">
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <h5 class="card-title">
+                                @restaurant.Name
+                            </h5>
+                            @if (restaurant.Ratings.Count() != 0)
+                            {
+                                <div class="small">
+                                    <i class="fa fa-star checked"></i> реитинг: @restaurant.AverageRating / гласували: @restaurant.RatingsCount
+                                    <p class="text-muted">
+                                </div>
+                            }
+
+                            <div class="text-muted small mb-2">
+                                Работно време
+                                @restaurant.OpenIn.ToString("HH:mm") - @restaurant.CloseIn.ToString("HH:mm") ч.
+                                Доставка @restaurant.DeliveryPeice лв.
+                            </div>
+
+                            <p class="card-text">@restaurant.Description</p>
+                            @{
+                                var type = restaurant.GetType().Name;
+
+                                this.ViewData["CurrentId"] = @restaurant.Id;
+                                this.ViewData["ObjectType"] = type;
+                            }
+
+                            <partial name="_RatingPartial" model=@rating view-data="ViewData" />
+                        </div>
+
+                        <div class="col">
+                            <img src="@restaurant.CoverImageUrl" class="img-thumbnail" alt="Responsive image">
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <a class="btn btn-sm btn-primary"
+                   asp-action="Menu"
+                   asp-route-restaurantId="@restaurant.Id">
+                        Меню
+                    </a>
                 </div>
 
-            }
-
-            <div class="text-muted small">
-                Работно време
-                @restaurant.OpenIn.ToString("HH:mm") - @restaurant.CloseIn.ToString("HH:mm") ч.
-                Доставка @restaurant.DeliveryPeice лв.
             </div>
-
-            @{
-                 var type = restaurant.GetType().Name;
-
-                 this.ViewData["CurrentId"] = @restaurant.Id;
-                 this.ViewData["ObjectType"] = type;
-            }
-
-            <partial name="_RatingPartial" model=@rating view-data="ViewData" />
-
-            <hr />
-            <p class="card-text">@restaurant.Description</p>
-            <a class="btn btn-sm btn-primary"
-                asp-action="Menu"
-                asp-route-restaurantId="@restaurant.Id">
-                Меню
-            </a>
         </div>
-
-    </div>
-}
-
+    }
+</div>
 
 
