@@ -29,6 +29,11 @@
                 <span asp-validation-for="CloseIn" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <input asp-for="CoverImage" class="form-control  alert-heading" type="file">
+                 <small>Mоже да промените снимката или да добавите нова</small>
+                <span asp-validation-for="CoverImage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Промени ресторант" class="btn btn-primary" />
             </div>
         </form>

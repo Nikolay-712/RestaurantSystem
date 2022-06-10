@@ -58,6 +58,14 @@
             restaurant.OpenIn = DateTime.Parse(restaurantEditModel.OpenIn, CultureInfo.InvariantCulture);
             restaurant.CloseIn = DateTime.Parse(restaurantEditModel.CloseIn, CultureInfo.InvariantCulture);
 
+            if (restaurantEditModel.CoverImage != null)
+            {
+                var imageUrl = await this.imageService
+                    .UploadFileAsync(restaurant.Id, restaurantEditModel.CoverImage);
+
+                restaurant.CoverImageUrl = imageUrl;
+            }
+
             this.applicationDbContext.Update(restaurant);
             await this.applicationDbContext.SaveChangesAsync();
         }
