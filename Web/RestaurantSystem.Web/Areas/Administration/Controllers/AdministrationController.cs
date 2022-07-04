@@ -4,7 +4,7 @@
     using Microsoft.AspNetCore.Mvc;
     using RestaurantSystem.Common;
 
-    //[Authorize(Roles = GlobalConstants.AdministratorRoleName)]
+    [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
     [Area("Administration")]
     public class AdministrationController : Controller
     {

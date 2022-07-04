@@ -39,6 +39,9 @@
                 var text = appruve == "true" ? Message.АpproveOwnerMessage : Message.RefuseOwnerMessage;
                 var messageStatus = appruve == "true" ? MessageStatus.Approved : MessageStatus.Canceled;
 
+                await this.userManager
+                    .AddToRoleAsync(await this.GetUserByIdAsync(message.UserId), OwnerRoleName);
+
                 await this.FinishedOwnerApplication(messageId, text, sender, message, messageStatus);
                 return true;
             }

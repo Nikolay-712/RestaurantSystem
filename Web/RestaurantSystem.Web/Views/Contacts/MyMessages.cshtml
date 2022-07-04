@@ -4,13 +4,43 @@
 
     @foreach (var message in Model)
     {
+        var sendBefore = DateTime.UtcNow - message.CreatedOn;
+
         <a asp-action="ReadMessage" asp-route-messageId="@message.Id" class="list-group-item list-group-item-action flex-column align-items-start mb-3 ">
             <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">@message.MessageType</h5>
-                <small>3 days ago</small>
+                <h5 class="mb-1">
+                    @message.MessageType
+                    @if (message.NewAdminRepliesCount > 0 && message.IsOpen == false)
+                    {
+                        <small>
+                            <span style="font-size: 1em; color: green;">
+                                <i class="fas fa-circle"></i>
+                            </span>
+                        </small>
+                    }
+                </h5>
+
+                @if (sendBefore.Days == 0)
+                {
+                    <small>днес</small>
+                }
+                else
+                {
+                    <small>преди @sendBefore.Days дни</small>
+                }
+
+
             </div>
             <p class="mb-1">@message.Message</p>
-            <small>Donec id elit non mi porta.нов отговор @message.NewAdminRepliesCount </small>
+            @if (message.IsOpen == true)
+            {
+                <small>дискусията е затворена от администратора </small>
+            }
+            else
+            {
+                <small>нов отговор @message.NewAdminRepliesCount </small>
+            }
+
         </a>
     }
 </div>

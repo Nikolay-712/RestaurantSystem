@@ -90,6 +90,7 @@
 
                 var services = serviceScope.ServiceProvider;
                 Infrastructure.ApplicationBuilderExtensions.SeedApplicationRole(services, OwnerRoleName);
+                Infrastructure.ApplicationBuilderExtensions.SeedApplicationRole(services, AdministratorRoleName);
             }
 
             if (env.IsDevelopment())

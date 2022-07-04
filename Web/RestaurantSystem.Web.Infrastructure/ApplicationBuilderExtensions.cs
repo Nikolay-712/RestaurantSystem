@@ -21,16 +21,16 @@
                     var role = new ApplicationRole { Name = roleName };
                     await roleManager.CreateAsync(role);
 
-                    string adminEmail = $"{roleName}@abv.bg";
-                    string adminPassword = $"{roleName}123";
+                    string roleEmail = $"{roleName.ToLower()}@abv.bg";
+                    string rolePassword = $"{roleName.ToLower()}123";
 
                     var user = new ApplicationUser
                     {
-                        Email = adminEmail,
-                        UserName = adminEmail,
+                        Email = roleEmail,
+                        UserName = roleEmail,
                     };
 
-                    await userManager.CreateAsync(user, adminPassword);
+                    await userManager.CreateAsync(user, rolePassword);
                     await userManager.AddToRoleAsync(user, roleName);
                 }
             }).GetAwaiter().GetResult();
