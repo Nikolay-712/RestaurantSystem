@@ -1,14 +1,28 @@
 ﻿namespace RestaurantSystem.Web.Controllers
 {
     using System.Diagnostics;
+    using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
+    using RestaurantSystem.Services.Seeder;
     using RestaurantSystem.Web.ViewModels;
 
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly IDataSeeder dataSeeder;
+
+        public HomeController(IDataSeeder dataSeeder)
         {
+            this.dataSeeder = dataSeeder;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            if (!this.dataSeeder.CheckDataBase())
+            {
+                await this.dataSeeder.AddRestaurantAsync();
+            }
+
             return this.View();
         }
 
