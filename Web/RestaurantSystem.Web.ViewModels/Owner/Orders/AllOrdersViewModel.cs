@@ -8,6 +8,8 @@
 
     public class AllOrdersViewModel : PagingViewModel
     {
+        public string RestaurantId { get; set; }
+
         public IEnumerable<OrderViewModel> AllOrders { get; init; }
 
         public IEnumerable<OrderViewModel> PendingOrders { get; init; }

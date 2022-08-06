@@ -15,6 +15,8 @@
 
         Order GetUserOrder(string userId, string restaurantId);
 
+        IEnumerable<UserOrdersViewModel> GetUserOrders(string userId);
+
         void CompleteOrder(string orderId);
 
         Task AddProductAsync(string orderId, string productId, string userId, string restaurantId);

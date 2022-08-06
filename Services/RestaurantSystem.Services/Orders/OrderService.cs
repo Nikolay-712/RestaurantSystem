@@ -128,6 +128,17 @@
             return order;
         }
 
+        public IEnumerable<UserOrdersViewModel> GetUserOrders(string userId)
+        {
+            var orders = this.applicationDbContext
+                .Orders
+                .Where(x => x.UserId == userId)
+                .OrderByDescending(x => x.CreatedOn)
+                .To<UserOrdersViewModel>();
+
+            return orders;
+        }
+
         public void CompleteOrder(string orderId)
         {
             var order = this.applicationDbContext

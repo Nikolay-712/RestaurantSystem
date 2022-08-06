@@ -27,6 +27,7 @@
 
             var allOrders = new AllOrdersViewModel
             {
+                RestaurantId = restaurantId,
                 ItemsPerPage = OrdersPerpage,
                 ItemsCount = allOrdersForRestaurant.Count(),
                 PageNumber = page,
