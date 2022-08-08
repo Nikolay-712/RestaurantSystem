@@ -17,6 +17,7 @@
 
     public class OrderService : IOrderService
     {
+        private const int OrdersPerPage = 3;
         private readonly ApplicationDbContext applicationDbContext;
         private readonly IPaymentService paymentService;
         private readonly IUserService userService;
@@ -128,15 +129,31 @@
             return order;
         }
 
-        public IEnumerable<UserOrdersViewModel> GetUserOrders(string userId)
+        public AllUserOrdersViewModel GetUserOrders(string userId, int page)
         {
             var orders = this.applicationDbContext
                 .Orders
                 .Where(x => x.UserId == userId)
                 .OrderByDescending(x => x.CreatedOn)
-                .To<UserOrdersViewModel>();
+                .To<UserOrdersViewModel>()
+                .ToList();
 
-            return orders;
+            var allUserOrders = new AllUserOrdersViewModel
+            {
+                AllOrders = orders,
+                ItemsPerPage = OrdersPerPage,
+                ItemsCount = orders
+                    .Where(x => x.Status == OrderStatus.Sent).Count(),
+                PageNumber = page,
+                OrdersInProgres = orders
+                    .Where(x => x.Status != OrderStatus.Sent),
+                SentOrders = orders
+                    .Where(x => x.Status == OrderStatus.Sent)
+                    .Skip((page - 1) * OrdersPerPage)
+                    .Take(OrdersPerPage),
+            };
+
+            return allUserOrders;
         }
 
         public void CompleteOrder(string orderId)

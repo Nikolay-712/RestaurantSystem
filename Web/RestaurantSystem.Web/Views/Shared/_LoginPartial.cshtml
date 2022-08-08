@@ -1,14 +1,25 @@
 ﻿@using RestaurantSystem.Common
 @using RestaurantSystem.Data.Models
 @using Microsoft.AspNetCore.Identity
+@using RestaurantSystem.Web.Infrastructure
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@inject RestaurantSystem.Services.Orders.IOrderService orderService
 
 <ul class="navbar-nav">
     @if (this.SignInManager.IsSignedIn(this.User))
     {
+        var userId =  ClaimsPrincipalExtensions.Id(this.User);
+
+        var ordersCount = orderService
+            .GetUserOrders(userId, 1).OrdersInProgres.Count();
+
+
         <li class="nav-item">
             <a class="nav-link text-dark" asp-controller="Contacts" asp-action="MyMessages" title="Manage"><i class="fas fa-comment-alt"></i></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Users" asp-action="MyOrders" title="Orders"><i class="fas fa-cart-arrow-down"> (@ordersCount)</i></a>
         </li>
 
         <li class="nav-item">

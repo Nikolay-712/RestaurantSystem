@@ -15,7 +15,7 @@
 
         Order GetUserOrder(string userId, string restaurantId);
 
-        IEnumerable<UserOrdersViewModel> GetUserOrders(string userId);
+        AllUserOrdersViewModel GetUserOrders(string userId, int page);
 
         void CompleteOrder(string orderId);
 

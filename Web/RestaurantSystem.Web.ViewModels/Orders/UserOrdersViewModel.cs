@@ -1,15 +1,14 @@
 ﻿namespace RestaurantSystem.Web.ViewModels.Orders
 {
-    using AutoMapper;
-    using RestaurantSystem.Data.Models.Orders;
-    using RestaurantSystem.Services.Mapping;
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
-    public class UserOrdersViewModel : IMapFrom<Order>, IHaveCustomMappings
+    using AutoMapper;
+    using RestaurantSystem.Data.Models.Orders;
+    using RestaurantSystem.Services.Mapping;
+
+    public class UserOrdersViewModel : PagingViewModel, IMapFrom<Order>, IHaveCustomMappings
     {
         public string Id { get; init; }
 

@@ -15,10 +15,10 @@
             this.orderService = orderService;
         }
 
-        public IActionResult MyOrders()
+        public IActionResult MyOrders(int page = 1)
         {
             var userId = ClaimsPrincipalExtensions.Id(this.User);
-            var orders = this.orderService.GetUserOrders(userId);
+            var orders = this.orderService.GetUserOrders(userId, page);
 
             return this.View(orders);
         }
