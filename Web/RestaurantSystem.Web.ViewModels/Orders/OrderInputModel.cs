@@ -1,9 +1,11 @@
 ﻿namespace RestaurantSystem.Web.ViewModels.Orders
 {
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     using RestaurantSystem.Web.ViewModels.Addresses;
     using RestaurantSystem.Web.ViewModels.CustomValidation;
+    using RestaurantSystem.Web.ViewModels.Menu;
     using RestaurantSystem.Web.ViewModels.Payments;
 
     using static RestaurantSystem.Common.GlobalConstants;
@@ -12,7 +14,7 @@
     {
         public string OrderId { get; set; }
 
-        public string RestaurantId { get; init; }
+        public string RestaurantId { get; set; }
 
         [Required(ErrorMessage = RequiredFieldMessage)]
         [PhoneValidation]
@@ -23,5 +25,7 @@
         public AddresInputModel Addres { get; set; }
 
         public bool SaveAddress { get; init; }
+
+        public IEnumerable<ProductViewModel> Addons { get; set; }
     }
 }

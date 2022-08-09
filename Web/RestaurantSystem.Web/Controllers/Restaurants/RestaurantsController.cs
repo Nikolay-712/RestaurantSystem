@@ -77,6 +77,17 @@
         }
 
         [Authorize]
+        public async Task<IActionResult> Addons(string restaurantId, string productId)
+        {
+            var userId = ClaimsPrincipalExtensions.Id(this.User);
+            var currentOrder = this.orderService.GetUserOrder(userId, restaurantId);
+
+            await this.orderService.AddProductAsync(currentOrder.Id, productId, userId, restaurantId);
+
+            return this.RedirectToAction("SendOrder", new { restaurantId = restaurantId });
+        }
+
+        [Authorize]
         public async Task<IActionResult> ProductCount(string restaurantId, string productId, string category, string orderId, string count)
         {
             if (!this.orderService.ExstingRestaurant(restaurantId)
@@ -158,6 +169,11 @@
             if (ratingInputModel.ObjectType.Contains("Product"))
             {
                 return this.RedirectToAction("Menu", new { restaurantId = ratingInputModel.RestaurantId, category = category });
+            }
+
+            if (ratingInputModel.ObjectType.Contains("Order"))
+            {
+                return this.RedirectToAction("SendOrder", new { restaurantId = ratingInputModel.RestaurantId });
             }
 
             return this.RedirectToAction("Index");

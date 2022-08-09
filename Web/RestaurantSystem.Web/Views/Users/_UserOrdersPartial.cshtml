@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<UserOrdersViewModel>
+@using RestaurantSystem.Data.Models.Orders;
 
 @foreach (var order in Model)
 {
@@ -6,7 +7,7 @@
         <div class="card">
             <div class="row d-flex justify-content-between px-3 top">
                 <div class="d-flex">
-                    @if (order.Status == RestaurantSystem.Data.Models.Orders.OrderStatus.InProgre)
+                    @if (order.Status == OrderStatus.InProgres)
                     {
                         <h5>
                             Номер
@@ -31,7 +32,16 @@
                     <p class="mb-0">Дата: <span>@order.CreatedOn.ToString("dd.MM.yy - HH:mm")</span></p>
                     <p>
                         Статус:
-                        <span class="font-weight-bold">@order.Status</span>
+                        @{
+                            var status = string.Empty;
+
+                            if (order.Status == OrderStatus.InProgres) { status = "В прогрес"; }
+                            if (order.Status == OrderStatus.Sent) { status = "Изпратена"; }
+                            if (order.Status == OrderStatus.Canceled) { status = "Отказана"; }
+                            if (order.Status == OrderStatus.Pending) { status = "Обработва се"; }
+
+                        }
+                        <span class="font-weight-bold">@status</span>
                     </p>
                 </div>
             </div>
@@ -39,21 +49,21 @@
         <div class="row d-flex justify-content-center">
                 <div class="col-12">
                     <ul id="progressbar" class="text-center">
-                        @if (order.Status == RestaurantSystem.Data.Models.Orders.OrderStatus.InProgre)
+                        @if (order.Status == OrderStatus.InProgres)
                         {
                             <li class="active step0"></li>
                             <li class="active step0"></li>
                             <li class="step0"></li>
                             <li class="step0"></li>
                         }
-                        @if (order.Status == RestaurantSystem.Data.Models.Orders.OrderStatus.Pending)
+                        @if (order.Status == OrderStatus.Pending)
                         {
                             <li class="active step0"></li>
                             <li class="active step0"></li>
                             <li class="active step0"></li>
                             <li class="step0"></li>
                         }
-                        @if (order.Status == RestaurantSystem.Data.Models.Orders.OrderStatus.Sent)
+                        @if (order.Status == OrderStatus.Sent)
                         {
                             <li class="active step0"></li>
                             <li class="active step0"></li>

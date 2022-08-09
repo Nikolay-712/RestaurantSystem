@@ -7,6 +7,7 @@
 
     using RestaurantSystem.Data;
     using RestaurantSystem.Data.Models.Orders;
+    using RestaurantSystem.Data.Models.Products;
     using RestaurantSystem.Services.Mapping;
     using RestaurantSystem.Services.Menu;
     using RestaurantSystem.Services.Payments;
@@ -59,7 +60,7 @@
             var order = new Order
             {
                 CreatedOn = DateTime.Now,
-                Status = OrderStatus.InProgre,
+                Status = OrderStatus.InProgres,
                 PaymentId = "NotSelected",
                 ShippingAddress = shippingAddress,
                 PhoneNumber = phoneNumber,
@@ -124,7 +125,7 @@
                 .Orders
                 .Where(x => x.UserId == userId)
                 .Where(x => x.ResaurantId == restaurantId)
-                .FirstOrDefault(x => x.Status == OrderStatus.InProgre);
+                .FirstOrDefault(x => x.Status == OrderStatus.InProgres);
 
             return order;
         }
@@ -136,6 +137,7 @@
                 .Where(x => x.UserId == userId)
                 .OrderByDescending(x => x.CreatedOn)
                 .To<UserOrdersViewModel>()
+                .Where(x => x.OrderProducts.Count() != 0)
                 .ToList();
 
             var allUserOrders = new AllUserOrdersViewModel
@@ -172,7 +174,7 @@
         {
             var order = this.applicationDbContext
                  .Orders
-                 .Where(x => x.Status == OrderStatus.InProgre)
+                 .Where(x => x.Status == OrderStatus.InProgres)
                  .Where(x => x.ResaurantId == restaurantId)
                  .Where(x => x.UserId == userId)
                  .To<OrderViewModel>().FirstOrDefault();
@@ -215,10 +217,34 @@
 
             var orderViewModel = this.GetProductsInOrder(userId, restaurantId);
 
+            inputOrder.RestaurantId = restaurantId;
             inputOrder.OrderId = order.Id;
             inputOrder.PhoneNumber = order.PhoneNumber;
             inputOrder.TotaalSum = orderViewModel.TotaalSum;
             inputOrder.OrderProducts = orderViewModel.OrderProducts;
+
+            var categories = inputOrder.OrderProducts.Select(x => x.Category).ToList();
+            var category = string.Empty;
+
+            if (!categories.Contains(Category.Десерт.ToString()))
+            {
+                category = Category.Десерт.ToString();
+            }
+
+            if (!categories.Contains(Category.Салата.ToString()) && category == string.Empty)
+            {
+                category = Category.Салата.ToString();
+            }
+
+            if (category == string.Empty)
+            {
+                category = Category.Други.ToString();
+            }
+
+            inputOrder.Addons = this.menuService
+                .GetProducts<ProductViewModel>(restaurantId)
+                .Where(x => x.Category == category)
+                .OrderByDescending(x => x.AverageRating).Take(3);
 
             return inputOrder;
         }
