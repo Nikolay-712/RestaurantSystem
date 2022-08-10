@@ -22,5 +22,12 @@
 
             return this.View(orders);
         }
+
+        public IActionResult MyReservations()
+        {
+            var userId = ClaimsPrincipalExtensions.Id(this.User);
+
+            return this.View();
+        }
     }
 }

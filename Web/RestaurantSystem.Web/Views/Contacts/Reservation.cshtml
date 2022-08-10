@@ -9,8 +9,8 @@
     };
 }
 
-<div class="row">
-    <div class="col-md-4">
+<div class="row offset-lg-3">
+    <div class="col-md-8">
         <form asp-action="Reservation">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -65,19 +65,16 @@
                     <input type="submit" value="Резервираи" class="btn btn-primary" />
                 </div>
 
-                @if (user.PhoneNumber == null)
-                {
-                    <div class="form-check">
-                        <div class="col-4">
-                            <div class="form-group form-check">
-                                <input asp-for="SavePhone" type="checkbox" class="form-check-input" id="exampleCheck1">
-                                <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                            </div>
+                <div class="form-check">
+                    <div class="col-4">
+                        <div class="form-group form-check">
+                            <input asp-for="SavePhone" type="checkbox" class="form-check-input" id="exampleCheck1">
+                            <label class="form-check-label" for="exampleCheck1">Запази телефона</label>
                         </div>
                     </div>
-                }
+                </div>
+
             </div>
         </form>
     </div>
 </div>
-

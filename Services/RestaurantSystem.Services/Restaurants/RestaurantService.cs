@@ -93,22 +93,5 @@
                 .Restaurants
                 .FirstOrDefault(x => x.Id == restaurantid);
         }
-
-        public RestaurantDetailsViewModel Details(string ownerId, string restaurantId)
-        {
-            var details = this.MyRestaurants<RestaurantDetailsViewModel>(ownerId)
-                .FirstOrDefault(x => x.Id == restaurantId);
-
-            if (details == null)
-            {
-                return details;
-            }
-
-            details.Rservations
-                .Where(x => x.RestaurantId == restaurantId)
-                .OrderByDescending(x => x.CreatedOn);
-
-            return details;
-        }
     }
 }

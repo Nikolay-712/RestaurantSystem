@@ -30,7 +30,7 @@
         [Range(minimum: 1, maximum: 100, ErrorMessage = CountErrorMessage)]
         public int PeopleCount { get; init; }
 
-        //[Required]
+        [Required]
         public string RestaurantId { get; init; }
 
         public bool SavePhone { get; init; }

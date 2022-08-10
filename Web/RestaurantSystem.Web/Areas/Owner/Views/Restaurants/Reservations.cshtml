@@ -1,12 +1,8 @@
 ﻿@using RestaurantSystem.Data.Models.Reservations
-@model RestaurantDetailsViewModel
+@model AllReservationsViewModel
 
-<h1>@Model.Name</h1>
-<hr />
-
-
-<div class="card mb-5 mb-2">
-    <div class="card-header">Резервацй (10)</div>
+<div class="card1 mb-5 mb-2">
+    <div class="card-header">Чакащи резервацй (@Model.PendingReservationsCount)</div>
     <div class="card-block p-0">
         <table id="myTable" class="table table-bordered table-sm m-0 text-center">
 
@@ -57,11 +53,11 @@
                         {
                             <td>
                                 <form asp-action="ChangeStatus"
-                              onclick="this.form.submit()" enctype="multipart/form-data">
+                                    onclick="this.form.submit()" enctype="multipart/form-data">
                                     <div class="form-group">
                                         <select asp-for="@reservation.ReservationStatus"
                                         onchange="this.form.submit()" class="form-control">
-                                            <option value=""></option>
+                                            <option value="">потварди/откажи</option>
                                             <option value="@ReservationStatus.Approved">Потвърди</option>
                                             <option value="@ReservationStatus.Canceled">Откажи</option>
                                         </select>
@@ -73,8 +69,6 @@
                                 </form>
                             </td>
                         }
-
-
                     </tr>
                 }
             </tbody>

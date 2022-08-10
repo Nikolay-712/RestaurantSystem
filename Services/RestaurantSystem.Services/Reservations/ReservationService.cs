@@ -7,25 +7,22 @@
 
     using RestaurantSystem.Data;
     using RestaurantSystem.Data.Models.Reservations;
-    using RestaurantSystem.Services.Contacts;
     using RestaurantSystem.Services.Mapping;
     using RestaurantSystem.Services.Users;
+    using RestaurantSystem.Web.ViewModels.Owner.Reservations;
     using RestaurantSystem.Web.ViewModels.Reservations;
 
     public class ReservationService : IReservationService
     {
         private readonly ApplicationDbContext applicationDbContext;
         private readonly IUserService userService;
-        private readonly IContactService contactService;
 
         public ReservationService(
             ApplicationDbContext applicationDbContext,
-            IUserService userService,
-            IContactService contactService)
+            IUserService userService)
         {
             this.applicationDbContext = applicationDbContext;
             this.userService = userService;
-            this.contactService = contactService;
         }
 
         public async Task<bool> SendReservationAsync(ReservationInputViewModel reservationInput, string userId)
@@ -53,11 +50,6 @@
                 await this.userService.SavePhoneNumberAsync(userId, reservationInput.PhoneNumber);
             }
 
-            if (result == 1)
-            {
-                //this.contactService.SendMessageAsync();
-            }
-
             return result == 1 ? true : false;
         }
 
@@ -65,6 +57,22 @@
         {
             return this.applicationDbContext
                  .Reservations.To<T>();
+        }
+
+        public AllReservationsViewModel GetAllReservations(string restaurantId)
+        {
+            var reservations = this.applicationDbContext.Reservations
+                .Where(x => x.RestaurantId == restaurantId)
+                .To<ReservationViewModel>().ToList();
+
+            var allReservations = new AllReservationsViewModel
+            {
+                Rservations = reservations
+                .OrderByDescending(x => x.ReservationStatus)
+                .ThenBy(x => x.Date),
+            };
+
+            return allReservations;
         }
 
         public async Task<bool> ChangeReservationStatusAsync(string resarvationId, string status)

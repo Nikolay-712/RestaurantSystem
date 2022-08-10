@@ -4,9 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-    using RestaurantSystem.Data.Models.Users;
     using RestaurantSystem.Services.Reservations;
     using RestaurantSystem.Services.Restaurants;
     using RestaurantSystem.Web.Infrastructure;
@@ -16,16 +14,12 @@
     public class RestaurantsController : OwnerController
     {
         private readonly IRestaurantService restaurantService;
-        private readonly UserManager<ApplicationUser> userManager;
         private readonly IReservationService reservationService;
 
         public RestaurantsController(
-            IRestaurantService restaurantService,
-            UserManager<ApplicationUser> userManager,
-            IReservationService reservationService)
+            IRestaurantService restaurantService, IReservationService reservationService)
         {
             this.restaurantService = restaurantService;
-            this.userManager = userManager;
             this.reservationService = reservationService;
         }
 
@@ -99,20 +93,15 @@
                 return this.NotFound();
             }
 
-            return this.RedirectToAction("Details", new { restaurantId = reservation.RestaurantId });
+            return this.RedirectToAction("Reservations", new { restaurantId = reservation.RestaurantId });
         }
 
         public IActionResult Reservations(string restaurantId)
         {
-            var details = this.restaurantService
-                .Details(ClaimsPrincipalExtensions.Id(this.User), restaurantId);
+            var reservations = this.reservationService
+                .GetAllReservations(restaurantId);
 
-            if (details == null)
-            {
-                return this.NotFound();
-            }
-
-            return this.View(details);
+            return this.View(reservations);
         }
     }
 }
