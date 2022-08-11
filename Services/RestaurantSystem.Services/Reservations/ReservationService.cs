@@ -8,21 +8,27 @@
     using RestaurantSystem.Data;
     using RestaurantSystem.Data.Models.Reservations;
     using RestaurantSystem.Services.Mapping;
+    using RestaurantSystem.Services.Notifications;
     using RestaurantSystem.Services.Users;
     using RestaurantSystem.Web.ViewModels.Owner.Reservations;
     using RestaurantSystem.Web.ViewModels.Reservations;
+
+    using static RestaurantSystem.Common.GlobalConstants;
 
     public class ReservationService : IReservationService
     {
         private readonly ApplicationDbContext applicationDbContext;
         private readonly IUserService userService;
+        private readonly INotificationService notificationService;
 
         public ReservationService(
             ApplicationDbContext applicationDbContext,
-            IUserService userService)
+            IUserService userService,
+            INotificationService notificationService)
         {
             this.applicationDbContext = applicationDbContext;
             this.userService = userService;
+            this.notificationService = notificationService;
         }
 
         public async Task<bool> SendReservationAsync(ReservationInputViewModel reservationInput, string userId)
@@ -48,6 +54,12 @@
             if (result == 1 && reservationInput.SavePhone)
             {
                 await this.userService.SavePhoneNumberAsync(userId, reservationInput.PhoneNumber);
+            }
+
+            if (result == 1)
+            {
+                await this.notificationService.SendNotificationAsync(
+                 userId, string.Format(Message.ReservationNotificationMessage, Message.ReservationPending), "Reservation", reservation.Id);
             }
 
             return result == 1 ? true : false;
@@ -93,6 +105,26 @@
 
             this.applicationDbContext.Update(resarvation);
             var result = await this.applicationDbContext.SaveChangesAsync();
+
+            if (result == 1)
+            {
+                var message = string.Empty;
+
+                if (parseResult == ReservationStatus.Canceled)
+                {
+                    message = string
+                        .Format(Message.ReservationNotificationMessage, Message.ReservationCanceled);
+                }
+
+                if (parseResult == ReservationStatus.Approved)
+                {
+                    message = string
+                        .Format(Message.ReservationApproved, resarvation.Date.ToString("dd.MM.yy HH:mm"));
+                }
+
+                await this.notificationService.ChanageNotificationMessageAsync(
+                    resarvation.UserId, message, "Reservation", resarvation.Id);
+            }
 
             return result == 1 ? true : false;
         }

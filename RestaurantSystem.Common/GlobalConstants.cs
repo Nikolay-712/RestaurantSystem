@@ -30,6 +30,11 @@
             public const string CloseDiscussionMessage = "Дискусията е затворена,надявам се да сме били полезни";
             public const string АpproveOwnerMessage = "Изпращам инструкци за използване";
             public const string RefuseOwnerMessage = "Вие не сте одобрен";
+
+            public const string ReservationNotificationMessage = "Статус - {0}";
+            public const string ReservationPending = "Обработва се";
+            public const string ReservationApproved = "Очакваме ви на {0}";
+            public const string ReservationCanceled = "Отказана";
         }
     }
 }
