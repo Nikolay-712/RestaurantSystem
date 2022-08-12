@@ -17,7 +17,7 @@
 
         AllUserOrdersViewModel GetUserOrders(string userId, int page);
 
-        void CompleteOrder(string orderId);
+        Task CompleteOrderAsync(string orderId);
 
         Task AddProductAsync(string orderId, string productId, string userId, string restaurantId);
 

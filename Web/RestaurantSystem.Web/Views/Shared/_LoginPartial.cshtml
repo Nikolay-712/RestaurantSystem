@@ -9,12 +9,14 @@
 <ul class="navbar-nav">
     @if (this.SignInManager.IsSignedIn(this.User))
     {
-        var userId =  ClaimsPrincipalExtensions.Id(this.User);
+        var userId = ClaimsPrincipalExtensions.Id(this.User);
 
         var ordersCount = orderService
-            .GetUserOrders(userId, 1).OrdersInProgres.Count();
+        .GetUserOrders(userId, 1).OrdersInProgres.Count();
 
-
+        <li class="nav-item">
+            <partial name="_NotificationsPartial" model=Model />
+        </li>
         <li class="nav-item">
             <a class="nav-link text-dark" asp-controller="Contacts" asp-action="MyMessages" title="Manage"><i class="fas fa-comment-alt"></i></a>
         </li>

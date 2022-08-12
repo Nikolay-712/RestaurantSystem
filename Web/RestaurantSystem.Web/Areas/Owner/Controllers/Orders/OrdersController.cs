@@ -1,6 +1,7 @@
 ﻿namespace RestaurantSystem.Web.Areas.Owner.Controllers.Orders
 {
     using System.Linq;
+    using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
     using RestaurantSystem.Services.Orders;
@@ -8,8 +9,8 @@
 
     public class OrdersController : OwnerController
     {
-        private readonly IOrderService orderService;
         private const int OrdersPerpage = 5;
+        private readonly IOrderService orderService;
 
         public OrdersController(IOrderService orderService)
         {
@@ -23,7 +24,6 @@
                     .Where(x => x.ResaurantId == restaurantId)
                     .Where(x => x.Status != "Pending")
                     .Where(x => x.Status != "InProgre");
-
 
             var allOrders = new AllOrdersViewModel
             {
@@ -56,9 +56,9 @@
         }
 
         [HttpPost]
-        public IActionResult SendOrder(string orderId, string restaurantId)
+        public async Task<IActionResult> SendOrder(string orderId, string restaurantId)
         {
-            this.orderService.CompleteOrder(orderId);
+            await this.orderService.CompleteOrderAsync(orderId);
 
             return this.RedirectToAction("Index", new { restaurantId = restaurantId });
         }

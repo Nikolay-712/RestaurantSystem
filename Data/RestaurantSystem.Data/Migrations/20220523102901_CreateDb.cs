@@ -1,7 +1,9 @@
 ﻿namespace RestaurantSystem.Data.Migrations
 {
     using System;
+
     using Microsoft.EntityFrameworkCore.Migrations;
+
     public partial class CreateDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -14,7 +16,7 @@
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Town = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ShippingAddress = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    UseId = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    UseId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -31,7 +33,7 @@
                     DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -60,7 +62,7 @@
                     TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
                     LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -80,7 +82,7 @@
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -103,7 +105,7 @@
                     Message = table.Column<string>(type: "nvarchar(700)", maxLength: 700, nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    IsOpen = table.Column<bool>(type: "bit", nullable: false)
+                    IsOpen = table.Column<bool>(type: "bit", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -123,7 +125,7 @@
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -143,7 +145,7 @@
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -161,7 +163,7 @@
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -187,7 +189,7 @@
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -211,7 +213,7 @@
                     DeliveryPeice = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     OpenIn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CloseIn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -233,7 +235,7 @@
                     Text = table.Column<string>(type: "nvarchar(700)", maxLength: 700, nullable: false),
                     MessageId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Sender = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsRead = table.Column<bool>(type: "bit", nullable: false)
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -257,7 +259,7 @@
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
                     PaymentId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ShippingAddress = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ShippingAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -288,7 +290,7 @@
                     Price = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     Weight = table.Column<int>(type: "int", nullable: false),
                     InStock = table.Column<bool>(type: "bit", nullable: false),
-                    RestaurantId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    RestaurantId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -312,7 +314,7 @@
                     PeopleCount = table.Column<int>(type: "int", nullable: false),
                     ReservationStatus = table.Column<int>(type: "int", nullable: false),
                     RestaurantId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -338,7 +340,7 @@
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PaymentType = table.Column<int>(type: "int", nullable: false),
                     IsSuccessful = table.Column<bool>(type: "bit", nullable: false),
-                    OrderId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    OrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -357,7 +359,7 @@
                 {
                     OrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProductId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Count = table.Column<int>(type: "int", nullable: false)
+                    Count = table.Column<int>(type: "int", nullable: false),
                 },
                 constraints: table =>
                 {

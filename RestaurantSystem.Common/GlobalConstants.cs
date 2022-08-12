@@ -35,6 +35,8 @@
             public const string ReservationPending = "Обработва се";
             public const string ReservationApproved = "Очакваме ви на {0}";
             public const string ReservationCanceled = "Отказана";
+
+            public const string SentOrder = "Поръчка номер - #{0} е изпратена";
         }
     }
 }

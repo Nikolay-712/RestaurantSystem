@@ -10,11 +10,14 @@
     using RestaurantSystem.Data.Models.Products;
     using RestaurantSystem.Services.Mapping;
     using RestaurantSystem.Services.Menu;
+    using RestaurantSystem.Services.Notifications;
     using RestaurantSystem.Services.Payments;
     using RestaurantSystem.Services.Users;
     using RestaurantSystem.Web.ViewModels.Addresses;
     using RestaurantSystem.Web.ViewModels.Menu;
     using RestaurantSystem.Web.ViewModels.Orders;
+
+    using static RestaurantSystem.Common.GlobalConstants;
 
     public class OrderService : IOrderService
     {
@@ -23,17 +26,20 @@
         private readonly IPaymentService paymentService;
         private readonly IUserService userService;
         private readonly IMenuService menuService;
+        private readonly INotificationService notificationService;
 
         public OrderService(
             ApplicationDbContext applicationDbContext,
             IPaymentService paymentService,
             IUserService userService,
-            IMenuService menuService)
+            IMenuService menuService,
+            INotificationService notificationService)
         {
             this.applicationDbContext = applicationDbContext;
             this.paymentService = paymentService;
             this.userService = userService;
             this.menuService = menuService;
+            this.notificationService = notificationService;
         }
 
         public MenuViewModel GetRestaurantMenuWithUserOrder(string restaurantId, string category, string userId)
@@ -158,16 +164,19 @@
             return allUserOrders;
         }
 
-        public void CompleteOrder(string orderId)
+        public async Task CompleteOrderAsync(string orderId)
         {
             var order = this.applicationDbContext
-                .Orders.
-                FirstOrDefault(x => x.Id == orderId);
+                .Orders
+                .FirstOrDefault(x => x.Id == orderId);
 
             order.Status = OrderStatus.Sent;
 
             this.applicationDbContext.Update(order);
-            this.applicationDbContext.SaveChanges();
+            await this.applicationDbContext.SaveChangesAsync();
+
+            await this.notificationService
+                  .SendNotificationAsync(order.UserId, string.Format(Message.SentOrder, order.Id.Substring(0, 4)), "Order", order.Id);
         }
 
         public OrderViewModel GetProductsInOrder(string userId, string restaurantId)
