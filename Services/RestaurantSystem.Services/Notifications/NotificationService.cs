@@ -71,9 +71,21 @@
                 .Notifications
                 .Where(x => x.UserId == userId)
                 .To<NotificationViewModel>()
-                .ToList();
+                .ToList().OrderByDescending(x => x.CreatedOn);
 
             return notifications;
+        }
+
+        public void ChangeNotificationStatus(string notificationId)
+        {
+            var notification = this.applicationDbContext
+                .Notifications
+                .FirstOrDefault(x => x.Id == notificationId);
+
+            notification.IsSeen = true;
+
+            this.applicationDbContext.Notifications.Update(notification);
+            this.applicationDbContext.SaveChanges();
         }
     }
 }

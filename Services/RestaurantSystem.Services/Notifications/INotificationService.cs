@@ -14,5 +14,7 @@
              string userId, string message, string targetService, string targetId);
 
         IEnumerable<NotificationViewModel> ShowUserNotifications(string userId);
+
+        void ChangeNotificationStatus(string notificationId);
     }
 }
