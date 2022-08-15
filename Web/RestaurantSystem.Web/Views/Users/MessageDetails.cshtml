@@ -1,0 +1,7 @@
+﻿@model AppMessageViewModel
+
+<a asp-controller="Contacts" asp-action="MyMessages" class="btn btn-primary btn btn-sm pull-right rounded mb-3">
+    <i class="fas fa-arrow-alt-circle-left"></i> Всички
+</a>
+
+<partial name="_ReadMessagePartial" model=Model />

@@ -4,11 +4,11 @@
 
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using RestaurantSystem.Services.Contacts;
     using RestaurantSystem.Services.Notifications;
     using RestaurantSystem.Services.Orders;
     using RestaurantSystem.Services.Reservations;
     using RestaurantSystem.Web.Infrastructure;
-    using RestaurantSystem.Services.Mapping;
     using RestaurantSystem.Web.ViewModels.Reservations;
 
     [Authorize]
@@ -17,15 +17,18 @@
         private readonly IOrderService orderService;
         private readonly IReservationService reservationService;
         private readonly INotificationService notificationService;
+        private readonly IContactService contactService;
 
         public UsersController(
-            IOrderService orderService, 
+            IOrderService orderService,
             IReservationService reservationService,
-            INotificationService notificationService)
+            INotificationService notificationService,
+            IContactService contactService)
         {
             this.orderService = orderService;
             this.reservationService = reservationService;
             this.notificationService = notificationService;
+            this.contactService = contactService;
         }
 
         public IActionResult MyOrders(int page = 1)
@@ -57,6 +60,14 @@
 
             this.notificationService.ChangeNotificationStatus(notificationId);
             return this.View(reservation);
+        }
+
+        public IActionResult MessageDetails(string targetId, string notificationId)
+        {
+            var message = this.contactService.ReadMessage(targetId);
+
+            this.notificationService.ChangeNotificationStatus(notificationId);
+            return this.View(message);
         }
     }
 }

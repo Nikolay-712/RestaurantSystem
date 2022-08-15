@@ -176,7 +176,7 @@
             await this.applicationDbContext.SaveChangesAsync();
 
             await this.notificationService
-                  .SendNotificationAsync(order.UserId, string.Format(Message.SentOrder, order.Id.Substring(0, 4)), "Order", order.Id);
+                  .SendNotificationAsync(order.UserId, string.Format(Message.SentOrder, order.Id.Substring(0, 4)), order.Id, "Order");
         }
 
         public OrderViewModel GetProductsInOrder(string userId, string restaurantId)

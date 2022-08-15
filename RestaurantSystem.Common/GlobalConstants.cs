@@ -37,6 +37,7 @@
             public const string ReservationCanceled = "Отказана";
 
             public const string SentOrder = "Поръчка номер - #{0} е изпратена";
+            public const string NewMessage = "Ново саобщение";
         }
     }
 }

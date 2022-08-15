@@ -15,18 +15,18 @@
         var ordersCount = orderService
         .GetUserOrders(userId, 1).OrdersInProgres.Count();
 
-        <li class="nav-item">
+        <li class="nav-item mr-2">
             <partial name="_NotificationsPartial" model=@notificationService.ShowUserNotifications(userId) />
         </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-controller="Contacts" asp-action="MyMessages" title="Manage"><i class="fas fa-comment-alt"></i></a>
+        <li class="nav-item mr-2">
+            <a asp-area="" asp-controller="Users" asp-action="MyOrders" title="Orders" type="button" class="btn btn-sm btn-primary">
+                <i class="fas fa-cart-arrow-down"> (@ordersCount)</i>
+            </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-controller="Users" asp-action="MyOrders" title="Orders"><i class="fas fa-cart-arrow-down"> (@ordersCount)</i></a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage"><i class="fas fa-user-cog"></i></a>
+        <li class="nav-item mr-2">
+            <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" type="button" class="btn btn-sm btn-primary">
+                <i class="fas fa-user-cog"></i>
+            </a>
         </li>
         if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))
         {
@@ -36,7 +36,10 @@
         }
         <li class="nav-item">
             <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@this.Url.Action("Index", "Home", new { area = string.Empty })">
-                <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+                <button type="submit" class="btn btn-sm btn-primary">
+                    <i class="fas fa-sign-out-alt"></i>
+
+        </button>
             </form>
         </li>
     }

@@ -20,31 +20,41 @@
         }
 
         public async Task SendNotificationAsync(
-            string userId, string message, string targetService, string targetId)
+            string userId, string message, string targetId, string notificationType)
         {
-            var notification = new Notification
-            {
-                CreatedOn = DateTime.Now,
-                UserId = userId,
-                Message = message,
-            };
+            var existingNotification =
+                this.applicationDbContext
+                .Notifications
+                .Where(x => x.UserId == userId)
+                .FirstOrDefault(x => x.TargetId == targetId);
 
-            if (targetService == "Reservation")
+            if (existingNotification != null)
             {
-                notification.ReservationId = targetId;
+                existingNotification.CreatedOn = DateTime.Now;
+                existingNotification.Message = message;
+                existingNotification.IsSeen = false;
+
+                this.applicationDbContext.Update(existingNotification);
+                await this.applicationDbContext.SaveChangesAsync();
             }
-
-            if (targetService == "Order")
+            else
             {
-                notification.OrderId = targetId;
-            }
+                var notification = new Notification
+                {
+                    CreatedOn = DateTime.Now,
+                    UserId = userId,
+                    TargetId = targetId,
+                    Message = message,
+                    NotificationType = notificationType,
+                };
 
-            await this.applicationDbContext.Notifications.AddAsync(notification);
-            await this.applicationDbContext.SaveChangesAsync();
+                await this.applicationDbContext.Notifications.AddAsync(notification);
+                await this.applicationDbContext.SaveChangesAsync();
+            }
         }
 
         public async Task ChanageNotificationMessageAsync(
-            string userId, string message, string targetService, string targetId)
+            string userId, string message, string targetId)
         {
             var notifications = this.applicationDbContext
                 .Notifications
@@ -52,14 +62,12 @@
 
             Notification notification = null;
 
-            if (targetService == "Reservation")
-            {
-                notification = notifications
-                    .FirstOrDefault(x => x.ReservationId == targetId);
-            }
+            notification = notifications
+                .FirstOrDefault(x => x.TargetId == targetId);
 
             notification.Message = message;
-            notification.CreatedOn = DateTime.UtcNow;
+            notification.CreatedOn = DateTime.Now;
+
 
             this.applicationDbContext.Update(notification);
             await this.applicationDbContext.SaveChangesAsync();

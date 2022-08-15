@@ -8,10 +8,10 @@
     public interface INotificationService
     {
         Task SendNotificationAsync(
-            string userId, string message, string targetService, string targetId);
+            string userId, string message, string targetId,string notificationType);
 
         Task ChanageNotificationMessageAsync(
-             string userId, string message, string targetService, string targetId);
+             string userId, string message, string targetId);
 
         IEnumerable<NotificationViewModel> ShowUserNotifications(string userId);
 

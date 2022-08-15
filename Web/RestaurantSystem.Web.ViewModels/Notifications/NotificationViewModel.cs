@@ -15,9 +15,9 @@
 
         public string Message { get; init; }
 
-        public string OrderId { get; init; }
+        public string TargetId { get; init; }
 
-        public string ReservationId { get; init; }
+        public string NotificationType { get; init; }
 
         public bool IsSeen { get; set; }
     }

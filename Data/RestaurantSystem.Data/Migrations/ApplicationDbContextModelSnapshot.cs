@@ -233,10 +233,11 @@ namespace RestaurantSystem.Data.Migrations
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("OrderId")
+                    b.Property<string>("NotificationType")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ReservationId")
+                    b.Property<string>("TargetId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")

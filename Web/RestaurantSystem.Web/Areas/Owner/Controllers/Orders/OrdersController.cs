@@ -23,7 +23,7 @@
                     .GetAllOrders<OrderViewModel>()
                     .Where(x => x.ResaurantId == restaurantId)
                     .Where(x => x.Status != "Pending")
-                    .Where(x => x.Status != "InProgre");
+                    .Where(x => x.Status != "InProgres");
 
             var allOrders = new AllOrdersViewModel
             {
@@ -34,7 +34,8 @@
                 AllOrders = allOrdersForRestaurant
                     .OrderByDescending(x => x.CreatedOn)
                     .Skip((page - 1) * OrdersPerpage)
-                    .Take(OrdersPerpage).ToList(),
+                    .Take(OrdersPerpage)
+                    .ToList(),
                 PendingOrders = this.orderService
                     .GetAllOrders<OrderViewModel>()
                     .Where(x => x.ResaurantId == restaurantId)

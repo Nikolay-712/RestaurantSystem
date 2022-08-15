@@ -7,6 +7,7 @@
     using RestaurantSystem.Data;
     using RestaurantSystem.Data.Models.Contacts;
     using RestaurantSystem.Services.Mapping;
+    using RestaurantSystem.Services.Notifications;
     using RestaurantSystem.Web.ViewModels.Contacts;
 
     using static RestaurantSystem.Common.GlobalConstants;
@@ -15,10 +16,14 @@
     {
         private const int MessagesPerPage = 15;
         private readonly ApplicationDbContext applicationDbContext;
+        private readonly INotificationService notificationService;
 
-        public ContactService(ApplicationDbContext applicationDbContext)
+        public ContactService(
+            ApplicationDbContext applicationDbContext,
+            INotificationService notificationService)
         {
             this.applicationDbContext = applicationDbContext;
+            this.notificationService = notificationService;
         }
 
         public async Task SendMessageAsync(MessageInputVewModel messageInput, string userId)
@@ -87,6 +92,9 @@
                 {
                     message.Status = MessageStatus.Answered;
                     this.applicationDbContext.AppMessages.Update(message);
+
+                    await this.notificationService
+                        .SendNotificationAsync(message.UserId, Message.NewMessage, message.Id, "Message");
                 }
 
                 await this.applicationDbContext.SaveChangesAsync();
@@ -132,6 +140,9 @@
 
             this.applicationDbContext.AppMessages.Update(message);
             await this.applicationDbContext.SaveChangesAsync();
+
+            await this.notificationService
+                .SendNotificationAsync(message.UserId, Message.NewMessage, message.Id, "Message");
         }
 
         private async Task UpdateLastReplies(string sender, string messageId)

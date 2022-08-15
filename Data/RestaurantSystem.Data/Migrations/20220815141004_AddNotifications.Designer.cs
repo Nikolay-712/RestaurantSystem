@@ -12,7 +12,7 @@ using RestaurantSystem.Data;
 namespace RestaurantSystem.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220811071731_AddNotifications")]
+    [Migration("20220815141004_AddNotifications")]
     partial class AddNotifications
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -235,10 +235,11 @@ namespace RestaurantSystem.Data.Migrations
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("OrderId")
+                    b.Property<string>("NotificationType")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ReservationId")
+                    b.Property<string>("TargetId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
@@ -248,7 +249,7 @@ namespace RestaurantSystem.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notification");
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("RestaurantSystem.Data.Models.Orders.Order", b =>

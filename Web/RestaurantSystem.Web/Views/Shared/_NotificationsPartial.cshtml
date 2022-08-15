@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<NotificationViewModel>
 
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal">
     <i class="fas fa-bell"></i>
 </button>
 <!-- Modal -->
@@ -20,26 +20,30 @@
                     @foreach (var notification in Model)
                     {
                         var sendBefore = DateTime.UtcNow - notification.CreatedOn;
-                        var action = string.Empty;
-                        var targetId = string.Empty;
+                        var actionName = string.Empty;
 
-                        if(notification.OrderId != null)
+                        if (notification.NotificationType == "Order")
                         {
-                            action = "OrderDetails";
-                            targetId = notification.OrderId;
+                            actionName = "OrderDetails";
+
                         }
-                        if(notification.ReservationId != null)
+                        if (notification.NotificationType == "Reservation")
                         {
-                            action = "ReservationDetails";
-                            targetId = notification.ReservationId;
+                            actionName = "ReservationDetails";
+
+                        }
+                        if (notification.NotificationType == "Message")
+                        {
+                            actionName = "MessageDetails";
+
                         }
 
-                        <a 
-                            asp-controller="Users" 
-                            asp-action="@action" 
-                            asp-route-targetId="@targetId" 
-                            asp-route-notificationId="@notification.Id" 
-                            class="list-group-item list-group-item-action flex-column align-items-start mb-3 ">
+                        <a asp-area=""
+                       asp-controller="Users"
+                       asp-action="@actionName"
+                       asp-route-targetId="@notification.TargetId"
+                       asp-route-notificationId="@notification.Id"
+                       class="list-group-item list-group-item-action flex-column align-items-start mb-3 ">
                             <div class="d-flex w-100 justify-content-between">
                                 <h7 class="mb-1">
                                     @if (!notification.IsSeen)
@@ -50,9 +54,9 @@
                                             </span>
                                         </small>
                                     }
-                                    
+
                                     @notification.CreatedOn.ToString("dd.MM.yy - HH:mm")
-                                    
+
                                 </h7>
 
                                 @if (sendBefore.Days == 0)
@@ -67,14 +71,12 @@
 
                             </div>
                             <p class="mb-1">@notification.Message</p>
-                            
+
                         </a>
                     }
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
             </div>
         </div>
     </div>

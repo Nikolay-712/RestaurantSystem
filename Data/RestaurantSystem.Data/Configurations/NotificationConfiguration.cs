@@ -18,6 +18,10 @@
                 .HasMaxLength(50);
 
             notification
+                .Property(x => x.TargetId)
+                .IsRequired();
+
+            notification
                 .HasOne(x => x.User)
                 .WithMany(x => x.Notifications)
                 .HasForeignKey(x => x.UserId);

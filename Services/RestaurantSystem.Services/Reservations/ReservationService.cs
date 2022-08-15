@@ -59,7 +59,7 @@
             if (result == 1)
             {
                 await this.notificationService.SendNotificationAsync(
-                 userId, string.Format(Message.ReservationNotificationMessage, Message.ReservationPending), "Reservation", reservation.Id);
+                 userId, string.Format(Message.ReservationNotificationMessage, Message.ReservationPending), reservation.Id, "Reservation");
             }
 
             return result == 1 ? true : false;
@@ -123,7 +123,7 @@
                 }
 
                 await this.notificationService.ChanageNotificationMessageAsync(
-                    resarvation.UserId, message, "Reservation", resarvation.Id);
+                    resarvation.UserId, message, resarvation.Id);
             }
 
             return result == 1 ? true : false;
