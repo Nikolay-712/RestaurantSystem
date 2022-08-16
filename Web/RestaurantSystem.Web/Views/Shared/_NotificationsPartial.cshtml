@@ -1,9 +1,18 @@
 ﻿@model IEnumerable<NotificationViewModel>
 
-<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal">
+
+<button type="button" class="btn btn-sm btn-primary position-relative" data-toggle="modal" data-target="#exampleModal">
     <i class="fas fa-bell"></i>
+    @{
+        var newNotifications = Model.Select(x => x).Where(x => x.IsSeen == false).Count();
+    }
+
+    @if (newNotifications > 0)
+    {
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">@newNotifications</span>
+    }
+
 </button>
-<!-- Modal -->
 
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

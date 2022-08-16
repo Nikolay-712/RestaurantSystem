@@ -15,6 +15,6 @@
 
         IEnumerable<NotificationViewModel> ShowUserNotifications(string userId);
 
-        void ChangeNotificationStatus(string notificationId);
+        bool ChangeNotificationStatus(string notificationId);
     }
 }

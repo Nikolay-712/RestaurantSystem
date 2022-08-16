@@ -24,6 +24,7 @@
     using RestaurantSystem.Services.Reservations;
     using RestaurantSystem.Services.Restaurants;
     using RestaurantSystem.Services.Seeder;
+    using RestaurantSystem.Services.Statistics;
     using RestaurantSystem.Services.Users;
     using RestaurantSystem.Web.Hubs;
     using RestaurantSystem.Web.ViewModels;
@@ -79,6 +80,7 @@
             services.AddTransient<IImageService, ImageService>();
             services.AddTransient<IDataSeeder, DataSeeder>();
             services.AddTransient<INotificationService, NotificationService>();
+            services.AddTransient<IStatisticService, StatisticService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -18,9 +18,13 @@
         <li class="nav-item mr-2">
             <partial name="_NotificationsPartial" model=@notificationService.ShowUserNotifications(userId) />
         </li>
-        <li class="nav-item mr-2">
-            <a asp-area="" asp-controller="Users" asp-action="MyOrders" title="Orders" type="button" class="btn btn-sm btn-primary">
-                <i class="fas fa-cart-arrow-down"> (@ordersCount)</i>
+        <li class="nav-item  mr-2">
+            <a asp-area="" asp-controller="Users" asp-action="MyOrders" type="button" class="btn btn-sm btn-primary position-relative">
+                <i class="fas fa-cart-arrow-down"></i>
+                @if(ordersCount > 0)
+                {
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">@ordersCount</span>
+                }
             </a>
         </li>
         <li class="nav-item mr-2">
@@ -39,7 +43,7 @@
                 <button type="submit" class="btn btn-sm btn-primary">
                     <i class="fas fa-sign-out-alt"></i>
 
-        </button>
+                </button>
             </form>
         </li>
     }
@@ -53,3 +57,4 @@
         </li>
     }
 </ul>
+

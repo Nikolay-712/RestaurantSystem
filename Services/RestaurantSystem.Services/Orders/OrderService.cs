@@ -253,7 +253,9 @@
             inputOrder.Addons = this.menuService
                 .GetProducts<ProductViewModel>(restaurantId)
                 .Where(x => x.Category == category)
-                .OrderByDescending(x => x.AverageRating).Take(3);
+                .OrderByDescending(x => x.AverageRating)
+                .ToList()
+                .Take(3);
 
             return inputOrder;
         }

@@ -4,6 +4,7 @@
 
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using RestaurantSystem.Data.Models.Orders;
     using RestaurantSystem.Services.Contacts;
     using RestaurantSystem.Services.Notifications;
     using RestaurantSystem.Services.Orders;
@@ -47,7 +48,12 @@
                 .AllOrders
                 .FirstOrDefault(x => x.Id == targetId);
 
-            this.notificationService.ChangeNotificationStatus(notificationId);
+            var status = this.notificationService.ChangeNotificationStatus(notificationId);
+
+            if (order == null || !status)
+            {
+                return this.NotFound();
+            }
 
             return this.View(order);
         }
@@ -58,7 +64,13 @@
                 .AllResarvations<UserReservationViewModel>()
                 .FirstOrDefault(x => x.Id == targetId);
 
-            this.notificationService.ChangeNotificationStatus(notificationId);
+            var status = this.notificationService.ChangeNotificationStatus(notificationId);
+
+            if (reservation == null || !status)
+            {
+                return this.NotFound();
+            }
+
             return this.View(reservation);
         }
 
@@ -66,7 +78,13 @@
         {
             var message = this.contactService.ReadMessage(targetId);
 
-            this.notificationService.ChangeNotificationStatus(notificationId);
+            var status = this.notificationService.ChangeNotificationStatus(notificationId);
+
+            if (message == null || !status)
+            {
+                return this.NotFound();
+            }
+
             return this.View(message);
         }
     }
