@@ -29,6 +29,9 @@
         public decimal OrdersRevenu
             => this.Orders.Select(x => x.TotaalSum).Sum();
 
+        public List<MonthlyReport> MonthlyReport
+            => this.GetMonthlyReport();
+
         public void CreateMappings(IProfileExpression configuration)
         {
             configuration.CreateMap<Restaurant, StatisticViewModel>()
@@ -40,6 +43,23 @@
                     x.Ratings.Select(x => x.Stars).Average()))
                 .ForMember(x => x.ReservationsCount,opt =>
                     opt.MapFrom(x => x.Rservations.Count()));
+        }
+
+        private List<MonthlyReport> GetMonthlyReport()
+        {
+            var monthlyReport = new List<MonthlyReport>();
+
+            for (int month = 1; month <= 12; month++)
+            {
+                monthlyReport.Add(new MonthlyReport
+                {
+                    Month = month.ToString(),
+                    OrdersCount = this.Orders.Where(x => x.CreatedOn.Month == month).Count(),
+                    OrdersRevenu = this.Orders.Where(x => x.CreatedOn.Month == month).Select(x => x.TotaalSum).Sum(),
+                });
+            }
+
+            return monthlyReport;
         }
     }
 }

@@ -1,0 +1,27 @@
+﻿@model IEnumerable<ProductStatisticViewModel>
+
+<div class="card-body">
+    <ul class="list-group">
+        @foreach (var product in Model)
+        {
+            <li class="list-group-item mb-3">
+                <div class="row">
+                    <div class=col>
+                        <div class="colead small float-right">
+                            поръчван: @product.InOrders пъти
+                        </div>
+                        @product.Name
+                        <hr />
+
+                        <div class="small">
+                            <i class="fa fa-star checked"></i> реитинг: @product.AvgRating / гласували: @product.Votes
+                            <p class="text-muted">
+                        </div>
+                        
+                    </div>
+                </div>
+            </li>
+
+        }
+    </ul>
+</div>

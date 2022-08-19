@@ -1,5 +1,6 @@
 ﻿namespace RestaurantSystem.Web.ViewModels.Owner.Statistics
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -11,6 +12,8 @@
     public class OrderStatisticViewModel : IMapFrom<Order>, IHaveCustomMappings
     {
         public string Status { get; init; }
+
+        public DateTime CreatedOn { get; set; }
 
         public IEnumerable<ProductInOrderViewModel> OrderProducts { get; init; }
 

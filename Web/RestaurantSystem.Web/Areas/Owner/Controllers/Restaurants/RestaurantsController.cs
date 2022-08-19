@@ -7,6 +7,7 @@
     using Microsoft.AspNetCore.Mvc;
     using RestaurantSystem.Services.Reservations;
     using RestaurantSystem.Services.Restaurants;
+    using RestaurantSystem.Services.Statistics;
     using RestaurantSystem.Web.Infrastructure;
     using RestaurantSystem.Web.ViewModels.Owner.Reservations;
     using RestaurantSystem.Web.ViewModels.Owner.Restaurants;
@@ -15,13 +16,16 @@
     {
         private readonly IRestaurantService restaurantService;
         private readonly IReservationService reservationService;
+        private readonly IStatisticService statisticService;
 
         public RestaurantsController(
             IRestaurantService restaurantService,
-            IReservationService reservationService)
+            IReservationService reservationService,
+            IStatisticService statisticService)
         {
             this.restaurantService = restaurantService;
             this.reservationService = reservationService;
+            this.statisticService = statisticService;
         }
 
         public IActionResult Registration()
@@ -105,9 +109,11 @@
             return this.View(reservations);
         }
 
-        public IActionResult Statistics()
+        public IActionResult Statistics(string restaurantId)
         {
-            return this.View();
-        }
+            var statistic = this.statisticService.GenerateRestaurantReport(restaurantId);
+            
+            return this.View(statistic);
+       }
     }
 }
