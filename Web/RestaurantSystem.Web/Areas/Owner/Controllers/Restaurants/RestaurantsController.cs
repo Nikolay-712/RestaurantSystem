@@ -112,7 +112,12 @@
         public IActionResult Statistics(string restaurantId)
         {
             var statistic = this.statisticService.GenerateRestaurantReport(restaurantId);
-            
+
+            if (statistic == null)
+            {
+                return this.NotFound();
+            }
+
             return this.View(statistic);
        }
     }

@@ -7,6 +7,5 @@
         public int OrdersCount { get; set; }
 
         public decimal OrdersRevenu { get; set; }
-
     }
 }

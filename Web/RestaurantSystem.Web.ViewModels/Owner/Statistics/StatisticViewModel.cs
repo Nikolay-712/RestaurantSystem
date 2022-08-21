@@ -5,31 +5,37 @@
     using System.Linq;
 
     using AutoMapper;
+    using RestaurantSystem.Data.Models.Reservations;
     using RestaurantSystem.Data.Models.Restaurants;
     using RestaurantSystem.Services.Mapping;
 
     public class StatisticViewModel : IMapFrom<Restaurant>, IHaveCustomMappings
     {
-        public string Name { get; set; }
+        public string Name { get; init; }
 
-        public DateTime CreatedOn { get; set; }
+        public DateTime CreatedOn { get; init; }
 
-        public int Votes { get; set; }
+        public int Votes { get; init; }
 
-        public double AvgRating { get; set; }
+        public double AvgRating { get; init; }
 
-        public IEnumerable<OrderStatisticViewModel> Orders { get; set; }
+        public IEnumerable<OrderStatisticViewModel> Orders { get; init; }
 
-        public IEnumerable<ProductStatisticViewModel> Menu { get; set; }
+        public IEnumerable<ProductStatisticViewModel> Menu { get; init; }
 
         public int OrdersCount => this.Orders.Count();
 
-        public int ReservationsCount { get; set; }
+        public int RejectedOrdersCount
+            => this.Orders.Where(x => x.Status == "Canceled").Count();
+
+        public int ReservationsCount { get; init; }
+
+        public int RejectedReservationsCount { get; init; }
 
         public decimal OrdersRevenu
             => this.Orders.Select(x => x.TotaalSum).Sum();
 
-        public List<MonthlyReport> MonthlyReport
+        public IEnumerable<MonthlyReport> MonthlyReport
             => this.GetMonthlyReport();
 
         public void CreateMappings(IProfileExpression configuration)
@@ -41,11 +47,14 @@
                     opt.MapFrom(x =>
                     x.Ratings.Select(x => x.Stars).Count() == 0 ? 0 :
                     x.Ratings.Select(x => x.Stars).Average()))
-                .ForMember(x => x.ReservationsCount,opt =>
-                    opt.MapFrom(x => x.Rservations.Count()));
+                .ForMember(x => x.ReservationsCount, opt =>
+                    opt.MapFrom(x => x.Rservations.Count()))
+                .ForMember(x => x.RejectedReservationsCount, opt =>
+                    opt.MapFrom(x => x.Rservations
+                    .Where(x => x.ReservationStatus == ReservationStatus.Canceled).Count()));
         }
 
-        private List<MonthlyReport> GetMonthlyReport()
+        private IEnumerable<MonthlyReport> GetMonthlyReport()
         {
             var monthlyReport = new List<MonthlyReport>();
 

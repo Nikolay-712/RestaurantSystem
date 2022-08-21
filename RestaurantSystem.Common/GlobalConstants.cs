@@ -20,6 +20,8 @@
 
         public const string CountErrorMessage = "{0} трябва да бъде между {1} - {2} души.";
 
+        public const string StatisticCacheKey = nameof(StatisticCacheKey);
+
         public static class Message
         {
             public const string UserSender = "User";
