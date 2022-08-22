@@ -4,6 +4,7 @@
 
     using Microsoft.AspNetCore.Mvc;
     using RestaurantSystem.Services.Contacts;
+    using RestaurantSystem.Web.ViewModels.Administration.Users;
     using RestaurantSystem.Web.ViewModels.Contacts;
 
     using static RestaurantSystem.Common.GlobalConstants;
@@ -49,6 +50,12 @@
             }
 
             return this.RedirectToAction("ReadMessage", new { messageId = readMessage.Id });
+        }
+
+        [HttpPost]
+        public IActionResult SendMessage(OwnerViewModel ownerViewModel)
+        {
+            return this.View();
         }
 
         public async Task<IActionResult> CloseDiscussion(string messageId)

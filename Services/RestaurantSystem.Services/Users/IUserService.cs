@@ -1,5 +1,6 @@
 ﻿namespace RestaurantSystem.Services.Users
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using RestaurantSystem.Data.Models.Users;
@@ -14,6 +15,8 @@
         Task SaveAddressAsync(string userId, AddresInputModel addresInput);
 
         Task<ApplicationUser> GetUserByIdAsync(string userId);
+
+        IEnumerable<T> AllUsers<T>();
 
         Address GetUserAddress(string userId);
     }

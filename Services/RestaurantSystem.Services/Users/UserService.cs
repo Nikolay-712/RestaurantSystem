@@ -1,5 +1,6 @@
 ﻿namespace RestaurantSystem.Services.Users
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -8,6 +9,7 @@
     using RestaurantSystem.Data.Models.Contacts;
     using RestaurantSystem.Data.Models.Users;
     using RestaurantSystem.Services.Contacts;
+    using RestaurantSystem.Services.Mapping;
     using RestaurantSystem.Web.ViewModels.Addresses;
 
     using static RestaurantSystem.Common.GlobalConstants;
@@ -99,6 +101,12 @@
                 .FirstOrDefault(x => x.UseId == userId);
 
             return address;
+        }
+
+        public IEnumerable<T> AllUsers<T>()
+        {
+            var users = this.applicationDbContext.Users.To<T>().ToList();
+            return users;
         }
 
         private async Task FinishedOwnerApplication(

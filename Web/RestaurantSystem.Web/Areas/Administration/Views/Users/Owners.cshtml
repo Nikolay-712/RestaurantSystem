@@ -1,0 +1,46 @@
+﻿@model IEnumerable<OwnerViewModel>
+
+
+<div class="row">
+    @foreach (var owner in Model)
+    {
+        <div class="col-md-4">
+            <p>@owner.Email</p>
+            <p>@owner.Id</p>
+            <button type="button" class="btn btn-sm btn-primary position-relative" data-toggle="modal" data-target="#@owner.Id">
+                <i class="fas fa-bell"></i>
+            </button>
+        </div>
+
+        <div class="modal fade" id="@owner.Id" tabindex="0" role="dialog" aria-labelledby="@owner.Id" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="@owner.Id">Известия</h6>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>@owner.Email</p>
+                        <form asp-controller="Dashboard"
+                          asp-action="SendMessage"
+                          asp-route-ownerId="@owner"
+                          enctype="multipart/form-data">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                            <div class="form-group">
+                                <textarea rows="5" asp-for="@owner.Message" class="form-control" placeholder="Саобщение..."></textarea>
+                                <span asp-validation-for="@owner.Message" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Изпрати" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>

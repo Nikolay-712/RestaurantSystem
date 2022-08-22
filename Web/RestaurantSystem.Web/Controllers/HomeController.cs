@@ -26,7 +26,8 @@
             return this.View();
         }
 
-        public IActionResult Privacy()
+        [HttpPost]
+        public IActionResult Create()
         {
             return this.View();
         }
