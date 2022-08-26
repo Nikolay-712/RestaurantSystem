@@ -23,9 +23,8 @@
                     <th scope="col"></th>
                     <th scope="col">Потребител</th>
                     <th scope="col">Дата</th>
-                    <th scope="col"></th>
+                    <th scope="col">Прочети</th>
                     <th scope="col">Тема</th>
-                    <th scope="col">Саобщение</th>
                 </tr>
             </thead>
             <tbody>
@@ -38,25 +37,25 @@
                         <td class="text-center">
                             @if (message.Status == "Pending")
                             {
-                                <span style="font-size: 1em; color: orange;">
+                                <span style="font-size: 0.8em; color: orange;">
                                     <i class="fas fa-circle"></i>
                                 </span>
                             }
                             @if (message.Status == "Answered")
                             {
-                                <span style="font-size: 1em; color: green;">
+                                <span style="font-size: 0.8em; color: green;">
                                     <i class="fas fa-circle"></i>
                                 </span>
                             }
                             @if (message.Status == "Approved")
                             {
-                                <span style="font-size: 1em; color: royalblue;">
+                                <span style="font-size: 0.8em; color: royalblue;">
                                     <i class="fas fa-circle"></i>
                                 </span>
                             }
                             @if (message.Status == "Canceled")
                             {
-                                <span style="font-size: 1em; color: red;">
+                                <span style="font-size: 0.8em; color: red;">
                                     <i class="fas fa-circle"></i>
                                 </span>
                             }
@@ -64,20 +63,17 @@
                         <td>@user.Email</td>
                         <td>@message.CreatedOn.ToString("dd.MM.yy HH:mm")</td>
                         <td class="text-center">
-                            <span style="font-size: 1em; color: green;">
-                                <i class="fas fa-bell"></i> (@message.NewUserRepliesCount)
-                            </span>
-
+                            <a asp-action="ReadMessage"
+                               asp-route-messageId="@message.Id" class="btn btn-sm btn-primary position-relative">
+                                <i class="fas fa-bell"></i>
+                                @if (message.NewUserRepliesCount > 0)
+                                {
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">@message.NewUserRepliesCount</span>
+                                }
+                            </a>
                         </td>
                         <td>@message.MessageType</td>
-                        <td>
-                            <a asp-action="ReadMessage"
-                           asp-route-messageId="@message.Id"
-                           class="btn-primary btn-sm">
-                                <i class="fas fa-comment-alt"></i> Прочети
-                            </a>
-
-                        </td>
+                       
                     </tr>
                 }
             </tbody>
@@ -89,25 +85,25 @@
 <partial name="_PagingPartial" model=Model />
 
 <script>
-     function myFunction1() {
-      // Declare variables
-      var input, filter, table, tr, td, i, txtValue;
-    input = document.getElementById("myInput");
-    filter = input.value.toUpperCase();
-    table = document.getElementById("myTable");
-    tr = table.getElementsByTagName("tr");
+    function myFunction1() {
+        // Declare variables
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
 
-    // Loop through all table rows, and hide those who don't match the search query
-    for (i = 0; i < tr.length; i++) {
-        td = tr[i].getElementsByTagName("td")[1];
-    if (td) {
-        txtValue = td.textContent || td.innerText;
-          if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-          } else {
-        tr[i].style.display = "none";
-          }
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[1];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
         }
-      }
     }
 </script>

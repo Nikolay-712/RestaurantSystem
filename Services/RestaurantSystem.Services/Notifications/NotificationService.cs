@@ -56,18 +56,14 @@
         public async Task ChanageNotificationMessageAsync(
             string userId, string message, string targetId)
         {
-            var notifications = this.applicationDbContext
+            var notification = this.applicationDbContext
                 .Notifications
-                .Where(x => x.UserId == userId);
-
-            Notification notification = null;
-
-            notification = notifications
+                .Where(x => x.UserId == userId)
                 .FirstOrDefault(x => x.TargetId == targetId);
 
             notification.Message = message;
             notification.CreatedOn = DateTime.Now;
-
+            notification.IsSeen = false;
 
             this.applicationDbContext.Update(notification);
             await this.applicationDbContext.SaveChangesAsync();

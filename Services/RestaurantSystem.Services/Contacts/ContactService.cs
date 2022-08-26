@@ -26,7 +26,7 @@
             this.notificationService = notificationService;
         }
 
-        public async Task SendMessageAsync(MessageInputVewModel messageInput, string userId)
+        public async Task<string> SendMessageAsync(MessageInputVewModel messageInput, string userId)
         {
             var message = new AppMessage
             {
@@ -38,6 +38,8 @@
 
             await this.applicationDbContext.AppMessages.AddAsync(message);
             await this.applicationDbContext.SaveChangesAsync();
+
+            return message.Id;
         }
 
         public AllMessagesViewModel AllMessages(int page)

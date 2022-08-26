@@ -3,6 +3,7 @@
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
+    using RestaurantSystem.Data.Models.Contacts;
     using RestaurantSystem.Services.Contacts;
     using RestaurantSystem.Web.ViewModels.Administration.Users;
     using RestaurantSystem.Web.ViewModels.Contacts;
@@ -53,8 +54,17 @@
         }
 
         [HttpPost]
-        public IActionResult SendMessage(OwnerViewModel ownerViewModel)
+        public async Task<IActionResult> SendMessage(OwnerViewModel owner, string ownerId)
         {
+            var mess = new MessageInputVewModel
+            {
+                MessageType = MessageType.Саобщение,
+                Message = Message.AdminNewMessage,
+            };
+
+            var messageId = await this.contactService.SendMessageAsync(mess, ownerId);
+            await this.contactService.ReplyMessageAsync(messageId, owner.Message, Message.AdminSender);
+
             return this.View();
         }
 

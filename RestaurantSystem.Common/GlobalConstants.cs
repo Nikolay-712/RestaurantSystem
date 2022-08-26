@@ -26,6 +26,7 @@
         {
             public const string UserSender = "User";
             public const string AdminSender = "Administration";
+            public const string AdminNewMessage = "Имате саобщение от администрацията";
 
             public const string SuccessfullySentMessage = "Благодаря за вашето саобщение,ще се свържем с вас";
             public const string SuccessfullySentReservation = "Вашата резервация бевше изпратена успешно.След като бъде обработена ше получите потварждение";

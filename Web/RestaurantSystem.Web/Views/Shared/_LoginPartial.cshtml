@@ -13,7 +13,7 @@
         var userId = ClaimsPrincipalExtensions.Id(this.User);
 
         var ordersCount = orderService
-        .GetUserOrders(userId, 1).OrdersInProgres.Count();
+            .GetUserOrders(userId, 1).OrdersInProgres.Count();
 
         <li class="nav-item mr-2">
             <partial name="_NotificationsPartial" model=@notificationService.ShowUserNotifications(userId) />
@@ -24,6 +24,15 @@
                 @if(ordersCount > 0)
                 {
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">@ordersCount</span>
+                }
+            </a>
+        </li>
+        <li class="nav-item  mr-2">
+            <a asp-area="" asp-controller="Contacts" asp-action="MyMessages" type="button" class="btn btn-sm btn-primary position-relative">
+                <i class="fas fa-envelope-open-text"></i>
+                @if (ordersCount > 0)
+                {
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"></span>
                 }
             </a>
         </li>

@@ -8,7 +8,7 @@
 
     public interface IContactService
     {
-        Task SendMessageAsync(MessageInputVewModel messageInput, string userId);
+        Task<string> SendMessageAsync(MessageInputVewModel messageInput, string userId);
 
         IEnumerable<T> GetMessages<T>();
 

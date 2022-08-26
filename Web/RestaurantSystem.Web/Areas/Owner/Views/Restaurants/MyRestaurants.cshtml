@@ -30,28 +30,28 @@
                         asp-controller="Menu"
                         asp-action="Index" 
                         asp-route-restaurantId= "@restaurant.Id">
-                        <i class="fas fa-hamburger"></i> Меню
+                        <i class="fas fa-hamburger"></i> 
                     </a>
                     <a class="btn btn-warning btn-sm"
                         asp-controller="Orders"
                         asp-action="Index"
                         asp-route-restaurantId="@restaurant.Id">
-                        <i class="fas fa-cart-arrow-down"></i> Поръчки
+                        <i class="fas fa-cart-arrow-down"></i>
                     </a>
                     <a class="btn btn-success btn-sm"
                         asp-action="Reservations"
                         asp-route-restaurantId="@restaurant.Id">
-                        <i class="fas fa-glass-cheers"></i> Резерваций
+                        <i class="fas fa-glass-cheers"></i>
                     </a>
                     <a class="btn btn-danger btn-sm"
                         asp-action="Edit"
                         asp-route-restaurantId="@restaurant.Id">
-                        <i class="fas fa-tools"></i> Настройки
+                        <i class="fas fa-tools"></i>
                     </a>
-                    <a class="btn btn-danger btn-sm"
+                    <a class="btn btn-primary btn-sm"
                         asp-action="Statistics"
                         asp-route-restaurantId="@restaurant.Id">
-                        <i class="fas fa-tools"></i> Репорт
+                        <i class="fas fa-paste"></i>
                     </a>
                 </td>
             </tr>
