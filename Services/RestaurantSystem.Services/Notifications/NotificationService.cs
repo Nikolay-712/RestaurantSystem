@@ -76,7 +76,8 @@
                 .Where(x => x.UserId == userId)
                 .To<NotificationViewModel>()
                 .ToList()
-                .OrderByDescending(x => x.CreatedOn);
+                .OrderByDescending(x => x.CreatedOn)
+                .Take(6);
 
             return notifications;
         }

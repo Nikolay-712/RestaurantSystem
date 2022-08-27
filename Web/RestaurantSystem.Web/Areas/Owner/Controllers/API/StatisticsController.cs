@@ -2,6 +2,7 @@
 {
     using Microsoft.AspNetCore.Mvc;
     using RestaurantSystem.Services.Statistics;
+    using RestaurantSystem.Web.Infrastructure;
     using RestaurantSystem.Web.ViewModels.Owner.Statistics;
 
     [Route("api/[controller]")]
@@ -17,7 +18,9 @@
 
         public StatisticViewModel Get(string restaurantId)
         {
-            var statistic = this.statisticService.GenerateRestaurantReport(restaurantId);
+            var statistic = this.statisticService
+                .GenerateRestaurantReport(restaurantId, ClaimsPrincipalExtensions.Id(this.User));
+
             return statistic;
         }
     }

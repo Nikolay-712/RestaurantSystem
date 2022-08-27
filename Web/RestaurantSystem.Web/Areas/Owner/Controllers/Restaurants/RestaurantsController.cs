@@ -111,7 +111,8 @@
 
         public IActionResult Statistics(string restaurantId)
         {
-            var statistic = this.statisticService.GenerateRestaurantReport(restaurantId);
+            var statistic = this.statisticService
+                .GenerateRestaurantReport(restaurantId, ClaimsPrincipalExtensions.Id(this.User));
 
             if (statistic == null)
             {
@@ -119,6 +120,6 @@
             }
 
             return this.View(statistic);
-       }
+        }
     }
 }

@@ -4,6 +4,6 @@
 
     public interface IStatisticService
     {
-        StatisticViewModel GenerateRestaurantReport(string restaurantId);
+        StatisticViewModel GenerateRestaurantReport(string restaurantId, string ownerId);
     }
 }
