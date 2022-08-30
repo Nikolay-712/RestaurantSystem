@@ -12,6 +12,10 @@
                .HasKey(x => x.Id);
 
             appMessage
+                .Property(x => x.UserId)
+                .IsRequired();
+
+            appMessage
                 .Property(x => x.MessageType)
                 .IsRequired();
 
