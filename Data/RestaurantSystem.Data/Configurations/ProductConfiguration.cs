@@ -42,6 +42,10 @@
                 .IsRequired();
 
             product
+                .Property(x => x.RestaurantId)
+                .IsRequired();
+
+            product
                 .HasMany(x => x.Ratings)
                 .WithOne()
                 .HasForeignKey(x => x.ProductId);

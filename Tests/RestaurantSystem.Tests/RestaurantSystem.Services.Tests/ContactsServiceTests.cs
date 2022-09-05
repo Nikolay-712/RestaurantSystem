@@ -25,6 +25,11 @@ namespace RestaurantSystem.Tests.RestaurantSystem.Services.Tests
             this.dbContext = new ApplicationDbContext(options);
             var notificationService = new Mock<INotificationService>();
             this.contactService = new ContactService(this.dbContext, notificationService.Object);
+
+            if (this.dbContext.AppMessages.Count() == 0)
+            {
+                this.AddMessagesToDbContext();
+            }
         }
 
         [Fact]
@@ -36,23 +41,11 @@ namespace RestaurantSystem.Tests.RestaurantSystem.Services.Tests
                 MessageType = MessageType.Саобщение,
             }, "usserId");
 
-            await this.contactService.SendMessageAsync(new MessageInputVewModel
-            {
-                Message = "test method message",
-                MessageType = MessageType.Кандидатсване,
-            }, "usserId1");
-
-            await this.contactService.SendMessageAsync(new MessageInputVewModel
-            {
-                Message = "test method message",
-                MessageType = MessageType.Кандидатсване,
-            }, "usserId2");
-
-            Assert.Equal(3, dbContext.AppMessages.Count());
+            Assert.Equal(5, dbContext.AppMessages.Count());
         }
 
         [Fact]
-        public async Task SendAppMessageShouldReturnValidMessage()
+        public void SendAppMessageShouldReturnValidMessage()
         {
             var message = this.dbContext.AppMessages.FirstOrDefault();
 
@@ -68,17 +61,14 @@ namespace RestaurantSystem.Tests.RestaurantSystem.Services.Tests
         public async void SendAppMessagesWithInvalidParametersShouldReturnDbUpdateException
             (string messageText, MessageType messageType, string userId)
         {
-            var notificationService = new Mock<INotificationService>();
-            var service = new ContactService(this.dbContext, notificationService.Object);
-
             await Assert.ThrowsAsync<DbUpdateException>(()
-                  => service.SendMessageAsync(new
+                  => this.contactService.SendMessageAsync(new
                   MessageInputVewModel
                   { Message = messageText, MessageType = messageType }, userId));
         }
 
         [Fact]
-        public async Task GetMessageByIdShouldReturnNotNull()
+        public void GetMessageByIdShouldReturnNotNull()
         {
             var message = this.dbContext.AppMessages.FirstOrDefault();
 
@@ -132,6 +122,74 @@ namespace RestaurantSystem.Tests.RestaurantSystem.Services.Tests
                 .ReplyMessageAsync("fake messageId", replyText, sender);
 
             Assert.False(result);
+        }
+
+        [Theory]
+        [InlineData(MessageStatus.Answered)]
+        [InlineData(MessageStatus.Canceled)]
+        [InlineData(MessageStatus.Approved)]
+        public async Task ChangeMessageSatusShouldReturnCorectStatus(MessageStatus messageStatus)
+        {
+            var message = this.dbContext.AppMessages
+                .FirstOrDefault(x => x.UserId == "testUserId5");
+
+            Assert.NotNull(message);
+            await this.contactService.ChangeMessageStatusAsync(message, messageStatus);
+
+            Assert.Equal(messageStatus, message.Status);
+        }
+
+        [Fact]
+        public async Task CloseDiscussionAndSuccessfullyChangeMessage()
+        {
+            var message = this.dbContext.AppMessages
+                .FirstOrDefault(x => x.UserId == "testUserId4");
+
+            Assert.NotNull(message);
+
+            await this.contactService.CloseDiscussionAsync(message);
+
+            Assert.True(message.IsOpen);
+            Assert.Equal(MessageStatus.Answered, message.Status);
+            Assert.True(message.Replies.Count() != 0);
+        }
+
+        private void AddMessagesToDbContext()
+        {
+            var appMessages = new List<AppMessage>()
+            {
+                new AppMessage
+                {
+                    MessageType = MessageType.Кандидатсване,
+                    Message = "some text message 1",
+                    UserId = "testUserId",
+                    Status = MessageStatus.Pending,
+                },
+                new AppMessage
+                {
+                    MessageType = MessageType.Саобщение,
+                    Message = "some text message 2",
+                    UserId = "testUserId3",
+                    Status = MessageStatus.Pending,
+                },
+                new AppMessage
+                {
+                    MessageType = MessageType.Кандидатсване,
+                    Message = "some text message 3",
+                    UserId = "testUserId4",
+                    Status = MessageStatus.Pending,
+                },
+                new AppMessage
+                {
+                    MessageType = MessageType.Саобщение,
+                    Message = "some text message 4",
+                    UserId = "testUserId5",
+                    Status = MessageStatus.Pending,
+                },
+            };
+
+            this.dbContext.AppMessages.AddRange(appMessages);
+            this.dbContext.SaveChanges();
         }
     }
 }

@@ -47,11 +47,9 @@ namespace RestaurantSystem.Tests.RestaurantsSystem.Controllers.Tests
             var result = await this.contactController
                 .Index(new MessageInputVewModel 
                 {
-                    Message = "eeeeeeeeeeeee",
+                    Message = "",
                     MessageType = MessageType.Саобщение,
                 });
-
-           var aaa= contactController.ViewData.ModelState.Count;
 
             Assert.True(!contactController.ModelState.IsValid, "This must be InValid");
         }
