@@ -13,6 +13,9 @@ using RestaurantSystem.Data.Models.Users;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc;
+using SendGrid;
+using Microsoft.Extensions.Hosting;
+using RestaurantSystem.Web.Controllers;
 
 namespace RestaurantSystem.Tests.RestaurantsSystem.Controllers.Tests
 {
@@ -34,7 +37,16 @@ namespace RestaurantSystem.Tests.RestaurantsSystem.Controllers.Tests
         }
 
         [Fact]
-        public async Task SendMessageWithInvalidModelState()
+        public void TestIndexShouldReturnIndexViewName()
+        {
+            var result = this.contactController.Index() as ViewResult;
+
+            Assert.NotNull(result);
+            Assert.Equal(string.Empty, result?.ViewName);
+        }
+
+        [Fact]
+        public async Task SendMessageWhenModelStateIsInValid()
         {
             var testUser = await this.AddTestUserAsync();
             this.AddTestClaims(testUser.Email, testUser.Id);
@@ -42,18 +54,35 @@ namespace RestaurantSystem.Tests.RestaurantsSystem.Controllers.Tests
             var mockTempData = new Mock<ITempDataDictionary>();
             this.contactController.TempData = mockTempData.Object;
 
-            this.contactController.ModelState.AddModelError("emptyMessage", "some text");
+            this.contactController.ModelState.AddModelError("emptyMessage", "Required text");
 
             var result = await this.contactController
-                .Index(new MessageInputVewModel 
+                .Index(new MessageInputVewModel
                 {
                     Message = "",
                     MessageType = MessageType.Саобщение,
                 });
-
-            Assert.True(!contactController.ModelState.IsValid, "This must be InValid");
         }
 
+        [Fact]
+        public async Task SendMessageWhenModelStateIsValid()
+        {
+            var testUser = await this.AddTestUserAsync();
+            this.AddTestClaims(testUser.Email, testUser.Id);
+
+            var mockTempData = new Mock<ITempDataDictionary>();
+            this.contactController.TempData = mockTempData.Object;
+
+            var result = await this.contactController
+                .Index(new MessageInputVewModel
+                {
+                    Message = "test some text",
+                    MessageType = MessageType.Саобщение,
+                }) as Response;
+
+
+            //Assert.Equal("/", result.Url);
+        }
 
         private void AddTestClaims(string email, string userId)
         {

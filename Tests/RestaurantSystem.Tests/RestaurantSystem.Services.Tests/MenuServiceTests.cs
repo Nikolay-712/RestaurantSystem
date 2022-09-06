@@ -1,12 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RestaurantSystem.Data;
+﻿using RestaurantSystem.Data;
 using RestaurantSystem.Services.Menu;
 using RestaurantSystem.Web.ViewModels.Owner.Menu;
 using RestaurantSystem.Data.Models.Products;
 using RestaurantSystem.Data.Models.Restaurants;
+
+using Microsoft.EntityFrameworkCore;
 using Xunit;
-using NuGet.Protocol.Plugins;
-using Moq;
 
 namespace RestaurantSystem.Tests.RestaurantSystem.Services.Tests
 {
@@ -14,7 +13,7 @@ namespace RestaurantSystem.Tests.RestaurantSystem.Services.Tests
     {
         private ApplicationDbContext dbContext;
         private MenuService menuService;
-
+        
         public MenuServiceTests()
         {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
@@ -116,7 +115,7 @@ namespace RestaurantSystem.Tests.RestaurantSystem.Services.Tests
                 .FirstOrDefault(x => x.Name == "new product name");
 
             await this.menuService.EditProductAsync
-                (product.InStock, product.Id, new EditProductViewModel 
+                (product.InStock, product.Id, new EditProductViewModel
                 {
                     Name = product.Name,
                     Description = product.Description,
@@ -125,6 +124,43 @@ namespace RestaurantSystem.Tests.RestaurantSystem.Services.Tests
                 });
 
             Assert.False(product.InStock);
+        }
+
+        [Fact]
+        public async Task AddProductToToDailyMenuShouldReturnTrue()
+        {
+            var product = this.dbContext.Products.FirstOrDefault();
+            var restaurant = this.dbContext.Restaurants.FirstOrDefault();
+
+            var result = await this.menuService
+                 .AddProductToDailyMenuAsync(product.Id, product.InDalyMenu);
+
+            Assert.True(result);
+            Assert.True(product.InDalyMenu);
+
+            var menu = restaurant.Menu.Where(x => x.InDalyMenu);
+
+            Assert.Equal(1, menu.Count());
+        }
+
+        [Fact]
+        public async Task RemoveProductFromToDailyMenuShouldReturnTrue()
+        {
+            var product = this.dbContext.Products.FirstOrDefault(x => x.Name == "TestProduct5");
+            product.InDalyMenu = true;
+
+            var restaurant = this.dbContext.Restaurants.FirstOrDefault();
+
+            var result = await this.menuService
+                 .AddProductToDailyMenuAsync(product.Id, product.InDalyMenu);
+
+            Assert.True(result);
+            Assert.False(product.InDalyMenu);
+
+            var menu = restaurant.Menu.Where(x => x.InDalyMenu);
+
+            Assert.Equal(0, menu.Count());
+
         }
 
         private string AddTestRestaurant()
