@@ -1,6 +1,7 @@
 ﻿namespace RestaurantSystem.Web.ViewModels.Payments
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     using RestaurantSystem.Data.Models.Payments;
@@ -17,8 +18,12 @@
 
         public string CVV { get; init; }
 
+        public string CustomerEmail { get; init; }
+
         [Required(ErrorMessage = RequiredFieldMessage)]
         [EnumDataType(typeof(PaymentType), ErrorMessage = CategoryErrorMesage)]
         public PaymentType PaymentType { get; init; }
+
+        public HashSet<string> ProcessPaymentResult { get; set; }
     }
 }

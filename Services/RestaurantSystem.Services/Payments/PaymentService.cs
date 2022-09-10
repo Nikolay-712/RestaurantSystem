@@ -11,18 +11,22 @@
     using RestaurantSystem.Web.ViewModels.Payments;
     using Stripe;
 
+    using static RestaurantSystem.Common.GlobalConstants;
+
     public class PaymentService : IPaymentService
     {
         private readonly ApplicationDbContext applicationDbContext;
         private readonly IConfiguration configuration;
 
-        public PaymentService(ApplicationDbContext applicationDbContext, IConfiguration configuration)
+        public PaymentService(
+            ApplicationDbContext applicationDbContext, IConfiguration configuration)
         {
             this.applicationDbContext = applicationDbContext;
             this.configuration = configuration;
         }
 
-        public async Task<string> MakePaymentAsync(string orderId, PaymentsInputModel paymentsInput)
+        public async Task<string> MakePaymentAsync(
+            string orderId, PaymentsInputModel paymentsInput, decimal amount)
         {
             var payment = new Payment
             {
@@ -37,12 +41,10 @@
                     payment.IsSuccessful = true;
                     break;
                 case PaymentType.DebitCard:
-
-                    var processPaymentResult = new ProcessPaymentResult();
                     try
                     {
                         var customers = new CustomerService();
-
+                        paymentsInput.ProcessPaymentResult = new HashSet<string>();
 
                         var options = new RequestOptions
                         {
@@ -58,7 +60,7 @@
                                 ExpYear = paymentsInput.Expiration.Value.Day.ToString(),
                                 Cvc = paymentsInput.CVV,
                                 Name = paymentsInput.CardName,
-                                Currency = "bgn",
+                                Currency = BGN,
                             },
                         };
 
@@ -66,7 +68,7 @@
                         Token paymentToken = await tokenService.CreateAsync(optionToken, options);
 
                         var customer = new Customer();
-                        var customerEmail = "testcustumer@abv.bg";
+                        var customerEmail = paymentsInput.CustomerEmail;
 
                         var stripeCustomer = await customers.ListAsync(
                             new CustomerListOptions
@@ -83,17 +85,19 @@
                                 new CustomerCreateOptions
                                 {
                                     Source = paymentToken.Id,
-                                    Phone = "",
-                                    Name = "custumerTestName".ToString(),
+                                    Name = paymentsInput.CardName,
                                     Email = customerEmail,
-                                    Description = $"test description",
+                                    Description = $"New stripe customer - {customerEmail}",
                                 },
                                 options);
+
+                            paymentToken = await tokenService.CreateAsync(optionToken, options);
                         }
                         else
                         {
                             // use existing customer
-                            customer = stripeCustomer.FirstOrDefault();
+                            customer = stripeCustomer
+                                .FirstOrDefault(x => x.Email.ToString() == customerEmail);
                         }
 
                         var charges = new ChargeService();
@@ -101,10 +105,10 @@
                             new ChargeCreateOptions
                             {
                                 Source = paymentToken.Id,
-                                Amount = 1000,
-                                Currency = "bgn",
+                                Amount = (int)(Math.Round(amount, 2) * 100),
+                                Currency = BGN,
                                 ReceiptEmail = "test@abv.bg",
-                                Description = "new test description",
+                                Description = $"New payment - {orderId}",
                             },
                             options);
 
@@ -114,13 +118,12 @@
                         }
                         else
                         {
-                            processPaymentResult.Errors.Add("Error processing payment." + charge.FailureMessage);
+                            paymentsInput.ProcessPaymentResult.Add("Error processing payment." + charge.FailureMessage);
                         }
-
                     }
                     catch (Exception ex)
                     {
-                        processPaymentResult.Errors.Add(ex.Message);
+                        paymentsInput.ProcessPaymentResult.Add(ex.Message);
                     }
 
                     break;
@@ -138,12 +141,5 @@
 
             return payment.Id;
         }
-
     }
-
-    public class ProcessPaymentResult
-    {
-        public List<string> Errors { get; set; }
-    }
-
 }

@@ -269,17 +269,19 @@
                 return false;
             }
 
-            var paymentId = await this.paymentService
-                .MakePaymentAsync(orderInput.OrderId, orderInput.Payment);
+            var amount = this.GetProductsInOrder(userId, orderInput.RestaurantId).TotaalSum;
 
-            if (paymentId == null)
+            var payment = await this.paymentService
+                .MakePaymentAsync(orderInput.OrderId, orderInput.Payment, amount);
+
+            if (payment == null)
             {
                 return false;
             }
 
             order.Status = OrderStatus.Pending;
             order.CreatedOn = DateTime.Now;
-            order.PaymentId = paymentId;
+            order.PaymentId = payment;
             order.ShippingAddress = orderInput.Addres.ShippingAddress;
             order.PhoneNumber = orderInput.PhoneNumber;
 

@@ -5,6 +5,7 @@
 
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.ModelBinding;
     using RestaurantSystem.Services.Orders;
     using RestaurantSystem.Services.Ratings;
     using RestaurantSystem.Services.Restaurants;
@@ -134,7 +135,6 @@
         public async Task<IActionResult> SendOrder(OrderInputModel orderInput, string restaurantId)
         {
             var userId = ClaimsPrincipalExtensions.Id(this.User);
-
             if (!this.ModelState.IsValid)
             {
                 var order = this.orderService.SendOrder(userId, restaurantId);
@@ -142,6 +142,16 @@
             }
 
             var result = await this.orderService.AddOrderInformationАsync(userId, orderInput);
+            if (orderInput.Payment.ProcessPaymentResult.Count() != 0)
+            {
+                this.ModelState.AddModelError("PaymentResultError", orderInput.Payment.ProcessPaymentResult.ToList()[0]);
+            }
+
+            if (!this.ModelState.IsValid)
+            {
+                var order = this.orderService.SendOrder(userId, restaurantId);
+                return this.View(order);
+            }
 
             if (!result)
             {
