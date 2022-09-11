@@ -10,7 +10,7 @@
     using RestaurantSystem.Data.Models.Payments;
     using RestaurantSystem.Web.ViewModels.Payments;
     using Stripe;
-
+    using Stripe.Issuing;
     using static RestaurantSystem.Common.GlobalConstants;
 
     public class PaymentService : IPaymentService
@@ -25,7 +25,7 @@
             this.configuration = configuration;
         }
 
-        public async Task<string> MakePaymentAsync(
+        public async Task<ProcessPaymentResult> MakePaymentAsync(
             string orderId, PaymentsInputModel paymentsInput, decimal amount)
         {
             var payment = new Payment
@@ -35,17 +35,19 @@
                 OrderId = orderId,
             };
 
+            var processPaymentResult = new ProcessPaymentResult();
+
             switch (paymentsInput.PaymentType)
             {
                 case PaymentType.Cash:
+                    processPaymentResult.PaymentId = payment.Id;
+                    processPaymentResult.IsSuccessful = true;
                     payment.IsSuccessful = true;
                     break;
                 case PaymentType.DebitCard:
                     try
                     {
                         var customers = new CustomerService();
-                        paymentsInput.ProcessPaymentResult = new HashSet<string>();
-
                         var options = new RequestOptions
                         {
                             ApiKey = "",
@@ -114,16 +116,19 @@
 
                         if (charge.Status.ToLower().Equals("succeeded"))
                         {
+                            processPaymentResult.TransactionId = charge.Id;
+                            processPaymentResult.PaymentId = payment.Id;
+                            processPaymentResult.IsSuccessful = true;
                             payment.IsSuccessful = true;
                         }
                         else
                         {
-                            paymentsInput.ProcessPaymentResult.Add("Error processing payment." + charge.FailureMessage);
+                            processPaymentResult.Errors.Add("Error processing payment." + charge.FailureMessage);
                         }
                     }
                     catch (Exception ex)
                     {
-                        paymentsInput.ProcessPaymentResult.Add(ex.Message);
+                        processPaymentResult.Errors.Add(ex.Message);
                     }
 
                     break;
@@ -131,15 +136,15 @@
                     break;
             }
 
-            if (!payment.IsSuccessful)
+            if (payment.IsSuccessful)
             {
-                return null;
+                await this.applicationDbContext.Payments.AddAsync(payment);
+                await this.applicationDbContext.SaveChangesAsync();
+
+                return processPaymentResult;
             }
 
-            await this.applicationDbContext.Payments.AddAsync(payment);
-            await this.applicationDbContext.SaveChangesAsync();
-
-            return payment.Id;
+            return processPaymentResult;
         }
     }
 }

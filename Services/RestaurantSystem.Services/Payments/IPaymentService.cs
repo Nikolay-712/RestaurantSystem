@@ -7,6 +7,6 @@
 
     public interface IPaymentService
     {
-        Task<string> MakePaymentAsync(string orderId, PaymentsInputModel paymentsInput,decimal amount);
+        Task<ProcessPaymentResult> MakePaymentAsync(string orderId, PaymentsInputModel paymentsInput,decimal amount);
     }
 }

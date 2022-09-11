@@ -53,7 +53,8 @@
         }
 
         [Authorize]
-        public async Task<IActionResult> Order(string restaurantId, string category, string productId)
+        public async Task<IActionResult> Order(
+            string restaurantId, string category, string productId)
         {
             if (!this.orderService.ExstingRestaurant(restaurantId)
                 || !this.orderService.ExstingProduct(productId))
@@ -89,7 +90,8 @@
         }
 
         [Authorize]
-        public async Task<IActionResult> ProductCount(string restaurantId, string productId, string category, string orderId, string count)
+        public async Task<IActionResult> ProductCount(
+            string restaurantId, string productId, string category, string orderId, string count)
         {
             if (!this.orderService.ExstingRestaurant(restaurantId)
                 || !this.orderService.ExstingProduct(productId)
@@ -132,7 +134,8 @@
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> SendOrder(OrderInputModel orderInput, string restaurantId)
+        public async Task<IActionResult> SendOrder(
+            OrderInputModel orderInput, string restaurantId)
         {
             var userId = ClaimsPrincipalExtensions.Id(this.User);
             if (!this.ModelState.IsValid)
@@ -141,21 +144,19 @@
                 return this.View(order);
             }
 
-            var result = await this.orderService.AddOrderInformationАsync(userId, orderInput);
-            if (orderInput.Payment.ProcessPaymentResult.Count() != 0)
-            {
-                this.ModelState.AddModelError("PaymentResultError", orderInput.Payment.ProcessPaymentResult.ToList()[0]);
-            }
+            var paymentResult = await this.orderService
+                .AddOrderInformationАsync(userId, orderInput);
 
-            if (!this.ModelState.IsValid)
+            if (paymentResult.Errors.Count != 0)
             {
-                var order = this.orderService.SendOrder(userId, restaurantId);
-                return this.View(order);
-            }
+                var paymentError = paymentResult.Errors.FirstOrDefault();
+                this.ModelState.AddModelError("PaymentError", paymentError);
 
-            if (!result)
-            {
-                return this.NotFound();
+                if (!this.ModelState.IsValid)
+                {
+                    var order = this.orderService.SendOrder(userId, restaurantId);
+                    return this.View(order);
+                }
             }
 
             var message = "Благодарим за вашата поръчка";

@@ -23,7 +23,5 @@
         [Required(ErrorMessage = RequiredFieldMessage)]
         [EnumDataType(typeof(PaymentType), ErrorMessage = CategoryErrorMesage)]
         public PaymentType PaymentType { get; init; }
-
-        public HashSet<string> ProcessPaymentResult { get; set; }
     }
 }

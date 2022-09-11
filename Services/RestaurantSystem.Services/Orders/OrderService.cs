@@ -16,12 +16,13 @@
     using RestaurantSystem.Web.ViewModels.Addresses;
     using RestaurantSystem.Web.ViewModels.Menu;
     using RestaurantSystem.Web.ViewModels.Orders;
+    using RestaurantSystem.Web.ViewModels.Payments;
 
     using static RestaurantSystem.Common.GlobalConstants;
 
     public class OrderService : IOrderService
     {
-        private const int OrdersPerPage = 3;
+        private const int OrdersPerPage = 7;
         private readonly ApplicationDbContext applicationDbContext;
         private readonly IPaymentService paymentService;
         private readonly IUserService userService;
@@ -42,7 +43,8 @@
             this.notificationService = notificationService;
         }
 
-        public MenuViewModel GetRestaurantMenuWithUserOrder(string restaurantId, string category, string userId)
+        public MenuViewModel GetRestaurantMenuWithUserOrder(
+            string restaurantId, string category, string userId)
         {
             var menu = this.menuService.ShowRestaurantMenu(restaurantId, category, userId);
             if (menu != null) { menu.Order = this.GetProductsInOrder(userId, restaurantId); }
@@ -80,7 +82,8 @@
             return order.Id;
         }
 
-        public async Task AddProductAsync(string orderId, string productId, string userId, string restaurantId)
+        public async Task AddProductAsync(
+            string orderId, string productId, string userId, string restaurantId)
         {
             var currentOrderProducts = this.applicationDbContext.
                 OrderProducts.
@@ -106,7 +109,8 @@
             await this.applicationDbContext.SaveChangesAsync();
         }
 
-        public async Task RemoveProductAsync(string orderId, string productId, string userId, string restaurantId)
+        public async Task RemoveProductAsync(
+            string orderId, string productId, string userId, string restaurantId)
         {
             var currentOrderProducts = this.applicationDbContext.
                 OrderProducts.
@@ -260,30 +264,26 @@
             return inputOrder;
         }
 
-        public async Task<bool> AddOrderInformationАsync(string userId, OrderInputModel orderInput)
+        public async Task<ProcessPaymentResult> AddOrderInformationАsync(
+            string userId, OrderInputModel orderInput)
         {
             var order = this.GetUserOrder(userId, orderInput.RestaurantId);
-
-            if (!this.ExstingOrder(orderInput.OrderId))
-            {
-                return false;
-            }
-
             var amount = this.GetProductsInOrder(userId, orderInput.RestaurantId).TotaalSum;
 
-            var payment = await this.paymentService
+            var paymentResult = await this.paymentService
                 .MakePaymentAsync(orderInput.OrderId, orderInput.Payment, amount);
 
-            if (payment == null)
+            if (paymentResult.IsSuccessful)
             {
-                return false;
-            }
+                order.Status = OrderStatus.Pending;
+                order.CreatedOn = DateTime.Now;
+                order.PaymentId = paymentResult.PaymentId;
+                order.ShippingAddress = orderInput.Addres.ShippingAddress;
+                order.PhoneNumber = orderInput.PhoneNumber;
 
-            order.Status = OrderStatus.Pending;
-            order.CreatedOn = DateTime.Now;
-            order.PaymentId = payment;
-            order.ShippingAddress = orderInput.Addres.ShippingAddress;
-            order.PhoneNumber = orderInput.PhoneNumber;
+                this.applicationDbContext.Update(order);
+                await this.applicationDbContext.SaveChangesAsync();
+            }
 
             if (orderInput.SaveAddress)
             {
@@ -291,10 +291,7 @@
                 await this.userService.SavePhoneNumberAsync(userId, orderInput.PhoneNumber);
             }
 
-            this.applicationDbContext.Update(order);
-            await this.applicationDbContext.SaveChangesAsync();
-
-            return true;
+            return paymentResult;
         }
 
         public IEnumerable<T> GetAllOrders<T>()

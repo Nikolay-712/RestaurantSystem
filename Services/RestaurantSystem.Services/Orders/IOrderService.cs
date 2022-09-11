@@ -6,6 +6,7 @@
     using RestaurantSystem.Data.Models.Orders;
     using RestaurantSystem.Web.ViewModels.Menu;
     using RestaurantSystem.Web.ViewModels.Orders;
+    using RestaurantSystem.Web.ViewModels.Payments;
 
     public interface IOrderService
     {
@@ -27,7 +28,7 @@
 
         OrderInputModel SendOrder(string userId, string restaurantId);
 
-        Task<bool> AddOrderInformationАsync(string userId, OrderInputModel orderInput);
+        Task<ProcessPaymentResult> AddOrderInformationАsync(string userId, OrderInputModel orderInput);
 
         IEnumerable<T> GetAllOrders<T>();
 
