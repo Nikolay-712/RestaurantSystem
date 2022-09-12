@@ -271,7 +271,7 @@
             var amount = this.GetProductsInOrder(userId, orderInput.RestaurantId).TotaalSum;
 
             var paymentResult = await this.paymentService
-                .MakePaymentAsync(orderInput.OrderId, orderInput.Payment, amount);
+                .MakePaymentAsync(userId, orderInput.OrderId, orderInput.Payment, amount);
 
             if (paymentResult.IsSuccessful)
             {

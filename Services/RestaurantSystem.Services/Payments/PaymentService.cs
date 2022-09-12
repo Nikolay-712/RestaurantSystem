@@ -8,25 +8,31 @@
     using Microsoft.Extensions.Configuration;
     using RestaurantSystem.Data;
     using RestaurantSystem.Data.Models.Payments;
+    using RestaurantSystem.Services.Notifications;
     using RestaurantSystem.Web.ViewModels.Payments;
     using Stripe;
     using Stripe.Issuing;
+
     using static RestaurantSystem.Common.GlobalConstants;
 
     public class PaymentService : IPaymentService
     {
         private readonly ApplicationDbContext applicationDbContext;
         private readonly IConfiguration configuration;
+        private readonly INotificationService notificationService;
 
         public PaymentService(
-            ApplicationDbContext applicationDbContext, IConfiguration configuration)
+            ApplicationDbContext applicationDbContext,
+            IConfiguration configuration,
+            INotificationService notificationService)
         {
             this.applicationDbContext = applicationDbContext;
             this.configuration = configuration;
+            this.notificationService = notificationService;
         }
 
         public async Task<ProcessPaymentResult> MakePaymentAsync(
-            string orderId, PaymentsInputModel paymentsInput, decimal amount)
+          string userId, string orderId, PaymentsInputModel paymentsInput, decimal amount)
         {
             var payment = new Payment
             {
@@ -120,10 +126,23 @@
                             processPaymentResult.PaymentId = payment.Id;
                             processPaymentResult.IsSuccessful = true;
                             payment.IsSuccessful = true;
+
+                            await this.notificationService
+                                .SendNotificationAsync(
+                                userId,
+                                string.Format(Message.SucceededPaymentMessage, amount),
+                                processPaymentResult.PaymentId,
+                                "payment");
                         }
                         else
                         {
                             processPaymentResult.Errors.Add("Error processing payment." + charge.FailureMessage);
+                            await this.notificationService
+                                .SendNotificationAsync(
+                                userId,
+                                Message.RefusedPaymentMessage,
+                                processPaymentResult.PaymentId,
+                                "payment");
                         }
                     }
                     catch (Exception ex)

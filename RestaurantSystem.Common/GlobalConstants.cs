@@ -35,6 +35,8 @@
             public const string CloseDiscussionMessage = "Дискусията е затворена,надявам се да сме били полезни";
             public const string АpproveOwnerMessage = "Изпращам инструкци за използване";
             public const string RefuseOwnerMessage = "Вие не сте одобрен";
+            public const string SucceededPaymentMessage = "Успешно плащане {0} лв.";
+            public const string RefusedPaymentMessage = "Плащането не e успешно";
 
             public const string ReservationNotificationMessage = "Статус - {0}";
             public const string ReservationPending = "Обработва се";

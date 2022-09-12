@@ -1,7 +1,6 @@
 ﻿namespace RestaurantSystem.Web.ViewModels.Payments
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     using RestaurantSystem.Data.Models.Payments;
