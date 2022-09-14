@@ -8,10 +8,10 @@
     using Microsoft.Extensions.Configuration;
     using RestaurantSystem.Data;
     using RestaurantSystem.Data.Models.Payments;
+    using RestaurantSystem.Services.Mapping;
     using RestaurantSystem.Services.Notifications;
     using RestaurantSystem.Web.ViewModels.Payments;
     using Stripe;
-    using Stripe.Issuing;
 
     using static RestaurantSystem.Common.GlobalConstants;
 
@@ -39,6 +39,8 @@
                 CreatedOn = DateTime.Now,
                 PaymentType = paymentsInput.PaymentType,
                 OrderId = orderId,
+                UserId = userId,
+                Amount = amount,
             };
 
             var processPaymentResult = new ProcessPaymentResult();
@@ -164,6 +166,16 @@
             }
 
             return processPaymentResult;
+        }
+
+        public IEnumerable<OnlinePaymentViewModel> OnlinePaymentsHistory(string userId)
+        {
+            var payments = this.applicationDbContext.Payments
+                .Where(x => x.PaymentType == PaymentType.DebitCard)
+                .Where(x => x.UserId == userId)
+                .To<OnlinePaymentViewModel>();
+
+            return payments;
         }
     }
 }

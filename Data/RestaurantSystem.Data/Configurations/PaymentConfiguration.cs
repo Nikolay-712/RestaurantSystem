@@ -14,6 +14,16 @@
             payment
                 .Property(x => x.PaymentType)
                 .IsRequired();
+
+            payment
+                .Property(x => x.UserId)
+                .IsRequired();
+
+            payment
+                .Property(x => x.Amount)
+                .IsRequired()
+                .HasColumnType<decimal>("decimal")
+                .HasPrecision(10, 2);
         }
     }
 }

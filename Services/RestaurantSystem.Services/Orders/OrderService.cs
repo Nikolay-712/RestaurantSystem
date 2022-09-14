@@ -49,6 +49,8 @@
             var menu = this.menuService.ShowRestaurantMenu(restaurantId, category, userId);
             if (menu != null) { menu.Order = this.GetProductsInOrder(userId, restaurantId); }
 
+            var aa = this.paymentService.OnlinePaymentsHistory(userId);
+
             return menu;
         }
 
