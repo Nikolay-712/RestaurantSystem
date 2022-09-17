@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RestaurantSystem.Data;
 
@@ -11,9 +12,10 @@ using RestaurantSystem.Data;
 namespace RestaurantSystem.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220917070819_EditNotificationAndPaymentModels")]
+    partial class EditNotificationAndPaymentModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -319,9 +321,6 @@ namespace RestaurantSystem.Data.Migrations
                         .HasColumnType("decimal(10,2)");
 
                     b.Property<string>("CardNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CardType")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedOn")

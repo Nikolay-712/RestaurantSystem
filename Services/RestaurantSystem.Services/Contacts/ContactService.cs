@@ -6,6 +6,7 @@
 
     using RestaurantSystem.Data;
     using RestaurantSystem.Data.Models.Contacts;
+    using RestaurantSystem.Data.Models.Notifications;
     using RestaurantSystem.Services.Mapping;
     using RestaurantSystem.Services.Notifications;
     using RestaurantSystem.Web.ViewModels.Contacts;
@@ -96,7 +97,7 @@
                     this.applicationDbContext.AppMessages.Update(message);
 
                     await this.notificationService
-                        .SendNotificationAsync(message.UserId, Message.NewMessage, message.Id, "Message");
+                        .SendNotificationAsync(message.UserId, Message.NewMessage, message.Id, NotificationType.Message);
                 }
 
                 await this.applicationDbContext.SaveChangesAsync();
@@ -144,7 +145,7 @@
             await this.applicationDbContext.SaveChangesAsync();
 
             await this.notificationService
-                .SendNotificationAsync(message.UserId, Message.NewMessage, message.Id, "Message");
+                .SendNotificationAsync(message.UserId, Message.NewMessage, message.Id, NotificationType.Message);
         }
 
         private async Task UpdateLastReplies(string sender, string messageId)

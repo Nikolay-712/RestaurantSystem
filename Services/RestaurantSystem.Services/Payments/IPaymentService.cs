@@ -11,5 +11,7 @@
         Task<ProcessPaymentResult> MakePaymentAsync(string userId, string orderId, PaymentsInputModel paymentsInput, decimal amount);
 
         IEnumerable<OnlinePaymentViewModel> OnlinePaymentsHistory(string userId);
+
+        OnlinePaymentViewModel PaymentDetails(string paymentId);
     }
 }

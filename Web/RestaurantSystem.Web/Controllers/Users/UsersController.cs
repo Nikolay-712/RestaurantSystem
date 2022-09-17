@@ -8,6 +8,7 @@
     using RestaurantSystem.Services.Contacts;
     using RestaurantSystem.Services.Notifications;
     using RestaurantSystem.Services.Orders;
+    using RestaurantSystem.Services.Payments;
     using RestaurantSystem.Services.Reservations;
     using RestaurantSystem.Web.Infrastructure;
     using RestaurantSystem.Web.ViewModels.Reservations;
@@ -19,17 +20,20 @@
         private readonly IReservationService reservationService;
         private readonly INotificationService notificationService;
         private readonly IContactService contactService;
+        private readonly IPaymentService paymentService;
 
         public UsersController(
             IOrderService orderService,
             IReservationService reservationService,
             INotificationService notificationService,
-            IContactService contactService)
+            IContactService contactService,
+            IPaymentService paymentService)
         {
             this.orderService = orderService;
             this.reservationService = reservationService;
             this.notificationService = notificationService;
             this.contactService = contactService;
+            this.paymentService = paymentService;
         }
 
         public IActionResult MyOrders(int page = 1)
@@ -86,6 +90,20 @@
             }
 
             return this.View(message);
+        }
+
+        public IActionResult PaymentDetails(string targetId, string notificationId)
+        {
+            var payment = this.paymentService.PaymentDetails(targetId);
+
+            var status = this.notificationService.ChangeNotificationStatus(notificationId);
+
+            if (payment == null || !status)
+            {
+                return this.NotFound();
+            }
+
+            return this.View(payment);
         }
     }
 }

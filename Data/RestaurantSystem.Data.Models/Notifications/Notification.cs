@@ -24,7 +24,7 @@
 
         public string TargetId { get; set; }
 
-        public string NotificationType { get; set; }
+        public NotificationType NotificationType { get; set; }
 
         public bool IsSeen { get; set; }
     }

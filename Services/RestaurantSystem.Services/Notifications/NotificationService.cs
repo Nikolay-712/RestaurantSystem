@@ -20,7 +20,7 @@
         }
 
         public async Task SendNotificationAsync(
-            string userId, string message, string targetId, string notificationType)
+            string userId, string message, string targetId, NotificationType notificationType)
         {
             var existingNotification =
                 this.applicationDbContext

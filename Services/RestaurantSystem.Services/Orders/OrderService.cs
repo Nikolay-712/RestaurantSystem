@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
 
     using RestaurantSystem.Data;
+    using RestaurantSystem.Data.Models.Notifications;
     using RestaurantSystem.Data.Models.Orders;
     using RestaurantSystem.Data.Models.Products;
     using RestaurantSystem.Services.Mapping;
@@ -48,8 +49,6 @@
         {
             var menu = this.menuService.ShowRestaurantMenu(restaurantId, category, userId);
             if (menu != null) { menu.Order = this.GetProductsInOrder(userId, restaurantId); }
-
-            var aa = this.paymentService.OnlinePaymentsHistory(userId);
 
             return menu;
         }
@@ -182,7 +181,11 @@
             await this.applicationDbContext.SaveChangesAsync();
 
             await this.notificationService
-                  .SendNotificationAsync(order.UserId, string.Format(Message.SentOrder, order.Id.Substring(0, 4)), order.Id, "Order");
+                  .SendNotificationAsync(
+                    order.UserId,
+                    string.Format(Message.SentOrder, order.Id.Substring(0, 4)),
+                    order.Id,
+                    NotificationType.Order);
         }
 
         public OrderViewModel GetProductsInOrder(string userId, string restaurantId)

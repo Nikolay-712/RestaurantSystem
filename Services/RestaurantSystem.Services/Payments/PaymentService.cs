@@ -7,6 +7,7 @@
 
     using Microsoft.Extensions.Configuration;
     using RestaurantSystem.Data;
+    using RestaurantSystem.Data.Models.Notifications;
     using RestaurantSystem.Data.Models.Payments;
     using RestaurantSystem.Services.Mapping;
     using RestaurantSystem.Services.Notifications;
@@ -124,27 +125,35 @@
 
                         if (charge.Status.ToLower().Equals("succeeded"))
                         {
+                            var cardType = optionToken.Card;
+
                             processPaymentResult.TransactionId = charge.Id;
                             processPaymentResult.PaymentId = payment.Id;
                             processPaymentResult.IsSuccessful = true;
+
                             payment.IsSuccessful = true;
+                            payment.CardNumber = paymentsInput.CardNumber
+                                .Substring(paymentsInput.CardNumber.Length - 4, 4);
 
                             await this.notificationService
                                 .SendNotificationAsync(
                                 userId,
                                 string.Format(Message.SucceededPaymentMessage, amount),
                                 processPaymentResult.PaymentId,
-                                "payment");
+                                NotificationType.Payment);
                         }
                         else
                         {
                             processPaymentResult.Errors.Add("Error processing payment." + charge.FailureMessage);
+                            payment.CardNumber = paymentsInput.CardNumber
+                                .Substring(paymentsInput.CardNumber.Length - 4, 4);
+
                             await this.notificationService
                                 .SendNotificationAsync(
                                 userId,
                                 Message.RefusedPaymentMessage,
                                 processPaymentResult.PaymentId,
-                                "payment");
+                                NotificationType.Payment);
                         }
                     }
                     catch (Exception ex)
@@ -168,14 +177,28 @@
             return processPaymentResult;
         }
 
+        public IQueryable<T> GetAllPayments<T>()
+        {
+            return this.applicationDbContext.Payments.To<T>();
+        }
+
         public IEnumerable<OnlinePaymentViewModel> OnlinePaymentsHistory(string userId)
         {
-            var payments = this.applicationDbContext.Payments
+            var payments = this.GetAllPayments<Payment>()
                 .Where(x => x.PaymentType == PaymentType.DebitCard)
                 .Where(x => x.UserId == userId)
-                .To<OnlinePaymentViewModel>();
+                .To<OnlinePaymentViewModel>()
+                .ToList();
 
             return payments;
+        }
+
+        public OnlinePaymentViewModel PaymentDetails(string paymentId)
+        {
+            var payment = this.GetAllPayments<OnlinePaymentViewModel>()
+                 .FirstOrDefault(x => x.Id == paymentId);
+
+            return payment;
         }
     }
 }

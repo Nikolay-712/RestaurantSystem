@@ -46,6 +46,12 @@
                             actionName = "MessageDetails";
 
                         }
+                        if (notification.NotificationType == "Payment")
+                        {
+                            actionName = "PaymentDetails";
+
+                        }
+
 
                         <a asp-area=""
                        asp-controller="Users"

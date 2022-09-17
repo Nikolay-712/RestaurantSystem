@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
 
     using RestaurantSystem.Data;
+    using RestaurantSystem.Data.Models.Notifications;
     using RestaurantSystem.Data.Models.Reservations;
     using RestaurantSystem.Services.Mapping;
     using RestaurantSystem.Services.Notifications;
@@ -59,7 +60,11 @@
             if (result == 1)
             {
                 await this.notificationService.SendNotificationAsync(
-                 userId, string.Format(Message.ReservationNotificationMessage, Message.ReservationPending), reservation.Id, "Reservation");
+                 userId,
+                 string.Format(Message.ReservationNotificationMessage,
+                 Message.ReservationPending),
+                 reservation.Id,
+                 NotificationType.Reservation);
             }
 
             return result == 1 ? true : false;
