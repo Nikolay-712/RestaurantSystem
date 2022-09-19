@@ -1,5 +1,7 @@
 ﻿namespace RestaurantSystem.Web.ViewModels.Payments
 {
+    using System;
+
     using RestaurantSystem.Data.Models.Payments;
     using RestaurantSystem.Services.Mapping;
 
@@ -13,7 +15,7 @@
 
         public string OrderId { get; init; }
 
-        public string CreatedOn { get; init; }
+        public DateTime CreatedOn { get; init; }
 
         public bool IsSuccessful { get; init; }
 

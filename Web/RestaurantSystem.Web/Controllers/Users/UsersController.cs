@@ -52,11 +52,14 @@
                 .AllOrders
                 .FirstOrDefault(x => x.Id == targetId);
 
-            var status = this.notificationService.ChangeNotificationStatus(notificationId);
-
-            if (order == null || !status)
+            if (notificationId != null)
             {
-                return this.NotFound();
+                var status = this.notificationService.ChangeNotificationStatus(notificationId);
+
+                if (order == null || !status)
+                {
+                    return this.NotFound();
+                }
             }
 
             return this.View(order);
