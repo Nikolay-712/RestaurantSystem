@@ -2,11 +2,14 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.Linq;
 
     using RestaurantSystem.Data.Models.Restaurants;
     using RestaurantSystem.Services.Mapping;
     using RestaurantSystem.Web.ViewModels.Ratings;
+
+    using static RestaurantSystem.Common.GlobalConstants;
 
     public class RestaurantInfoViewModel : IMapFrom<Restaurant>
     {
@@ -27,6 +30,11 @@
         public IEnumerable<RatingViewModel> Ratings { get; init; }
 
         public int RatingsCount => this.Ratings.Count();
+
+        [Display(Name = "Коментара")]
+        [Required(ErrorMessage = RequiredFieldMessage)]
+        [StringLength(maximumLength: 300, ErrorMessage = LenghtErrorMessage, MinimumLength = 10)]
+        public string Comment { get; init; }
 
         public double AverageRating
             => Math.Round((double)this.Ratings.Select(x => x.Stars).Average(), 2);

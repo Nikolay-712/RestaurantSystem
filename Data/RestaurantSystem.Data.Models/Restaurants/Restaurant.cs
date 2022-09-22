@@ -2,7 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using RestaurantSystem.Data.Models.Images;
+
+    using RestaurantSystem.Data.Models.Comments;
     using RestaurantSystem.Data.Models.Orders;
     using RestaurantSystem.Data.Models.Products;
     using RestaurantSystem.Data.Models.Ratings;
@@ -18,6 +19,7 @@
             this.Rservations = new List<Reservation>();
             this.Orders = new List<Order>();
             this.Ratings = new List<Rating>();
+            this.Comments = new List<Comment>();
         }
 
         public string Id { get; set; }
@@ -47,5 +49,7 @@
         public IEnumerable<Order> Orders { get; set; }
 
         public IEnumerable<Rating> Ratings { get; set; }
+
+        public IEnumerable<Comment> Comments { get; set; }
     }
 }

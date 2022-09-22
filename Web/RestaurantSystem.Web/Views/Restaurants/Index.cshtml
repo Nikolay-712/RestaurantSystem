@@ -42,7 +42,16 @@
                                 this.ViewData["ObjectType"] = type;
                             }
 
-                            <partial name="_RatingPartial" model=@rating view-data="ViewData" />
+                            <div class="row">
+                                <div class="col">
+                                    <partial name="_RatingPartial" model=@rating view-data="ViewData" />
+                                </div>
+                                <div class="col">
+                                    <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#@restaurant.Id">
+                                        <i class="fas fa-info-circle"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         @if (restaurant.CoverImageUrl == null)
                         {
@@ -55,16 +64,16 @@
                                 <div class="row">
                                     <div class="col">
                                         <a class="btn btn-sm btn-primary"
-                                        asp-action="Menu"
-                                        asp-route-restaurantId="@restaurant.Id">
+                                   asp-action="Menu"
+                                   asp-route-restaurantId="@restaurant.Id">
                                             Меню
                                         </a>
                                     </div>
                                     <div class="col">
                                         <a class="btn btn-sm btn-primary"
-                                        asp-controller="Contacts"
-                                        asp-action="Reservation"
-                                        asp-route-restaurantId="@restaurant.Id">
+                                   asp-controller="Contacts"
+                                   asp-action="Reservation"
+                                   asp-route-restaurantId="@restaurant.Id">
                                             Резервирай
                                         </a>
                                     </div>
@@ -81,16 +90,16 @@
                                 <div class="row">
                                     <div class="col">
                                         <a class="btn btn-sm btn-primary"
-                                        asp-action="Menu"
-                                        asp-route-restaurantId="@restaurant.Id">
+                                   asp-action="Menu"
+                                   asp-route-restaurantId="@restaurant.Id">
                                             Меню
                                         </a>
                                     </div>
                                     <div class="col">
                                         <a class="btn btn-sm btn-primary"
-                                        asp-controller="Contacts"
-                                        asp-action="Reservation"
-                                        asp-route-restaurantId="@restaurant.Id">
+                                   asp-controller="Contacts"
+                                   asp-action="Reservation"
+                                   asp-route-restaurantId="@restaurant.Id">
                                             Резервирай
                                         </a>
                                     </div>
@@ -101,10 +110,41 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="@restaurant.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="exampleModalLabel">Коментари</h6>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>@restaurant.Name</p>
+
+                        <form asp-action="AddComment" enctype="multipart/form-data">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <textarea rows="3" asp-for="@restaurant.Comment" class="form-control" placeholder="Коментар..."></textarea>
+                                <span asp-validation-for="@restaurant.Comment" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input asp-for="OpenIn" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Изпрати" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
     }
 </div>
-
-
 
 <style>
     .thumbnail a > img, .thumbnail > img {

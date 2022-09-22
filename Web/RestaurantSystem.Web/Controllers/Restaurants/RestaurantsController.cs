@@ -39,6 +39,14 @@
             return this.View(restaurants);
         }
 
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> AddComment()
+        {
+            var userId = ClaimsPrincipalExtensions.Id(this.User);
+            return this.RedirectToAction("Index");
+        }
+
         public IActionResult Menu(string restaurantId, string category)
         {
             var userId = ClaimsPrincipalExtensions.Id(this.User);

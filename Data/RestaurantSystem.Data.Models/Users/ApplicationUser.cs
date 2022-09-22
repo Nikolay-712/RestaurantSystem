@@ -4,6 +4,7 @@
     using System.Collections.Generic;
 
     using Microsoft.AspNetCore.Identity;
+    using RestaurantSystem.Data.Models.Comments;
     using RestaurantSystem.Data.Models.Contacts;
     using RestaurantSystem.Data.Models.Notifications;
     using RestaurantSystem.Data.Models.Orders;
@@ -25,6 +26,7 @@
             this.Orders = new HashSet<Order>();
             this.Ratings = new HashSet<Rating>();
             this.Notifications = new HashSet<Notification>();
+            this.Comments = new HashSet<Comment>();
         }
 
         public DateTime CreatedOn { get; set; }
@@ -50,6 +52,8 @@
         public ICollection<Rating> Ratings { get; set; }
 
         public ICollection<Notification> Notifications { get; set; }
+
+        public ICollection<Comment> Comments { get; set; }
 
         public string AddressId { get; set; }
 
