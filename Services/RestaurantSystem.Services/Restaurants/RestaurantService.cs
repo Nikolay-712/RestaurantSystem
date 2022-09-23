@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
 
     using RestaurantSystem.Data;
+    using RestaurantSystem.Data.Models.Comments;
     using RestaurantSystem.Data.Models.Restaurants;
     using RestaurantSystem.Services.Images;
     using RestaurantSystem.Services.Mapping;
@@ -92,6 +93,20 @@
             return this.applicationDbContext
                 .Restaurants
                 .FirstOrDefault(x => x.Id == restaurantid);
+        }
+
+        public async Task AddCommentAsync(string restaurantId, string userId, string commentText)
+        {
+            var comment = new Comment
+            {
+                CreatedOn = DateTime.Now,
+                RestaurantId = restaurantId,
+                UserId = userId,
+                Text = commentText,
+            };
+
+            await this.applicationDbContext.Comments.AddAsync(comment);
+            await this.applicationDbContext.SaveChangesAsync();
         }
     }
 }

@@ -29,6 +29,8 @@
 
         public IEnumerable<RatingViewModel> Ratings { get; init; }
 
+        public IEnumerable<CommentViewModel> Comments { get; init; }
+
         public int RatingsCount => this.Ratings.Count();
 
         [Display(Name = "Коментара")]

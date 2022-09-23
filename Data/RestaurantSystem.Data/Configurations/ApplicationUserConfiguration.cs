@@ -48,11 +48,6 @@
                 .HasMany(x => x.Ratings)
                 .WithOne()
                 .HasForeignKey(x => x.UserId);
-
-            appUser
-                .HasMany(x => x.Comments)
-                .WithOne()
-                .HasForeignKey(x => x.UserId);
         }
     }
 }

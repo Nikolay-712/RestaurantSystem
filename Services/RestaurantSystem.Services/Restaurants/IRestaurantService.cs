@@ -17,5 +17,7 @@
         IEnumerable<T> AllRestaurants<T>();
 
         Restaurant GetRestaurant(string restaurantid);
+
+        Task AddCommentAsync(string restaurantId, string userId, string commentText);
     }
 }
