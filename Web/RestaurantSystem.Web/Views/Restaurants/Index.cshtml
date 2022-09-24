@@ -3,7 +3,19 @@
 
 @{
     var userId = ClaimsPrincipalExtensions.Id(this.User);
+    var message = this.TempData["newComment"] as string;
 }
+
+@if (message != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @message.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
 <div class="row">
     @foreach (var restaurant in Model)
     {
@@ -112,17 +124,31 @@
         </div>
 
         <div class="modal fade" id="@restaurant.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h6 class="modal-title" id="exampleModalLabel">Коментари - @restaurant.Name</h6>
+                        <h6 class="modal-title" id="exampleModalLabel">Коментари (@restaurant.Comments.Count()) - @restaurant.Name</h6>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-
+                          <form asp-action="AddComment"
+                          enctype="multipart/form-data">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <textarea rows="3" asp-for="@restaurant.Comment" class="form-control" placeholder="Коментар..."></textarea>
+                                <span asp-validation-for="@restaurant.Comment" class="text-danger"></span>
+                                <input type="hidden" asp-for="@restaurant.Ratings" />
+                                <input type="hidden" asp-for="@restaurant.Id" />
+                            </div>
+                            <div class="form-group">
+                                <input id="restaurant" type="hidden" value="@restaurant" name="restaurant">
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Изпрати" class="btn btn-primary" />
+                            </div>
+                        </form>
                         @foreach (var comment in restaurant.Comments)
                         {
                             <div class="container">
@@ -134,19 +160,42 @@
 
                                                     @{
                                                         var userName = comment.Email.Split('@');
-                                                        var starsCont = comment.Ratings.FirstOrDefault(x => x.RestaurantId == restaurant.Id).Stars;
+                                                        var restaurantRating = comment.Ratings
+                                                        .FirstOrDefault(x => x.RestaurantId == restaurant.Id);
                                                     }
 
                                                     <div class="row">
                                                         <div class="col"><h5 class="h5 g-color-gray-dark-v1 mb-0">@userName[0]</h5></div>
                                                         <div class="col">
-                                                            @for (int i = 1; i < starsCont + 1; i++)
+                                                            @if (restaurantRating != null)
                                                             {
-                                                                <div class="btn-group">
-                                                                    <a class="btn btn-sm" name="rating" value="@i">
-                                                                        <i class="fa fa-star checked"></i>
-                                                                    </a>
-                                                                </div>
+                                                                @for (int i = 1; i < restaurantRating.Stars + 1; i++)
+                                                                {
+                                                                    <div class="btn-group">
+                                                                        <a class="btn btn-sm" name="rating" value="@i">
+                                                                            <i class="fa fa-star checked"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                }
+                                                                @for (int i = 1; i < 5 - restaurantRating.Stars + 1; i++)
+                                                                {
+                                                                    <div class="btn-group">
+                                                                        <a class="btn btn-sm" name="rating" value="@i">
+                                                                            <i class="fa fa-star uncheked"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                @for (int i = 1; i < 5 + 1; i++)
+                                                                {
+                                                                    <div class="btn-group">
+                                                                        <a class="btn btn-sm" name="rating" value="@i">
+                                                                            <i class="fa fa-star uncheked"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                }
                                                             }
                                                         </div>
                                                     </div>
@@ -163,19 +212,7 @@
                             </div>
                             <hr />
                         }
-
-                        <form asp-action="Index"
-                          enctype="multipart/form-data">
-                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <div class="form-group">
-                                <textarea rows="3" asp-for="@restaurant.Comment" class="form-control" placeholder="Коментар..."></textarea>
-                                <span asp-validation-for="@restaurant.Comment" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <input type="submit" value="Изпрати" class="btn btn-primary" />
-                            </div>
-                        </form>
-
+                        
                     </div>
 
                 </div>
@@ -183,56 +220,3 @@
         </div>
     }
 </div>
-
-<style>
-    .thumbnail a > img, .thumbnail > img {
-        display: block;
-        width: 100%;
-        height: 250px;
-    }
-
-        body{
-        margin-top:10px;
-        background:#eee;
-    }
-    media (min-width: 0) {
-        .g-mr-15 {
-            margin-right: 1.07143rem !important;
-        }
-    }
-    media (min-width: 0){
-        .g-mt-3 {
-            margin-top: 0.21429rem !important;
-        }
-    }
-
-    .g-height-50 {
-        height: 50px;
-    }
-
-    .g-width-50 {
-        width: 50px !important;
-    }
-
-    media (min-width: 0){
-        .g-pa-30 {
-            padding: 2.14286rem !important;
-        }
-    }
-
-    .g-bg-secondary {
-        background-color: #fafafa !important;
-    }
-
-    .u-shadow-v18 {
-        box-shadow: 0 5px 10px -6px rgba(0, 0, 0, 0.15);
-    }
-
-    .g-color-gray-dark-v4 {
-        color: #777 !important;
-    }
-
-    .g-font-size-12 {
-        font-size: 0.85714rem !important;
-    }
-</style>

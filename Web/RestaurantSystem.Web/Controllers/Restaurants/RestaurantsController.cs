@@ -1,5 +1,6 @@
 ﻿namespace RestaurantSystem.Web.Controllers.Restaurants
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -41,9 +42,15 @@
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> AddComment()
+        public async Task<IActionResult> AddComment(RestaurantInfoViewModel restaurant)
         {
             var userId = ClaimsPrincipalExtensions.Id(this.User);
+            await this.restaurantService
+                .AddCommentAsync(restaurant.Id, userId, restaurant.Comment);
+
+            var message = "Благодарим за мнението ви!";
+            this.TempData["newComment"] = message;
+
             return this.RedirectToAction("Index");
         }
 

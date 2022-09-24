@@ -30,10 +30,10 @@
         {
             configuration.CreateMap<Comment, CommentViewModel>()
                  .ForMember(x => x.Ratings, opt =>
-                     opt.MapFrom(x => x.User.Ratings))
+                     opt.MapFrom(x => x.User.Ratings
+                     .Where(x => x.RestaurantId != null)))
                  .ForMember(x => x.Email, opt =>
                     opt.MapFrom(x => x.User.Email));
-
         }
     }
 }

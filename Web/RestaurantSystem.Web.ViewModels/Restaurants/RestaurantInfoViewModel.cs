@@ -39,6 +39,9 @@
         public string Comment { get; init; }
 
         public double AverageRating
-            => Math.Round((double)this.Ratings.Select(x => x.Stars).Average(), 2);
+        {
+            get =>
+                this.RatingsCount == 0 ? 0 : Math.Round((double)this.Ratings.Select(x => x.Stars).Average(), 2);
+        }
     }
 }
