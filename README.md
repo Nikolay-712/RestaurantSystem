@@ -11,6 +11,7 @@ Application for managing restaurants and ordering food. Easy to add new products
 - Custom Validation Attributes
 - Bootstrap
 - Cloudinary
+- Stripe Payments
 - JS
 
 
@@ -48,9 +49,12 @@ Approves/Rejects restaurant registration applications.Responds to user messages.
 **User**
 
 ## :information_source: User
-Can browse restaurants with their menu and order food. Receive notifications about the change in the status of orders placed. Choose payment method on delivery or by debit card - (not yet available), save address and phone number for delivery. Full history of orders placed.
+Can browse restaurants with their menu and order food. Receive notifications about the change in the status of orders placed. 
+Choose payment method on delivery or by debit card, save address and phone number for delivery. Full history of orders placed.
 Can rate a restaurant or product with the rating system.
-Possibility to send messages to the administration of the applications
+Possibility to send messages to the administration of the applications.
+Adding a comment for each restaurant.
+Notifications for payment, orders, reservations.
 
 **screenshots**
 
